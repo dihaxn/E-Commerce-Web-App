@@ -6,9 +6,11 @@ namespace E_Commerce_BE.Services
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
-        {
+        private readonly ApplicationDbContext context;
 
+        public ApplicationDbContext(DbContextOptions options)
+        {
+            this.context = context;
 
         }
 

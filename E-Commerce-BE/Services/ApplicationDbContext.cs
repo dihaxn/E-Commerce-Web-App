@@ -1,16 +1,15 @@
-﻿using E_Commerce_BE.Models;
+﻿
 
+using E_Commerce_BE.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_BE.Services
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly ApplicationDbContext context;
-
-        public ApplicationDbContext(DbContextOptions options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
-            this.context = context;
+
 
         }
 

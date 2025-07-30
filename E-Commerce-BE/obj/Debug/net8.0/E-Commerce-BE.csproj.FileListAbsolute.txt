@@ -144,3 +144,4 @@ C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Comm
 C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\obj\Debug\net8.0\E-Commerce-BE.pdb
 C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\obj\Debug\net8.0\E-Commerce-BE.genruntimeconfig.cache
 C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\obj\Debug\net8.0\ref\E-Commerce-BE.dll
+C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\obj\Debug\net8.0\E-Commerce-BE.sourcelink.json

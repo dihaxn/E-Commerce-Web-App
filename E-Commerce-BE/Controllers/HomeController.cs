@@ -1,21 +1,26 @@
 using System.Diagnostics;
 using E_Commerce_BE.Models;
+using E_Commerce_BE.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce_BE.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        public ApplicationDbContext context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            this.context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var products = context.Products
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(4)
+                .ToList();
+            return View(products);
         }
 
         public IActionResult Privacy()

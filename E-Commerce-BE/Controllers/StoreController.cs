@@ -17,9 +17,41 @@ namespace E_Commerce_BE.Controllers
             this.context = context;
         }
 
-        public IActionResult Index(int pageIndex)
-        {
+        public IActionResult Index(int pageIndex, string? search, string? brand, string? category, string? sort)
+     {
             IQueryable<Product> query = context.Products;
+
+            // search functionality
+            if (search != null && search.Length > 0)
+            {
+                query = query.Where(p => p.Name.Contains(search));
+            }
+
+            // filter functionality
+            if (brand != null && brand.Length > 0)
+            {
+                query = query.Where(p => p.Brand.Contains(brand));
+            }
+
+            if (category != null && category.Length > 0)
+            {
+                query = query.Where(p => p.Category.Contains(category));
+            }
+
+            // Sort functionality
+            if (sort == "price_asc")
+            {
+                query = query.OrderBy(p => p.Price);
+            }
+            else if (sort == "price_desc")
+            {
+                query = query.OrderByDescending(p => p.Price);
+            }
+            else
+            {
+                // newest products first
+                query = query.OrderByDescending(p => p.Id);
+            }
 
             query = query.OrderByDescending(p => p.Id);
 
@@ -39,7 +71,30 @@ namespace E_Commerce_BE.Controllers
             ViewBag.PageIndex = pageIndex;
             ViewBag.TotalPages = totalPages;
 
-            return View();
+            var storeSearchModel = new StoreSearchModel
+            {
+ 
+                Search = search,
+                Brand = brand ,
+                Category = category ,
+                Sort = sort 
+            };
+
+
+            return View(storeSearchModel);
+        }
+
+
+
+        public IActionResult Details(int id)
+        {
+            var product = context.Products.Find(id);
+            if (product == null)
+            {
+                return RedirectToAction("Index", "Store");
+            }
+
+            return View(product);
         }
     }
 }

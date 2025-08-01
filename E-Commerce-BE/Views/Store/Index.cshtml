@@ -1,4 +1,4 @@
-﻿
+﻿@model StoreSearchModel
 @{
 }
 
@@ -6,7 +6,7 @@
 
 <form class="row g-3 mb-3">
     <div class="col-lg-2 col-md-4">
-        <select class="form-select" name="brand" onchange="this.form.submit()">
+        <select class="form-select" name="brand" asp-for="Brand" onchange="this.form.submit()">
             <option value="">All Brands</option>
             <option value="Samsung">Samsung</option>
             <option value="Apple">Apple</option>
@@ -15,7 +15,7 @@
         </select>
     </div>
     <div class="col-lg-2 col-md-4">
-        <select id="category" name="category">
+        <select id="category" name="category" asp-for=" Category" onchange="this.form.submit()">
             <option value="">- All Categories -</option>
             <option value="Phones">Phones</option>
             <option value="Computers">Computers</option>
@@ -26,7 +26,7 @@
         </select>
     </div>
     <div class="col-lg-2 col-md-4">
-        <select class="form-select" name="sort" onchange="this.form.submit()">
+        <select class="form-select" name="sort" asp-for="Search" asp-for="Sort" onchange="this.form.submit()">
             <option value="newest">Order By Newest</option>
             <option value="price_asc">Price: Low to High</option>
             <option value="price_desc">Price: High to Low</option>
@@ -67,7 +67,13 @@
         {
             string active = "";
             if (i == ViewBag.PageIndex) active = "active";
-            <li class="page-item @active"><a class="page-link" asp-route-pageIndex="@i">@i</a></li>
+            <li class="page-item @active">
+                <a class="page-link" asp-route-pageIndex="@i"
+                   asp-route-search="@Model.Search" asp-route-brand="@Model.Brand"
+                   asp-route-category="@Model.Category" asp-route-sort="@Model.Sort">
+                    @i
+                </a>
+            </li>
         }
     </ul>
 </nav>

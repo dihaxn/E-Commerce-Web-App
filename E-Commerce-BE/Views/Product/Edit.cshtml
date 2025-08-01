@@ -1,40 +1,196 @@
 ﻿@model ProductDto
 @{
-    <div class="row">
-        <div class="col-md-8 mx-auto rounded border p-3">
-            <h2 class="text-center mb-5">Edit Product</h2>
+    ViewData["Title"] = "Edit Product";
+}
 
+<style>
+    :root {
+        /* Premium Color Palette */
+        --primary-color: #6c5ce7;
+        --primary-dark: #5649c0;
+        --accent-color: #00cec9;
+        --light-bg: #f8f9ff;
+        --card-bg: #ffffff;
+        --text-dark: #2d3436;
+        --text-light: #f5f6fa;
+        --shadow-light: 0 4px 20px rgba(108, 92, 231, 0.1);
+        --shadow-medium: 0 8px 30px rgba(108, 92, 231, 0.2);
+        --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.15);
+        --border-radius: 16px;
+        --border-radius-sm: 8px;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .edit-product-container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .edit-product-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-heavy);
+        background: var(--card-bg);
+        overflow: hidden;
+    }
+
+    .edit-product-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .edit-product-title {
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+
+    .edit-product-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .form-control, .form-select, .form-file {
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        border: 1px solid rgba(108, 92, 231, 0.2);
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 206, 201, 0.15);
+        }
+
+    .form-control-plaintext {
+        padding: 0.75rem 0;
+    }
+
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .btn-submit {
+        background: var(--primary-gradient);
+        border: none;
+        padding: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+    .btn-cancel {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        padding: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+    /* Image styling */
+    .current-image {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid rgba(108, 92, 231, 0.2);
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .image-preview-container {
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: var(--border-radius-sm);
+        border: 1px dashed rgba(108, 92, 231, 0.3);
+        padding: 0.5rem;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .edit-product-container {
+            padding: 0 1rem;
+        }
+
+        .edit-product-body {
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="edit-product-container">
+    <div class="edit-product-card">
+        <div class="edit-product-header">
+            <h1 class="edit-product-title">Edit Product</h1>
+        </div>
+
+        <div class="edit-product-body">
             <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label">Product ID</label>
+                        <input class="form-control-plaintext" value="@ViewData["ProductId"]" readonly>
+                    </div>
 
-
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">ID</label>
-                    <div class="col-sm-8">
-                        <input class="form-control" value="@ViewData["ProductId"]" />
+                    <div class="col-md-6">
+                        <label class="form-label">Created At</label>
+                        <input class="form-control-plaintext" readonly value="@ViewData["CreatedAt"]">
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Name</label>
-                    <div class="col-sm-8">
-                        <input class="form-control" asp-for="Name" />
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label asp-for="Name" class="form-label">Product Name*</label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter product name">
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Brand</label>
-                    <div class="col-sm-8">
-                        <input class="form-control" asp-for="Brand" />
+                    <div class="col-md-6">
+                        <label asp-for="Brand" class="form-label">Brand*</label>
+                        <input asp-for="Brand" class="form-control" placeholder="Enter brand name">
                         <span asp-validation-for="Brand" class="text-danger"></span>
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Category</label>
-                    <div class="col-sm-8">
-                        <select class="form-select" asp-for="Category">
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label asp-for="Category" class="form-label">Category*</label>
+                        <select asp-for="Category" class="form-select">
                             <option value="Other">Other</option>
                             <option value="Phones">Phones</option>
                             <option value="Computers">Computers</option>
@@ -42,58 +198,73 @@
                             <option value="Printers">Printers</option>
                             <option value="Cameras">Cameras</option>
                         </select>
+                        <span asp-validation-for="Category" class="text-danger"></span>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Price</label>
-                    <div class="col-sm-8">
-                        <input class="form-control" asp-for="Price">
+                    <div class="col-md-6">
+                        <label asp-for="Price" class="form-label">Price*</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="Price" class="form-control" placeholder="0.00">
+                        </div>
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Description</label>
-                    <div class="col-sm-8">
-                        <textarea class="form-control" asp-for="Description"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter product description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Current Image</label>
+                    <div class="image-preview-container">
+                        <img src="/products/@ViewData["ImageFileName"]" class="current-image" alt="Current product image">
+                    </div>
+
+                    <label asp-for="ImageFile" class="form-label">Update Image</label>
+                    <input asp-for="ImageFile" class="form-control form-file" type="file">
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+
+                    <div class="image-preview-container" id="imagePreview">
+                        <img id="previewImage" class="image-preview" src="#" alt="New image preview" style="display: none;" />
                     </div>
                 </div>
 
+                <div class="d-grid gap-3 mt-5">
+                    <button type="submit" class="btn btn-submit">
+                        <i class="bi bi-save-fill me-2"></i>Update Product
+                    </button>
 
-                <div class="row mb-3">
-                    <div class="offset-sm-4 col-sm-8">
-                        <img src="/products/@ViewData["ImageFileName"]" width="150">
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Image</label>
-                    <div class="col-sm-8">
-                        <input class="form-control" asp-for="ImageFile">
-                        <span asp-validation-for="ImageFile" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Created At</label>
-                    <div class="col-sm-8">
-                        <input class="form-control-plaintext" readonly value="@ViewData["CreatedAt"]">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="offset-sm-4 col-sm-4 d-grid">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                    <div class="col-sm-4 d-grid">
-                        <a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index" role="button">
-                            Cancel
-                        </a>
-                    </div>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-cancel">
+                        <i class="bi bi-x-circle-fill me-2"></i>Cancel
+                    </a>
                 </div>
             </form>
         </div>
     </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Image preview functionality
+        document.getElementById('ImageFile').addEventListener('change', function(event) {
+            const output = document.getElementById('previewImage');
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    output.src = e.target.result;
+                    output.style.display = 'block';
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+
+        // Price input validation
+        document.getElementById('Price').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+        });
+    </script>
 }

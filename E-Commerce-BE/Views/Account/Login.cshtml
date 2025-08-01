@@ -1,6 +1,6 @@
-﻿@model RegisterDto
+﻿@model LoginDto
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Login";
 }
 
 <style>
@@ -18,19 +18,22 @@
         --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.15);
         --border-radius: 16px;
         --border-radius-sm: 8px;
+        --primary-gradient: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     }
 
     body {
         background-color: var(--light-bg);
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        padding: 1rem;
     }
 
-    .register-container {
+    .login-container {
         max-width: 700px;
         margin: 2rem auto;
     }
 
-    .register-card {
+    .login-card {
         border: none;
         border-radius: var(--border-radius);
         box-shadow: var(--shadow-heavy);
@@ -38,26 +41,29 @@
         overflow: hidden;
     }
 
-    .register-header {
+    .login-header {
         background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
         color: white;
         padding: 1.5rem;
         text-align: center;
     }
 
-    .register-title {
+    .login-title {
         font-weight: 800;
         letter-spacing: -0.5px;
         margin: 0;
+        font-size: 1.75rem;
     }
 
-    .register-body {
+    .login-body {
         padding: 2rem;
     }
 
     .form-label {
         font-weight: 600;
         color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        display: block;
     }
 
     .form-control {
@@ -65,28 +71,63 @@
         padding: 0.75rem 1rem;
         border: 1px solid rgba(108, 92, 231, 0.2);
         transition: all 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 1rem;
     }
 
         .form-control:focus {
             border-color: var(--accent-color);
             box-shadow: 0 0 0 0.25rem rgba(0, 206, 201, 0.15);
+            outline: none;
         }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+    }
+
+    .form-check-input {
+        border-radius: var(--border-radius-sm);
+        border: 1px solid rgba(108, 92, 231, 0.2);
+        width: 1.2em;
+        height: 1.2em;
+        margin-right: 0.5rem;
+    }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+    .form-check-label {
+        color: var(--text-dark);
+        cursor: pointer;
+    }
 
     .text-danger {
         font-size: 0.85rem;
         margin-top: 0.25rem;
+        color: #dc3545;
+        display: block;
     }
 
-    .btn-register {
+    .btn-login {
         background: var(--primary-gradient);
         border: none;
+        color: white;
         padding: 0.75rem;
         font-weight: 600;
         letter-spacing: 0.5px;
         transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-        .btn-register:hover {
+        .btn-login:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-medium);
         }
@@ -94,9 +135,14 @@
     .btn-cancel {
         border: 2px solid var(--primary-color);
         color: var(--primary-color);
+        background: transparent;
         padding: 0.75rem;
         font-weight: 600;
         transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
         .btn-cancel:hover {
@@ -122,49 +168,42 @@
         font-size: 0.9rem;
     }
 
+    .d-grid {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .mt-5 {
+        margin-top: 3rem;
+    }
+
     /* Responsive adjustments */
     @@media (max-width: 768px) {
-        .register-container {
+        .login-container {
             padding: 0 1rem;
         }
 
-        .register-body {
+        .login-body {
             padding: 1.5rem;
         }
 
         .form-row {
             flex-direction: column;
         }
-
-        .form-label {
-            margin-bottom: 0.5rem;
-        }
     }
 </style>
 
-<div class="register-container">
-    <div class="register-card">
-        <div class="register-header">
-            <h1 class="register-title">Create Your Account</h1>
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1 class="login-title">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Welcome Back
+            </h1>
         </div>
 
-        <div class="register-body">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-
+        <div class="login-body">
             <form method="post">
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <label asp-for="FirstName" class="form-label">First Name</label>
-                        <input asp-for="FirstName" class="form-control" placeholder="Enter your first name">
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="LastName" class="form-label">Last Name*</label>
-                        <input asp-for="LastName" class="form-control" placeholder="Enter your last name">
-                        <span asp-validation-for="LastName" class="text-danger"></span>
-                    </div>
-                </div>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                 <div class="mb-4">
                     <label asp-for="Email" class="form-label">Email Address*</label>
@@ -172,45 +211,34 @@
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
-                        <input asp-for="PhoneNumber" class="form-control" placeholder="Enter your phone">
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Address" class="form-label">Address</label>
-                        <input asp-for="Address" class="form-control" placeholder="Enter your address">
-                        <span asp-validation-for="Address" class="text-danger"></span>
-                    </div>
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label">Password*</label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password">
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <label asp-for="Password" class="form-label">Password*</label>
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Create password">
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="ConfirmPassword" class="form-label">Confirm Password*</label>
-                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password">
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                    </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="RememberMe">
+                    <label class="form-check-label" asp-for="RememberMe">Remember me</label>
                 </div>
 
                 <div class="d-grid gap-3 mt-5">
-                    <button type="submit" class="btn btn-register">
-                        <i class="bi bi-person-plus-fill me-2"></i>Create Account
+                    <button type="submit" class="btn btn-login">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Log In
                     </button>
 
                     <div class="divider">
                         <span class="divider-text">or</span>
                     </div>
 
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-cancel">
-                        <i class="bi bi-arrow-left-circle-fill me-2"></i>Already have an account? Login
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-cancel">
+                        <i class="bi bi-person-plus-fill me-2"></i>Create an Account
+                    </a>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a asp-controller="Account" asp-action="ForgotPassword" class="text-muted" style="text-decoration: none; font-size: 0.9rem;">
+                        <i class="bi bi-key me-1"></i>Forgot your password?
                     </a>
                 </div>
             </form>
@@ -221,13 +249,13 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Add floating label effect
+        // Floating label effect
         document.querySelectorAll('.form-control').forEach(input => {
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 this.parentElement.querySelector('.form-label').style.color = 'var(--primary-color)';
             });
 
-            input.addEventListener('blur', function() {
+            input.addEventListener('blur', function () {
                 if (!this.value) {
                     this.parentElement.querySelector('.form-label').style.color = '';
                 }

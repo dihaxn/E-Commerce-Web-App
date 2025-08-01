@@ -7,145 +7,533 @@
     <link href="https://cdn-icons-png.flaticon.com/512/263/263142.png" rel="icon" type="image/png" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <style>
         :root {
-            --primary-color: #4e73df;
-            --hover-color: #2e59d9;
-            --transition-speed: 0.3s;
+            /* Modern Luxury Color Palette */
+            --primary-color: #6c5ce7; /* Vibrant purple */
+            --primary-gradient: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --hover-color: #5649c0;
+            --accent-color: #00cec9; /* Teal accent */
+            --success-color: #00b894; /* Mint green */
+            --warning-color: #fdcb6e; /* Soft yellow */
+            --danger-color: #ff7675; /* Coral red */
+            --text-color: #2d3436;
+            --light-bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --shadow-light: 0 4px 6px rgba(108, 92, 231, 0.1);
+            --shadow-medium: 0 10px 15px rgba(108, 92, 231, 0.2);
+            --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
+            --transition-fast: 0.2s;
+            --transition-medium: 0.35s;
+            --transition-slow: 0.5s;
+            --border-radius: 12px;
+            --border-radius-sm: 6px;
+            --glass-effect: rgba(255, 255, 255, 0.85);
         }
 
+        /* New Animations */
+        @@keyframes float {
+            0%, 100%
+
+        {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+
+        }
+
+        @@keyframes gradientShift {
+            0%
+
+        {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+
+        }
+
+        @@keyframes neonGlow {
+            0%, 100%
+
+        {
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--accent-color), 0 0 20px var(--accent-color);
+        }
+
+        50% {
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--accent-color), 0 0 40px var(--accent-color);
+        }
+
+        }
+
+        /* Glass Morphism Effect */
+        .glass {
+            background: var(--glass-effect);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 5px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--hover-color);
+            }
+
+        /* Base Styles */
         body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Page Loader - Modernized */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--light-bg);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            background-color: #f8f9fc;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease, visibility 0.4s;
         }
 
+            .page-loader.hidden {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+        .loader-logo {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .loader-text {
+            margin-top: 20px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loader-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 3px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 3px;
+            transition: width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        /* Modern Navbar */
         .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all var(--transition-speed) ease;
+            background: var(--glass-effect) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-light);
+            padding: 0.75rem 1rem;
+            border-bottom: none;
         }
 
         .navbar-brand {
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            transition: transform 0.3s ease;
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 0.5rem 0;
         }
 
-            .navbar-brand:hover {
-                transform: translateX(2px);
+            .navbar-brand i {
+                margin-right: 0.75rem;
+                font-size: 1.8rem;
             }
 
+        /* Modern Navigation Links */
         .nav-link {
+            font-weight: 600;
+            padding: 0.75rem 1.25rem !important;
+            margin: 0 0.5rem;
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-medium) ease;
             position: relative;
-            transition: color var(--transition-speed) ease;
-            padding: 0.5rem 1rem !important;
         }
 
-            .nav-link::after {
+            .nav-link::before {
                 content: '';
                 position: absolute;
                 bottom: 0;
                 left: 50%;
-                width: 0;
-                height: 2px;
-                background-color: var(--primary-color);
-                transition: all var(--transition-speed) ease;
                 transform: translateX(-50%);
+                width: 0;
+                height: 3px;
+                background: var(--primary-gradient);
+                transition: all var(--transition-medium) ease;
+                border-radius: 3px;
             }
 
-            .nav-link:hover {
-                color: var(--primary-color) !important;
+            .nav-link:hover::before {
+                width: 70%;
             }
 
-                .nav-link:hover::after {
-                    width: 70%;
-                }
+            .nav-link i {
+                margin-right: 0.5rem;
+                transition: transform var(--transition-fast) ease;
+            }
 
+            .nav-link:hover i {
+                transform: rotate(15deg);
+            }
+
+        /* Modern Dropdown */
         .dropdown-menu {
             border: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transform: translateY(5px);
-            opacity: 0;
-            visibility: hidden;
-            display: block;
-            transition: all 0.25s ease;
+            box-shadow: var(--shadow-heavy);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            background: var(--glass-effect);
+            backdrop-filter: blur(15px);
+            transform-origin: top center;
         }
-
-            .dropdown-menu.show {
-                opacity: 1;
-                visibility: visible;
-                transform: translateY(0);
-            }
 
         .dropdown-item {
-            transition: all 0.2s ease;
             padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
+            font-weight: 500;
+            transition: all var(--transition-fast) ease;
+            border-radius: var(--border-radius-sm);
+            margin: 0.25rem 0.5rem;
         }
+
+            .dropdown-item:hover {
+                background: var(--primary-gradient);
+                color: white !important;
+                transform: translateX(5px);
+            }
 
             .dropdown-item i {
                 width: 20px;
                 margin-right: 10px;
-                transition: transform 0.2s ease;
+                text-align: center;
             }
 
-            .dropdown-item:hover i {
-                transform: translateX(3px);
+        /* Modern Buttons */
+        .btn {
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: var(--shadow-light);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-medium);
+                animation: gradientShift 3s ease infinite;
+                background-size: 200% 200%;
             }
 
-            .dropdown-item:hover {
-                background-color: var(--primary-color);
+        .btn-outline-primary {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+            .btn-outline-primary:hover {
+                background: var(--primary-gradient);
                 color: white;
-                padding-left: 1.75rem;
+                border-color: transparent;
             }
 
-        .dropdown-divider {
-            margin: 0.25rem 0;
+        /* Modern Cards */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: all var(--transition-medium) ease;
         }
 
-        .container {
-            flex: 1;
+            .card:hover {
+                transform: translateY(-10px);
+                box-shadow: var(--shadow-heavy);
+            }
+
+        .card-img-top {
+            object-fit: cover;
+            height: 200px;
         }
 
+        /* Modern Footer */
         footer {
-            background-color: #fff;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-            footer:hover {
-                box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.1);
-            }
 
         .footer a {
-            transition: color 0.3s ease;
+            transition: all var(--transition-fast) ease;
+            font-weight: 500;
         }
 
             .footer a:hover {
                 color: var(--primary-color) !important;
+                text-decoration: none;
             }
 
-        .nav-item.dropdown:hover .dropdown-toggle {
-            color: var(--primary-color) !important;
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(108, 92, 231, 0.1);
+            transition: all var(--transition-medium) ease;
         }
 
-        .dropdown-toggle::after {
-            transition: transform 0.3s ease;
+            .social-links a:hover {
+                background: var(--primary-gradient);
+                color: white !important;
+                transform: translateY(-3px);
+            }
+
+        /* Modern Form Elements */
+        .form-control {
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(108, 92, 231, 0.2);
         }
 
-        .dropdown-toggle.show::after {
-            transform: rotate(180deg);
+            .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
+            }
+
+        /* Modern Alert */
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
         }
+
+        /* Modern Badge */
+        .badge {
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+        }
+
+        /* Responsive Adjustments */
+        @@media (max-width: 768px) {
+            .navbar-brand
+
+        {
+            font-size: 1.4rem;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem !important;
+        }
+
+        .btn {
+            padding: 0.65rem 1.25rem;
+        }
+
+        .dropdown-menu {
+            width: 95%;
+            margin: 0.5rem auto;
+        }
+
+        }
+
+        /* Special Effects */
+        .neon-text {
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Modern Table */
+        .table {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+            .table thead th {
+                background: var(--primary-gradient);
+                color: white;
+                border: none;
+            }
+
+        /* Custom Checkbox */
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(108, 92, 231, 0.1);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-heavy);
+            z-index: 100;
+            transition: all var(--transition-medium) ease;
+        }
+
+            .fab:hover {
+                transform: scale(1.1) rotate(15deg);
+            }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+            .timeline::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 4px;
+                background: var(--primary-gradient);
+                border-radius: 2px;
+            }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+
+            .timeline-item::before {
+                content: '';
+                position: absolute;
+                left: -2.3rem;
+                top: 0;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: var(--primary-color);
+                border: 3px solid white;
+                box-shadow: 0 0 0 2px var(--primary-color);
+            }
     </style>
 </head>
 <body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-logo">
+            <svg viewBox="0 0 100 100" width="60" height="60">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--primary-color)" stroke-width="4" />
+            </svg>
+            <div class="loader-text">Best Store</div>
+        </div>
+        <div class="loader-progress">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-shop me-2"></i>Best Store
+                    <i class="bi bi-shop"></i>Best Store
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -155,104 +543,336 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house-door me-1"></i>Home
+                                <i class="bi bi-house-door"></i>Home
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="Index">
-                                <i class="bi bi-cart me-1"></i>Store
+                                <i class="bi bi-cart"></i>Store
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="bi bi-shield-lock me-1"></i>Privacy
+                                <i class="bi bi-shield-lock"></i>Privacy
                             </a>
                         </li>
                     </ul>
-
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-1"></i>Admin
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">
-                                        <i class="bi bi-box-seam"></i>Products
+                    @using Microsoft.AspNetCore.Identity;
+                    @inject SignInManager<ApplicationUser> SignInManager
+                    @inject UserManager<ApplicationUser> UserManager
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var appUser = await UserManager.GetUserAsync(User);
+                        if (User.IsInRole("admin"))
+                        {
+                            <ul class="navbar-nav me-3">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle"></i>
+                                        @(appUser.FirstName + " " + appUser.LastName + " (Admin)")
                                     </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">
-                                        <i class="bi bi-person"></i>Profile
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">
-                                        <i class="bi bi-box-arrow-right"></i>Logout
-                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">
+                                                <i class="bi bi-box-seam"></i>Products
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">
+                                                <i class="bi bi-person"></i>Profile
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">
+                                                <i class="bi bi-box-arrow-right"></i>Logout
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
-                        </li>
-                    </ul>
+                        }
+                        else if (User.IsInRole("client"))
+                        {
+                            <ul class="navbar-nav me-3">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle"></i>
+                                        @(appUser.FirstName + " " + appUser.LastName + " (Client)")
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">
+                                                <i class="bi bi-person"></i>Profile
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">
+                                                <i class="bi bi-box-arrow-right"></i>Logout
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        }
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-outline-primary me-2" asp-area="" asp-controller="Account" asp-action="Register">
+                                <i class="bi bi-person-plus"></i>Register
+                            </a>
+                            <a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right"></i>Login
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
     </header>
     @if (ViewData["HomePage"] == null)
     {
-        <div class="container m-3">
+        <div class="container">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
         </div>
-
-
     }
     else
     {
         @RenderBody()
-    
     }
-
-    
-
     <footer class="border-top footer text-muted">
-        <div class="container py-3">
-            &copy; 2025 - Best Store - <a class="text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
-            <span class="float-end">
-                <a href="#" class="text-muted me-3"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="text-muted me-3"><i class="bi bi-twitter"></i></a>
-                <a href="#" class="text-muted"><i class="bi bi-instagram"></i></a>
-            </span>
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    &copy; 2025 - Best Store -
+                    <a class="text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+                </div>
+                <div class="col-md-6">
+                    <div class="social-links text-end">
+                        <a href="#" class="text-muted" aria-label="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="text-muted" aria-label="Twitter">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="text-muted" aria-label="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Enhance dropdown transitions
+        // Page loader functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.querySelector('.page-loader');
+            const progressBar = document.querySelector('.progress-bar');
+            let progress = 0;
+
+            // Simulate loading progress
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(loadingInterval);
+
+                    // Hide loader
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                        document.body.style.overflow = 'auto';
+                    }, 300);
+                }
+                progressBar.style.width = `${Math.min(progress, 100)}%`;
+            }, 150);
+
+            // Ensure loader hides even if something fails
+            setTimeout(() => {
+                if (progress < 100) {
+                    progressBar.style.width = '100%';
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                        document.body.style.overflow = 'auto';
+                    }, 300);
+                }
+            }, 3000);
+        });
+
+        // Enhanced dropdown transitions with better timing
         document.querySelectorAll('.dropdown').forEach(dropdown => {
+            let showTimeout, hideTimeout;
+            dropdown.addEventListener('mouseenter', function() {
+                clearTimeout(hideTimeout);
+                showTimeout = setTimeout(() => {
+                    const dropdownMenu = this.querySelector('.dropdown-menu');
+                    if (dropdownMenu && !dropdownMenu.classList.contains('show')) {
+                        this.querySelector('.dropdown-toggle').click();
+                    }
+                }, 150);
+            });
+            dropdown.addEventListener('mouseleave', function() {
+                clearTimeout(showTimeout);
+                hideTimeout = setTimeout(() => {
+                    const dropdownMenu = this.querySelector('.dropdown-menu');
+                    if (dropdownMenu && dropdownMenu.classList.contains('show')) {
+                        this.querySelector('.dropdown-toggle').click();
+                    }
+                }, 200);
+            });
             dropdown.addEventListener('show.bs.dropdown', function() {
                 this.querySelector('.dropdown-menu').classList.add('showing');
             });
-
             dropdown.addEventListener('shown.bs.dropdown', function() {
                 this.querySelector('.dropdown-menu').classList.remove('showing');
             });
         });
 
-        // Add smooth scrolling for anchor links
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     window.scrollTo({
-                        top: target.offsetTop - 70,
+                        top: target.offsetTop - 80,
                         behavior: 'smooth'
                     });
                 }
+            });
+        });
+
+        // Add loading states for buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.classList.contains('disabled')) {
+                    const originalText = this.innerHTML;
+                    this.classList.add('disabled');
+                    this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Loading...';
+
+                    // Simulate loading (remove in production)
+                    setTimeout(() => {
+                        this.classList.remove('disabled');
+                        this.innerHTML = originalText;
+                    }, 1000);
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling up
+                navbar.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // Add ripple effect to buttons
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+            circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+            circle.classList.add("ripple");
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+            button.appendChild(circle);
+        }
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', createRipple);
+        });
+
+        // Add cart confirmation animation
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Create confirmation element
+                const confirmation = document.createElement('div');
+                confirmation.className = 'cart-added-confirmation';
+                confirmation.innerHTML = '<i class="bi bi-check-circle"></i> Item added to cart!';
+
+                document.body.appendChild(confirmation);
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    confirmation.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(confirmation);
+                    }, 300);
+                }, 3000);
+            });
+        });
+
+        // Enhanced accessibility - keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('using-keyboard');
+            }
+        });
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('using-keyboard');
+        });
+
+        // Show loading overlay for AJAX requests
+        function showLoadingOverlay() {
+            const overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner-icon"></div>
+                    <div class="spinner-text">Processing...</div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            return overlay;
+        }
+
+        function hideLoadingOverlay(overlay) {
+            overlay.classList.add('fade-out');
+            setTimeout(() => overlay.remove(), 300);
+        }
+
+        // Example usage for cart operations
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const overlay = showLoadingOverlay();
+
+                // Simulate API call
+                setTimeout(() => {
+                    hideLoadingOverlay(overlay);
+
+                    // Show confirmation
+                    const confirmation = document.createElement('div');
+                    confirmation.className = 'cart-added-confirmation';
+                    confirmation.innerHTML = '<i class="bi bi-check-circle"></i> Item added to cart!';
+
+                    document.body.appendChild(confirmation);
+
+                    // Remove after 3 seconds
+                    setTimeout(() => {
+                        confirmation.style.opacity = '0';
+                        setTimeout(() => {
+                            document.body.removeChild(confirmation);
+                        }, 300);
+                    }, 3000);
+                }, 800);
             });
         });
     </script>

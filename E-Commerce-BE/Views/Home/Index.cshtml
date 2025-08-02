@@ -7,27 +7,35 @@
 
 <style>
     :root {
-        /* Premium Color Palette */
-        --primary-color: #6c5ce7;
-        --primary-dark: #5649c0;
-        --accent-color: #00cec9;
-        --light-bg: #f8f9ff;
-        --card-bg: #ffffff;
-        --text-dark: #2d3436;
-        --text-light: #f5f6fa;
-        --shadow-light: 0 4px 20px rgba(108, 92, 231, 0.1);
-        --shadow-medium: 0 8px 30px rgba(108, 92, 231, 0.2);
-        --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.15);
-        --border-radius: 16px;
-        --border-radius-sm: 8px;
+        /* Warm Beige Color Palette */
+        --primary-color: #87785F; /* Main brownish-gray */
+        --primary-dark: #7A6B50; /* Darker for hover states */
+        --primary-gradient: linear-gradient(135deg, #87785F, #A99A7D);
+        --accent-color: #A99A7D; /* Lighter accent color */
+        --success-color: #6B8E23; /* Olive green */
+        --warning-color: #DAA520; /* Goldenrod */
+        --danger-color: #B22222; /* Firebrick */
+        --text-dark: #3E3325; /* Dark brown for text */
+        --light-bg: #F7E7CE; /* Light beige background */
+        --card-bg: #FFF6E8; /* Very light beige/cream for cards */
+        --shadow-light: 0 4px 6px rgba(135, 120, 95, 0.1);
+        --shadow-medium: 0 10px 15px rgba(135, 120, 95, 0.2);
+        --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
+        --transition-fast: 0.2s;
+        --transition-medium: 0.35s;
+        --transition-slow: 0.5s;
+        --border-radius: 12px;
+        --border-radius-sm: 6px;
+        --glass-effect: rgba(255, 246, 232, 0.85);
     }
 
     /* Hero Section */
     .hero-section {
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-        color: var(--text-light);
+        background: var(--primary-gradient);
+        color: white;
         position: relative;
         overflow: hidden;
+        padding: 4rem 0;
     }
 
         .hero-section::before {
@@ -41,26 +49,56 @@
             background-size: cover;
         }
 
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to top, var(--light-bg), transparent);
+        }
+
     .hero-title {
         font-weight: 800;
         letter-spacing: -1px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        line-height: 1.2;
+        max-width: 90%;
+    }
+
+    .hero-text {
+        max-width: 500px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     .hero-img {
-        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
         animation: float 6s ease-in-out infinite;
+        border-radius: var(--border-radius);
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: 0;
     }
 
     /* Products Section */
     .products-section {
         background: var(--light-bg);
         position: relative;
+        padding-top: 4rem;
+        padding-bottom: 4rem;
     }
 
     .section-title {
         position: relative;
         display: inline-block;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 2.5rem;
     }
 
         .section-title::after {
@@ -80,11 +118,14 @@
         border: none;
         border-radius: var(--border-radius);
         overflow: hidden;
-        box-shadow: var(--shadow-light);
+        box-shadow: var(--shadow-medium);
         background: var(--card-bg);
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition: all var(--transition-medium) ease;
         position: relative;
         z-index: 1;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 246, 232, 0.3);
     }
 
         .product-card:hover {
@@ -102,20 +143,21 @@
             background: var(--primary-color);
             filter: blur(12px);
             opacity: 0;
-            transition: all 0.4s ease;
+            transition: all var(--transition-medium) ease;
             z-index: -1;
         }
 
         .product-card:hover::after {
-            opacity: 0.3;
+            opacity: 0.2;
         }
 
     .product-img {
         height: 200px;
         object-fit: contain;
-        background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        background: rgba(255, 246, 232, 0.6);
         padding: 1.5rem;
-        transition: transform 0.5s ease;
+        transition: transform var(--transition-medium) ease;
+        border-bottom: 1px solid rgba(135, 120, 95, 0.1);
     }
 
     .product-card:hover .product-img {
@@ -125,6 +167,9 @@
     .product-meta {
         font-size: 0.85rem;
         color: #6c757d;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.5rem;
     }
 
     .price {
@@ -139,88 +184,333 @@
         padding: 0.75rem 2rem;
         font-weight: 600;
         letter-spacing: 0.5px;
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-light);
     }
 
     .btn-light {
-        background: white;
-        color: var(--primary-dark);
+        background: var(--glass-effect);
+        color: var(--primary-color);
+        border: 1px solid rgba(135, 120, 95, 0.2);
+        transition: all var(--transition-medium) ease;
     }
+
+        .btn-light:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+            border-color: transparent;
+        }
 
     .btn-outline-light {
         border: 2px solid white;
     }
 
     .btn-details {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        transition: all 0.3s ease;
+        background: var(--glass-effect);
+        border: 1px solid rgba(135, 120, 95, 0.2);
+        color: var(--primary-color);
+        border-radius: var(--border-radius);
+        transition: all var(--transition-medium) ease;
     }
 
         .btn-details:hover {
-            background: var(--primary-dark);
+            background: var(--primary-gradient);
+            color: white;
             transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            border-color: transparent;
         }
 
     .btn-cart {
-        background: var(--accent-color);
-        color: var(--text-dark);
+        background: var(--primary-gradient);
+        color: white;
         border: none;
-        transition: all 0.3s ease;
+        border-radius: var(--border-radius);
+        transition: all var(--transition-medium) ease;
+        position: relative;
+        overflow: hidden;
     }
 
         .btn-cart:hover {
-            background: #00b4b0;
             transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
         }
 
     .btn-view-all {
-        background: var(--primary-gradient);
-        color: white;
+        background: var(--glass-effect);
+        border: 1px solid rgba(135, 120, 95, 0.2);
+        color: var(--primary-color);
         border-radius: var(--border-radius);
         padding: 0.75rem 2.5rem;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) ease;
     }
 
         .btn-view-all:hover {
+            background: var(--primary-gradient);
+            color: white;
             transform: translateY(-3px);
             box-shadow: var(--shadow-medium);
+            border-color: transparent;
         }
+
+    /* Button ripple effect */
+    .btn .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.7);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    @@keyframes ripple {
+        to
+
+    {
+        transform: scale(4);
+        opacity: 0;
+    }
+
+    }
+
+    @@keyframes gradientShift {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
 
     /* Animations */
     @@keyframes float {
-        0%, 100% {
-            transform: translateY(0) rotate(0deg);
+        0%, 100%
+
+    {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(1deg);
+    }
+
+    }
+
+    /* Featured Products */
+    .featured-section {
+        padding: 4rem 0;
+    }
+
+    .featured-card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-medium);
+        transition: all var(--transition-medium) ease;
+        height: 100%;
+    }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
         }
 
-        50% {
-            transform: translateY(-20px) rotate(2deg);
+    .featured-img {
+        height: 250px;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(135, 120, 95, 0.1);
+    }
+
+    .badge-new {
+        background: var(--success-color);
+        color: white;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-weight: 600;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+    }
+
+    .featured-info {
+        padding: 1.5rem;
+    }
+
+    .featured-title {
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .featured-desc {
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+        background: var(--light-bg);
+        padding: 4rem 0;
+    }
+
+    .testimonial-card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        box-shadow: var(--shadow-light);
+        height: 100%;
+    }
+
+    .testimonial-text {
+        font-style: italic;
+        color: var(--text-dark);
+        line-height: 1.7;
+        position: relative;
+        padding: 1rem 0;
+    }
+
+        .testimonial-text::before,
+        .testimonial-text::after {
+            content: '"';
+            font-size: 3rem;
+            color: var(--accent-color);
+            opacity: 0.3;
+            position: absolute;
         }
+
+        .testimonial-text::before {
+            top: -10px;
+            left: -10px;
+        }
+
+        .testimonial-text::after {
+            bottom: -30px;
+            right: -10px;
+        }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        margin-top: 1.5rem;
+    }
+
+    .author-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 1rem;
+        border: 2px solid var(--accent-color);
+    }
+
+    .author-name {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .author-role {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    /* Call to Action */
+    .cta-section {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 4rem 0;
+        border-radius: var(--border-radius);
+        margin: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/></svg>');
+            background-size: 30px 30px;
+        }
+
+    .cta-title {
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-text {
+        max-width: 600px;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+        opacity: 0.9;
     }
 
     /* Responsive Adjustments */
     @@media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.5rem;
-        }
+        .hero-title
 
-        .hero-img {
-            margin-top: 2rem;
-            max-width: 80%;
-        }
+    {
+        font-size: 2.2rem;
+        max-width: 100%;
+    }
+
+    .hero-img {
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 2rem;
+    }
+
+    .hero-text {
+        text-align: center;
+    }
+
+    .d-flex {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .section-title {
+        text-align: center;
+    }
+
     }
 </style>
 
 <!-- Hero Section -->
 <div class="hero-section">
-    <div class="container py-5">
+    <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6 position-relative">
-                <h1 class="hero-title mb-4 display-4 fw-bold">Discover Premium Electronics</h1>
-                <p class="lead">
+                <h1 class="hero-title display-4 fw-bold">Discover Premium Electronics</h1>
+                <p class="hero-text">
                     Explore our curated collection of cutting-edge devices from top brands at unbeatable prices.
+                    Experience the perfect blend of quality, style, and innovation.
                 </p>
                 <div class="d-flex gap-3 mt-4">
                     <a class="btn btn-light btn-hero fw-bold" href="#">
@@ -232,7 +522,94 @@
                 </div>
             </div>
             <div class="col-md-6 text-center position-relative">
-                <img src="~/images/hero.png" class="hero-img img-fluid" alt="Premium Electronics" />
+                <img src="~/images/hero-electronics.png" class="hero-img img-fluid" alt="Premium Electronics" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products -->
+<div class="featured-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5 fw-bold">Featured Products</h2>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="featured-card h-100">
+                    <div class="position-relative">
+                        <span class="badge-new">New</span>
+                        <img src="~/images/featured-1.jpg" class="featured-img img-fluid" alt="Wireless Headphones">
+                    </div>
+                    <div class="featured-info">
+                        <h3 class="featured-title">Premium Wireless Headphones</h3>
+                        <div class="product-meta mb-2">
+                            <span><i class="bi bi-tag-fill me-1"></i> SoundMaster</span>
+                            <span><i class="bi bi-grid-fill me-1"></i> Audio</span>
+                        </div>
+                        <p class="featured-desc">
+                            Experience crystal-clear audio with our premium wireless headphones.
+                            Active noise cancellation and 30-hour battery life.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="price">$199.99</h4>
+                            <a href="#" class="btn btn-cart">
+                                <i class="bi bi-cart-plus-fill me-2"></i>Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="featured-card h-100">
+                    <div class="position-relative">
+                        <span class="badge-new">New</span>
+                        <img src="~/images/featured-2.jpg" class="featured-img img-fluid" alt="Smart Watch">
+                    </div>
+                    <div class="featured-info">
+                        <h3 class="featured-title">Advanced Smart Watch</h3>
+                        <div class="product-meta mb-2">
+                            <span><i class="bi bi-tag-fill me-1"></i> TechWear</span>
+                            <span><i class="bi bi-grid-fill me-1"></i> Wearables</span>
+                        </div>
+                        <p class="featured-desc">
+                            Track your health, stay connected, and express your style with our advanced smart watch.
+                            Water-resistant and 7-day battery life.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="price">$249.99</h4>
+                            <a href="#" class="btn btn-cart">
+                                <i class="bi bi-cart-plus-fill me-2"></i>Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="featured-card h-100">
+                    <div class="position-relative">
+                        <span class="badge-new">New</span>
+                        <img src="~/images/featured-3.jpg" class="featured-img img-fluid" alt="Wireless Speaker">
+                    </div>
+                    <div class="featured-info">
+                        <h3 class="featured-title">Portable Bluetooth Speaker</h3>
+                        <div class="product-meta mb-2">
+                            <span><i class="bi bi-tag-fill me-1"></i> SoundMaster</span>
+                            <span><i class="bi bi-grid-fill me-1"></i> Audio</span>
+                        </div>
+                        <p class="featured-desc">
+                            Take your music anywhere with our portable Bluetooth speaker.
+                            Waterproof design with 24-hour battery life and deep bass.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="price">$129.99</h4>
+                            <a href="#" class="btn btn-cart">
+                                <i class="bi bi-cart-plus-fill me-2"></i>Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -240,56 +617,163 @@
 
 <!-- Products Section -->
 <div class="products-section">
-    <div class="container py-5">
+    <div class="container">
         <h2 class="section-title text-center mb-5 fw-bold">Newest Arrivals</h2>
 
         <div class="row g-4">
-            @foreach (var product in Model)
+            @if (Model != null && Model.Any())
             {
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card h-100">
-                        <img src="~/products/@product.ImageFileName" alt="@product.Name"
-                             class="card-img-top product-img" />
-                        <div class="card-body text-center">
-                            <h5 class="card-title fw-bold">@product.Name</h5>
-                            <div class="product-meta mb-2">
-                                <div><i class="bi bi-tag-fill me-1"></i> @product.Brand</div>
-                                <div><i class="bi bi-grid-fill me-1"></i> @product.Category</div>
-                            </div>
-                            <h4 class="price mb-3">@product.Price.ToString("C")</h4>
-                            <div class="d-grid gap-2 mt-3">
-                                <a asp-controller="Store" asp-action="Details" asp-route-id="@product.Id"
-                                   class="btn btn-details">
-                                    <i class="bi bi-eye-fill me-2"></i>Details
-                                </a>
-                                <button type="button" class="btn btn-cart">
-                                    <i class="bi bi-cart-plus-fill me-2"></i>Add to Cart
-                                </button>
+                @foreach (var product in Model)
+                {
+                    <div class="col-lg-3 col-md-6">
+                        <div class="product-card h-100">
+                            <img src="~/products/@product.ImageFileName" alt="@product.Name"
+                                 class="card-img-top product-img" />
+                            <div class="card-body text-center">
+                                <h5 class="card-title fw-bold">@product.Name</h5>
+                                <div class="product-meta mb-2">
+                                    <div><i class="bi bi-tag-fill me-1"></i> @product.Brand</div>
+                                    <div><i class="bi bi-grid-fill me-1"></i> @product.Category</div>
+                                </div>
+                                <h4 class="price mb-3">@product.Price.ToString("C")</h4>
+                                <div class="d-grid gap-2 mt-3">
+                                    <a asp-controller="Store" asp-action="Details" asp-route-id="@product.Id"
+                                       class="btn btn-details">
+                                        <i class="bi bi-eye-fill me-2"></i>Details
+                                    </a>
+                                    <button type="button" class="btn btn-cart add-to-cart-btn">
+                                        <i class="bi bi-cart-plus-fill me-2"></i>Add to Cart
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        No products available at the moment. Please check back later!
                     </div>
                 </div>
             }
         </div>
 
         <div class="text-center mt-5">
-            <a href="#" class="btn btn-view-all">
+            <a asp-controller="Store" asp-action="Index" class="btn btn-view-all">
                 Browse All Products <i class="bi bi-arrow-right ms-2"></i>
             </a>
         </div>
     </div>
 </div>
 
+<!-- Testimonials Section -->
+<div class="testimonials-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5 fw-bold">What Our Customers Say</h2>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card h-100">
+                    <div class="testimonial-text">
+                        The quality of products at Best Store is exceptional. I've purchased multiple electronics here and have never been disappointed.
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="~/images/avatar-1.jpg" alt="Customer" class="author-img">
+                        <div>
+                            <div class="author-name">Sarah Johnson</div>
+                            <div class="author-role">Regular Customer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card h-100">
+                    <div class="testimonial-text">
+                        Fast shipping, excellent customer service, and the best prices. Best Store has become my go-to for all electronics needs.
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="~/images/avatar-2.jpg" alt="Customer" class="author-img">
+                        <div>
+                            <div class="author-name">Michael Chen</div>
+                            <div class="author-role">Tech Enthusiast</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card h-100">
+                    <div class="testimonial-text">
+                        I was impressed with how knowledgeable the staff was. They helped me find exactly what I needed without upselling.
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="~/images/avatar-3.jpg" alt="Customer" class="author-img">
+                        <div>
+                            <div class="author-name">Emily Rodriguez</div>
+                            <div class="author-role">First-time Buyer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="cta-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="cta-title">Join Our Community of Satisfied Customers</h2>
+                <p class="cta-text">
+                    Subscribe to our newsletter and be the first to know about new arrivals, exclusive deals, and special offers.
+                    Plus, get 10% off your first order when you sign up today!
+                </p>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="email" class="form-control" placeholder="Your email address" aria-label="Your email address">
+                    <button class="btn btn-light" type="button">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Add ripple effect to buttons
+    function createRipple(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement("span");
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+        circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+        circle.classList.add("ripple");
+        const ripple = button.getElementsByClassName("ripple")[0];
+        if (ripple) {
+            ripple.remove();
+        }
+        button.appendChild(circle);
+    }
+
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', createRipple);
+    });
+
     // Add to cart animation
-    document.querySelectorAll('.btn-cart').forEach(button => {
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
             const card = this.closest('.product-card');
             card.style.transform = 'translateY(-10px) scale(1.02)';
 
             // Create a temporary cart icon animation
             const cartIcon = document.createElement('div');
-            cartIcon.innerHTML = '<i class="bi bi-cart-check-fill" style="font-size: 2rem; color: var(--accent-color);"></i>';
+            cartIcon.innerHTML = '<i class="bi bi-cart-check-fill" style="font-size: 2rem; color: white;"></i>';
             cartIcon.style.position = 'fixed';
             cartIcon.style.top = '50%';
             cartIcon.style.left = '50%';
@@ -313,6 +797,20 @@
                 cartIcon.remove();
                 card.style.transform = 'translateY(-10px)';
             }, 1000);
+
+            // Show confirmation message
+            const confirmation = document.createElement('div');
+            confirmation.className = 'cart-added-confirmation';
+            confirmation.innerHTML = '<i class="bi bi-check-circle"></i> Item added to cart!';
+            document.body.appendChild(confirmation);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                confirmation.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(confirmation);
+                }, 300);
+            }, 3000);
         });
     });
 </script>

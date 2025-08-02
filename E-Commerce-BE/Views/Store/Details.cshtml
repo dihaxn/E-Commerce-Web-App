@@ -2,25 +2,33 @@
 
 <style>
     :root {
-        /* Premium Color Palette */
-        --primary-color: #6c5ce7;
-        --primary-dark: #5649c0;
-        --accent-color: #00cec9;
-        --light-bg: #f8f9ff;
-        --card-bg: #ffffff;
-        --text-dark: #2d3436;
-        --text-light: #f5f6fa;
-        --shadow-light: 0 4px 20px rgba(108, 92, 231, 0.1);
-        --shadow-medium: 0 8px 30px rgba(108, 92, 231, 0.2);
-        --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.15);
-        --border-radius: 16px;
-        --border-radius-sm: 8px;
+        /* Warm Beige Color Palette */
+        --primary-color: #87785F; /* Main brownish-gray */
+        --primary-dark: #7A6B50; /* Darker for hover states */
+        --primary-gradient: linear-gradient(135deg, #87785F, #A99A7D);
+        --accent-color: #A99A7D; /* Lighter accent color */
+        --success-color: #6B8E23; /* Olive green */
+        --warning-color: #DAA520; /* Goldenrod */
+        --danger-color: #B22222; /* Firebrick */
+        --text-dark: #3E3325; /* Dark brown for text */
+        --light-bg: #F7E7CE; /* Light beige background */
+        --card-bg: #FFF6E8; /* Very light beige/cream for cards */
+        --shadow-light: 0 4px 6px rgba(135, 120, 95, 0.1);
+        --shadow-medium: 0 10px 15px rgba(135, 120, 95, 0.2);
+        --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
+        --transition-fast: 0.2s;
+        --transition-medium: 0.35s;
+        --transition-slow: 0.5s;
+        --border-radius: 12px;
+        --border-radius-sm: 6px;
+        --glass-effect: rgba(255, 246, 232, 0.85);
     }
 
     body {
         background-color: var(--light-bg);
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         padding-top: 2rem;
+        color: var(--text-dark);
     }
 
     .product-detail-container {
@@ -29,6 +37,9 @@
         box-shadow: var(--shadow-heavy);
         padding: 2rem;
         margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 246, 232, 0.3);
     }
 
     .product-image-container {
@@ -36,16 +47,21 @@
         position: relative;
         overflow: hidden;
         border-radius: var(--border-radius);
-        background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        background: rgba(255, 246, 232, 0.6);
         padding: 2rem;
+        transition: all var(--transition-medium) ease;
     }
+
+        .product-image-container:hover {
+            box-shadow: var(--shadow-medium);
+        }
 
     .product-image {
         max-width: 100%;
         height: auto;
         max-height: 400px;
         object-fit: contain;
-        transition: all 0.5s ease;
+        transition: all var(--transition-medium) ease;
         border-radius: var(--border-radius-sm);
     }
 
@@ -55,15 +71,16 @@
 
     .product-title {
         font-weight: 800;
-        color: var(--primary-color);
+        color: var(--text-dark);
         margin-bottom: 1.5rem;
         letter-spacing: -0.5px;
+        font-size: 2.2rem;
     }
 
     .product-price {
         font-weight: 700;
         font-size: 2rem;
-        color: var(--primary-dark);
+        color: var(--primary-color);
         margin-bottom: 1.5rem;
     }
 
@@ -75,28 +92,31 @@
         letter-spacing: 0.5px;
         color: white;
         border-radius: var(--border-radius);
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275);
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
     }
 
         .btn-add-to-cart:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-medium);
-            background: var(--primary-dark);
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
         }
 
     .product-divider {
         border: none;
         height: 1px;
-        background: linear-gradient(to right, transparent, rgba(108, 92, 231, 0.3), transparent);
+        background: linear-gradient(to right, transparent, rgba(135, 120, 95, 0.3), transparent);
         margin: 2rem 0;
     }
 
     .product-spec-label {
         font-weight: 600;
-        color: var(--primary-dark);
+        color: var(--primary-color);
     }
 
     .product-spec-value {
@@ -104,31 +124,79 @@
     }
 
     .product-description {
-        background: rgba(248, 249, 252, 0.5);
+        background: rgba(255, 246, 232, 0.6);
         padding: 1.5rem;
         border-radius: var(--border-radius-sm);
         line-height: 1.7;
         border-left: 4px solid var(--accent-color);
     }
 
+    .badge {
+        background: var(--glass-effect);
+        color: var(--text-dark);
+        border: 1px solid rgba(135, 120, 95, 0.2);
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+    }
+
+    /* Button ripple effect */
+    .btn .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.7);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    @@keyframes ripple {
+        to
+
+    {
+        transform: scale(4);
+        opacity: 0;
+    }
+
+    }
+
+    @@keyframes gradientShift {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
+
     /* Responsive adjustments */
     @@media (max-width: 768px) {
-        .product-detail-container {
-            padding: 1.5rem;
-        }
+        .product-detail-container
 
-        .product-image-container {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-        }
+    {
+        padding: 1.5rem;
+    }
 
-        .product-title {
-            font-size: 1.75rem;
-        }
+    .product-image-container {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+    }
 
-        .product-price {
-            font-size: 1.5rem;
-        }
+    .product-title {
+        font-size: 1.75rem;
+    }
+
+    .product-price {
+        font-size: 1.5rem;
+    }
+
     }
 </style>
 
@@ -144,8 +212,8 @@
                 <h1 class="product-title">@Model.Name</h1>
                 <div class="product-price">@Model.Price.ToString("C")</div>
 
-                <button type="button" class="btn-add-to-cart">
-                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                <button type="button" class="btn-add-to-cart add-to-cart-btn">
+                    <i class="bi bi-cart-plus-fill me-2"></i> Add to Cart
                 </button>
 
                 <hr class="product-divider" />
@@ -164,7 +232,7 @@
                         Category
                     </div>
                     <div class="col-sm-9 product-spec-value">
-                        <span class="badge bg-primary rounded-pill">@Model.Category</span>
+                        <span class="badge">@Model.Category</span>
                     </div>
                 </div>
 
@@ -176,16 +244,79 @@
 </div>
 
 <script>
-    // Add to cart animation
-    document.querySelector('.btn-add-to-cart').addEventListener('click', function() {
-        const btn = this;
-        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Added to Cart';
-        btn.style.background = 'var(--success-gradient)';
+    // Add ripple effect to buttons
+    function createRipple(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement("span");
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+        circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+        circle.classList.add("ripple");
+        const ripple = button.getElementsByClassName("ripple")[0];
+        if (ripple) {
+            ripple.remove();
+        }
+        button.appendChild(circle);
+    }
 
-        setTimeout(() => {
-            btn.innerHTML = '<i class="bi bi-cart-plus-fill"></i> Add to Cart';
-            btn.style.background = 'var(--primary-gradient)';
-        }, 2000);
+    document.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+        btn.addEventListener('click', createRipple);
+    });
+
+    // Add to cart animation
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i> Added to Cart';
+            this.style.background = 'var(--success-color)';
+
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.background = '';
+            }, 2000);
+
+            // Create a temporary cart icon animation
+            const cartIcon = document.createElement('div');
+            cartIcon.innerHTML = '<i class="bi bi-cart-check-fill" style="font-size: 2rem; color: white;"></i>';
+            cartIcon.style.position = 'fixed';
+            cartIcon.style.top = '50%';
+            cartIcon.style.left = '50%';
+            cartIcon.style.transform = 'translate(-50%, -50%)';
+            cartIcon.style.opacity = '0';
+            cartIcon.style.transition = 'all 0.5s ease';
+            cartIcon.style.zIndex = '1000';
+            document.body.appendChild(cartIcon);
+
+            // Animate the icon
+            setTimeout(() => {
+                cartIcon.style.opacity = '1';
+                cartIcon.style.top = '20px';
+                cartIcon.style.right = '20px';
+                cartIcon.style.left = 'auto';
+                cartIcon.style.transform = 'translateY(0)';
+            }, 50);
+
+            // Remove after animation
+            setTimeout(() => {
+                cartIcon.remove();
+            }, 1000);
+
+            // Show confirmation message
+            const confirmation = document.createElement('div');
+            confirmation.className = 'cart-added-confirmation';
+            confirmation.innerHTML = '<i class="bi bi-check-circle"></i> Item added to cart!';
+            document.body.appendChild(confirmation);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                confirmation.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(confirmation);
+                }, 300);
+            }, 3000);
+        });
     });
 
     // Image zoom functionality
@@ -202,6 +333,7 @@
         modal.style.justifyContent = 'center';
         modal.style.zIndex = '9999';
         modal.style.cursor = 'zoom-out';
+        modal.style.transition = 'opacity 0.3s ease';
 
         const img = document.createElement('img');
         img.src = this.src;
@@ -209,12 +341,23 @@
         img.style.maxHeight = '90%';
         img.style.objectFit = 'contain';
         img.style.borderRadius = 'var(--border-radius)';
+        img.style.transition = 'transform 0.3s ease';
 
         modal.appendChild(img);
-        modal.addEventListener('click', function() {
-            document.body.removeChild(modal);
-        });
-
         document.body.appendChild(modal);
+
+        // Fade in effect
+        setTimeout(() => {
+            modal.style.opacity = '1';
+            img.style.transform = 'scale(1)';
+        }, 10);
+
+        modal.addEventListener('click', function() {
+            modal.style.opacity = '0';
+            img.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                document.body.removeChild(modal);
+            }, 300);
+        });
     });
 </script>

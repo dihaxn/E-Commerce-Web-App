@@ -3,48 +3,52 @@
   "WorkspaceRootPath": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\store\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\store\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\product\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\product\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\product\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\product\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\product\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\product\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\store\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\store\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\store\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\store\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\store\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\store\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\controllers\\storecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\controllers\\storecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\models\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -65,10 +69,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\e-commerce-be.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\e-commerce-be.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\controllers\\storecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\controllers\\storecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\models\\storesearchmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -126,7 +126,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -134,85 +134,59 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Account\\Login.cshtml",
-              "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Account\\Login.cshtml",
-              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Account\\Login.cshtml*",
-              "RelativeToolTip": "E-Commerce-BE\\Views\\Account\\Login.cshtml*",
-              "ViewState": "AgIAADsBAAAAAAAAAAAmwFoBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-01T10:06:10.309Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "StoreController.cs",
-              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Controllers\\StoreController.cs",
-              "RelativeDocumentMoniker": "E-Commerce-BE\\Controllers\\StoreController.cs",
-              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Controllers\\StoreController.cs",
-              "RelativeToolTip": "E-Commerce-BE\\Controllers\\StoreController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T03:59:06.248Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "Details.cshtml",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Store\\Details.cshtml",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Store\\Details.cshtml",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Store\\Details.cshtml",
               "RelativeToolTip": "E-Commerce-BE\\Views\\Store\\Details.cshtml",
-              "ViewState": "AgIAAL0AAAAAAAAAAAAUwNsAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAKIAAAAAAAAAAAAuwLMAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-31T08:41:12.291Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "E-Commerce-BE\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAABIAAAAAAAAAAAAiwA8AAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAuwIwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-30T03:08:04.095Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "Register.cshtml",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Account\\Register.cshtml",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Account\\Register.cshtml",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Account\\Register.cshtml",
               "RelativeToolTip": "E-Commerce-BE\\Views\\Account\\Register.cshtml",
-              "ViewState": "AgIAAL0AAAAAAAAAAAAqwNgAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAJcAAAAAAAAAAAAuwLUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-08-01T04:17:28.394Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 9,
               "Title": "LoginDto.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Models\\LoginDto.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Models\\LoginDto.cs",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Models\\LoginDto.cs",
               "RelativeToolTip": "E-Commerce-BE\\Models\\LoginDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-01T10:01:33.735Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 11,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Controllers\\AccountController.cs",
@@ -220,12 +194,11 @@
               "RelativeToolTip": "E-Commerce-BE\\Controllers\\AccountController.cs",
               "ViewState": "AgIAADoAAAAAAAAAAAAIwEwAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-01T04:01:28.027Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-01T04:01:28.027Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Services\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Services\\ApplicationDbContext.cs",
@@ -233,77 +206,101 @@
               "RelativeToolTip": "E-Commerce-BE\\Services\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T08:36:49.477Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-29T08:36:49.477Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 0,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Create.cshtml",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Product\\Create.cshtml",
-              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Create.cshtml",
-              "RelativeToolTip": "E-Commerce-BE\\Views\\Product\\Create.cshtml",
-              "ViewState": "AgIAAMkAAAAAAAAAAAAwwPkAAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Create.cshtml*",
+              "RelativeToolTip": "E-Commerce-BE\\Views\\Product\\Create.cshtml*",
+              "ViewState": "AgIAADMBAAAAAAAAAAAqwFMBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-30T04:23:39.209Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 5,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Home\\Index.cshtml",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "E-Commerce-BE\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAB4BAAAAAAAAAAAiwD0BAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAMUBAAAAAAAAAAAuwNYBAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-31T08:27:46.203Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Edit.cshtml",
-              "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Product\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Edit.cshtml",
-              "RelativeToolTip": "E-Commerce-BE\\Views\\Product\\Edit.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0BAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-30T05:49:11.572Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Index.cshtml",
-              "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Product\\Index.cshtml",
-              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Index.cshtml",
-              "RelativeToolTip": "E-Commerce-BE\\Views\\Product\\Index.cshtml",
-              "ViewState": "AgIAAKMBAAAAAAAAAAAwwNABAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-30T06:36:46.592Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 4,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Store\\Index.cshtml",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Store\\Index.cshtml",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Store\\Index.cshtml",
               "RelativeToolTip": "E-Commerce-BE\\Views\\Store\\Index.cshtml",
-              "ViewState": "AgIAAOwAAAAAAAAAAAAwwCIBAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAALUAAAAAAAAAAAAuwMYAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-31T07:03:16.302Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Index.cshtml",
+              "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Product\\Index.cshtml",
+              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Index.cshtml",
+              "RelativeToolTip": "E-Commerce-BE\\Views\\Product\\Index.cshtml",
+              "ViewState": "AgIAADwBAAAAAAAAAAAuwFsBAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-30T06:36:46.592Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Edit.cshtml",
+              "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Product\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Product\\Edit.cshtml*",
+              "RelativeToolTip": "E-Commerce-BE\\Views\\Product\\Edit.cshtml*",
+              "ViewState": "AgIAAMUAAAAAAAAAAAAuwNoAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-30T05:49:11.572Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "StoreController.cs",
+              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Controllers\\StoreController.cs",
+              "RelativeDocumentMoniker": "E-Commerce-BE\\Controllers\\StoreController.cs",
+              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Controllers\\StoreController.cs",
+              "RelativeToolTip": "E-Commerce-BE\\Controllers\\StoreController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-31T03:59:06.248Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Account\\Login.cshtml",
+              "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "E-Commerce-BE\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAMwAAAAAAAAAAAAuwOIAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-01T10:06:10.309Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "ApplicationUser.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Models\\ApplicationUser.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Models\\ApplicationUser.cs",
@@ -311,12 +308,11 @@
               "RelativeToolTip": "E-Commerce-BE\\Models\\ApplicationUser.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAuwAQAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T09:42:26.41Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-31T09:42:26.41Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "20250731095500_SecondMigration.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Migrations\\20250731095500_SecondMigration.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Migrations\\20250731095500_SecondMigration.cs",
@@ -324,12 +320,11 @@
               "RelativeToolTip": "E-Commerce-BE\\Migrations\\20250731095500_SecondMigration.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T09:55:00.671Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-31T09:55:00.671Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "RegisterDto.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Models\\RegisterDto.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Models\\RegisterDto.cs",
@@ -337,12 +332,11 @@
               "RelativeToolTip": "E-Commerce-BE\\Models\\RegisterDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-01T02:58:46.507Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-01T02:58:46.507Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "E-Commerce-BE.csproj",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\E-Commerce-BE.csproj",
               "RelativeDocumentMoniker": "E-Commerce-BE\\E-Commerce-BE.csproj",
@@ -362,8 +356,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Models\\StoreSearchModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T08:01:21.873Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-31T08:01:21.873Z"
             },
             {
               "$type": "Document",
@@ -375,8 +368,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvxQAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T02:55:04.544Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-31T02:55:04.544Z"
             },
             {
               "$type": "Document",
@@ -388,8 +380,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Controllers\\ProductController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-30T03:29:28.535Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-30T03:29:28.535Z"
             },
             {
               "$type": "Document",
@@ -401,8 +392,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-30T03:30:20.279Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-30T03:30:20.279Z"
             },
             {
               "$type": "Document",
@@ -414,8 +404,7 @@
               "RelativeToolTip": "E-Commerce-BE\\wwwroot\\css\\site.css",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-07-30T10:40:42.966Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-30T10:40:42.966Z"
             },
             {
               "$type": "Document",
@@ -427,8 +416,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Models\\ProductDto.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAgwBEAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-30T04:08:52.459Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-30T04:08:52.459Z"
             },
             {
               "$type": "Document",
@@ -440,8 +428,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Views\\Shared\\Error.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-30T05:00:52.335Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-30T05:00:52.335Z"
             },
             {
               "$type": "Document",
@@ -453,8 +440,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Views\\_ViewImports.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-30T03:46:35.164Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-30T03:46:35.164Z"
             },
             {
               "$type": "Document",
@@ -466,8 +452,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Views\\_ViewStart.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-30T03:48:44.356Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-30T03:48:44.356Z"
             },
             {
               "$type": "Document",
@@ -479,8 +464,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Migrations\\20250729093554_FirstMigration.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAAUwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T09:35:55.025Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-29T09:35:55.025Z"
             },
             {
               "$type": "Document",
@@ -492,8 +476,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T08:44:56.75Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-29T08:44:56.75Z"
             },
             {
               "$type": "Document",
@@ -505,8 +488,7 @@
               "RelativeToolTip": "E-Commerce-BE\\Properties\\launchSettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-07-29T08:21:24.681Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-29T08:21:24.681Z"
             }
           ]
         }

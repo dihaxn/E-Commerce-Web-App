@@ -19,32 +19,39 @@
         return new HtmlString("<i class='bi bi-arrow-up text-primary'></i>");
     }
 }
-
 <style>
     :root {
-        /* Premium Color Palette */
-        --primary-color: #6c5ce7;
-        --primary-dark: #5649c0;
-        --accent-color: #00cec9;
-        --light-bg: #f8f9ff;
-        --card-bg: #ffffff;
-        --text-dark: #2d3436;
-        --text-light: #f5f6fa;
-        --shadow-light: 0 4px 20px rgba(108, 92, 231, 0.1);
-        --shadow-medium: 0 8px 30px rgba(108, 92, 231, 0.2);
-        --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.15);
-        --border-radius: 16px;
-        --border-radius-sm: 8px;
+        /* Warm Beige Color Palette */
+        --primary-color: #87785F; /* Main brownish-gray */
+        --primary-dark: #7A6B50; /* Darker for hover states */
+        --primary-gradient: linear-gradient(135deg, #87785F, #A99A7D);
+        --accent-color: #A99A7D; /* Lighter accent color */
+        --success-color: #6B8E23; /* Olive green */
+        --warning-color: #DAA520; /* Goldenrod */
+        --danger-color: #B22222; /* Firebrick */
+        --text-dark: #3E3325; /* Dark brown for text */
+        --light-bg: #F7E7CE; /* Light beige background */
+        --card-bg: #FFF6E8; /* Very light beige/cream for cards */
+        --shadow-light: 0 4px 6px rgba(135, 120, 95, 0.1);
+        --shadow-medium: 0 10px 15px rgba(135, 120, 95, 0.2);
+        --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
+        --transition-fast: 0.2s;
+        --transition-medium: 0.35s;
+        --transition-slow: 0.5s;
+        --border-radius: 12px;
+        --border-radius-sm: 6px;
+        --glass-effect: rgba(255, 246, 232, 0.85);
     }
 
     body {
         background-color: var(--light-bg);
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text-dark);
     }
 
     /* Page Header */
     .page-header {
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        background: var(--primary-gradient);
         color: white;
         padding: 2rem 0;
         margin-bottom: 2rem;
@@ -76,14 +83,15 @@
 
     /* Controls Section */
     .controls-section {
-        background: rgba(255, 255, 255, 0.95);
+        background: var(--card-bg);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-radius: var(--border-radius);
         padding: 1.5rem;
         margin-bottom: 2rem;
         box-shadow: var(--shadow-light);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(108, 92, 231, 0.1);
+        transition: all var(--transition-medium) ease;
+        border: 1px solid rgba(255, 246, 232, 0.3);
     }
 
         .controls-section:hover {
@@ -97,7 +105,7 @@
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         letter-spacing: 0.5px;
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
         display: inline-flex;
@@ -115,36 +123,50 @@
         .btn-primary-enhanced:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-medium);
-            color: white;
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+    .btn-danger-enhanced {
+        background: var(--danger-color);
+        color: white;
+    }
+
+        .btn-danger-enhanced:hover {
+            background: #9d1b0e;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
         }
 
     /* Search Form */
     .search-input {
-        border: 2px solid rgba(108, 92, 231, 0.2);
+        border: 1px solid rgba(135, 120, 95, 0.2);
         border-radius: var(--border-radius);
         padding: 0.75rem 1rem;
         font-size: 1rem;
-        transition: all 0.3s ease;
-        background: rgba(248, 249, 252, 0.8);
+        transition: all var(--transition-medium) ease;
+        background: white;
+        color: var(--text-dark);
     }
 
         .search-input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 4px rgba(0, 206, 201, 0.2);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(135, 120, 95, 0.2);
             background: white;
             outline: none;
         }
 
     /* Enhanced Table */
     .table-container {
-        background: rgba(255, 255, 255, 0.95);
+        background: var(--card-bg);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-radius: var(--border-radius);
         padding: 1.5rem;
         box-shadow: var(--shadow-light);
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) ease;
         overflow: hidden;
-        border: 1px solid rgba(108, 92, 231, 0.1);
+        border: 1px solid rgba(255, 246, 232, 0.3);
     }
 
         .table-container:hover {
@@ -166,7 +188,7 @@
             border: none;
             position: relative;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition-medium) ease;
         }
 
             .table-enhanced thead th:hover {
@@ -174,21 +196,22 @@
             }
 
         .table-enhanced tbody tr {
-            transition: all 0.3s ease;
+            transition: all var(--transition-medium) ease;
         }
 
             .table-enhanced tbody tr:nth-child(even) {
-                background: rgba(248, 249, 252, 0.5);
+                background: rgba(255, 246, 232, 0.3);
             }
 
             .table-enhanced tbody tr:hover {
-                background: rgba(108, 92, 231, 0.1);
+                background: rgba(135, 120, 95, 0.1);
             }
 
         .table-enhanced tbody td {
             padding: 1rem;
             border: none;
             vertical-align: middle;
+            color: var(--text-dark);
         }
 
     /* Product Image */
@@ -198,8 +221,9 @@
         object-fit: cover;
         border-radius: var(--border-radius-sm);
         box-shadow: var(--shadow-light);
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) ease;
         cursor: pointer;
+        border: 1px solid rgba(135, 120, 95, 0.1);
     }
 
         .product-image:hover {
@@ -218,19 +242,20 @@
         font-size: 0.875rem;
         border-radius: var(--border-radius-sm);
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) ease;
     }
 
     /* Enhanced Pagination */
     .pagination-container {
-        background: rgba(255, 255, 255, 0.95);
+        background: var(--card-bg);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-radius: var(--border-radius);
         padding: 1.5rem;
         margin-top: 2rem;
         box-shadow: var(--shadow-light);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(108, 92, 231, 0.1);
+        transition: all var(--transition-medium) ease;
+        border: 1px solid rgba(255, 246, 232, 0.3);
     }
 
         .pagination-container:hover {
@@ -244,58 +269,104 @@
     }
 
     .page-item-enhanced .page-link-enhanced {
-        border: 2px solid transparent;
+        border: 1px solid rgba(135, 120, 95, 0.2);
         border-radius: var(--border-radius-sm);
         padding: 0.75rem 1rem;
         color: var(--primary-color);
-        background: rgba(248, 249, 252, 0.8);
+        background: var(--glass-effect);
         text-decoration: none;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) ease;
     }
 
         .page-item-enhanced .page-link-enhanced:hover {
             background: var(--primary-gradient);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            border-color: transparent;
         }
 
     .page-item-enhanced.active .page-link-enhanced {
         background: var(--primary-gradient);
         color: white;
+        border-color: transparent;
+    }
+
+    /* Button ripple effect */
+    .btn-enhanced .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.7);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    @@keyframes ripple {
+        to
+
+    {
+        transform: scale(4);
+        opacity: 0;
+    }
+
+    }
+
+    @@keyframes gradientShift {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
     }
 
     /* Animations */
     @@keyframes float {
-        0%, 100% {
-            transform: translateY(0px);
-        }
+        0%, 100%
 
-        50% {
-            transform: translateY(-10px);
-        }
+    {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
     }
 
     /* Responsive Design */
     @@media (max-width: 768px) {
-        .page-header {
-            padding: 1.5rem 1rem;
-        }
+        .page-header
 
-        .controls-section {
-            padding: 1rem;
-        }
+    {
+        padding: 1.5rem 1rem;
+    }
 
-        .table-container {
-            padding: 1rem;
-            overflow-x: auto;
-        }
+    .controls-section {
+        padding: 1rem;
+    }
 
-        .action-buttons {
-            flex-direction: column;
-        }
+    .table-container {
+        padding: 1rem;
+        overflow-x: auto;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
     }
 </style>
-
 <div class="page-header">
     <div class="container">
         <h2 class="text-center">
@@ -303,7 +374,6 @@
         </h2>
     </div>
 </div>
-
 <div class="container">
     <div class="controls-section">
         <div class="row align-items-center">
@@ -323,7 +393,6 @@
             </div>
         </div>
     </div>
-
     <div class="table-container">
         <div class="table-responsive">
             <table class="table-enhanced">
@@ -347,10 +416,10 @@
                             <td>@product.Name</td>
                             <td>@product.Brand</td>
                             <td>
-                                <span class="badge bg-primary rounded-pill">@product.Category</span>
+                                <span class="badge" style="background: var(--glass-effect); border: 1px solid rgba(135, 120, 95, 0.2); color: var(--text-dark);">@product.Category</span>
                             </td>
                             <td>
-                                <strong>$@product.Price.ToString("N2")</strong>
+                                <strong>@product.Price.ToString("C")</strong>
                             </td>
                             <td>
                                 <img src="~/products/@product.ImageFileName"
@@ -381,7 +450,6 @@
             </table>
         </div>
     </div>
-
     @if (totalPages > 1)
     {
         <div class="pagination-container">
@@ -399,7 +467,6 @@
                             </a>
                         </li>
                     }
-
                     @for (int i = Math.Max(1, pageIndex - 2); i <= Math.Min(totalPages, pageIndex + 2); i++)
                     {
                         string active = i == pageIndex ? "active" : "";
@@ -413,7 +480,6 @@
                             </a>
                         </li>
                     }
-
                     @if (pageIndex < totalPages)
                     {
                         <li class="page-item-enhanced">
@@ -431,19 +497,37 @@
         </div>
     }
 </div>
-
 <script>
     function sortTable(column) {
         let orderBy = "asc";
         let currentColumn = "@column";
         let currentOrder = "@orderBy";
-
         if (column == currentColumn) {
             orderBy = currentOrder == "asc" ? "desc" : "asc";
         }
-
         window.location.href = `?search=@(search)&column=${column}&orderBy=${orderBy}`;
     }
+
+    // Add ripple effect to buttons
+    function createRipple(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement("span");
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+        circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+        circle.classList.add("ripple");
+        const ripple = button.getElementsByClassName("ripple")[0];
+        if (ripple) {
+            ripple.remove();
+        }
+        button.appendChild(circle);
+    }
+
+    document.querySelectorAll('.btn-enhanced').forEach(btn => {
+        btn.addEventListener('click', createRipple);
+    });
 
     // Image modal functionality
     document.querySelectorAll('.product-image').forEach(img => {
@@ -452,14 +536,20 @@
             modal.innerHTML = `
                 <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                      background: rgba(0,0,0,0.8); display: flex; align-items: center;
-                     justify-content: center; z-index: 9999; cursor: pointer;"
-                     onclick="this.remove()">
+                     justify-content: center; z-index: 9999; cursor: pointer; transition: opacity 0.3s ease;"
+                     onclick="this.style.opacity='0'; setTimeout(() => this.remove(), 300);">
                     <img src="${this.src}" style="max-width: 90%; max-height: 90%;
-                         border-radius: 12px; box-shadow: 0 8px 35px rgba(0,0,0,0.3);"
+                         border-radius: 12px; box-shadow: 0 8px 35px rgba(0,0,0,0.3); transition: transform 0.3s ease;"
                          alt="${this.alt}">
                 </div>
             `;
             document.body.appendChild(modal);
+
+            // Trigger fade-in effect
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.querySelector('img').style.transform = 'scale(1)';
+            }, 10);
         });
     });
 </script>

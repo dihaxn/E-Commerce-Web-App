@@ -10,28 +10,27 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <style>
         :root {
-            /* Modern Luxury Color Palette */
-            --primary-color: #6c5ce7; /* Vibrant purple */
-            --primary-gradient: linear-gradient(135deg, #6c5ce7, #a29bfe);
-            --hover-color: #5649c0;
-            --accent-color: #00cec9; /* Teal accent */
-            --success-color: #00b894; /* Mint green */
-            --warning-color: #fdcb6e; /* Soft yellow */
-            --danger-color: #ff7675; /* Coral red */
-            --text-color: #2d3436;
-            --light-bg: #f5f6fa;
-            --card-bg: #ffffff;
-            --shadow-light: 0 4px 6px rgba(108, 92, 231, 0.1);
-            --shadow-medium: 0 10px 15px rgba(108, 92, 231, 0.2);
+            /* Warm Beige Color Palette */
+            --primary-color: #87785F; /* Main brownish-gray */
+            --primary-gradient: linear-gradient(135deg, #87785F, #A99A7D);
+            --hover-color: #7A6B50; /* Darker for hover states */
+            --accent-color: #A99A7D; /* Lighter accent color */
+            --success-color: #6B8E23; /* Olive green */
+            --warning-color: #DAA520; /* Goldenrod */
+            --danger-color: #B22222; /* Firebrick */
+            --text-color: #3E3325; /* Dark brown for text */
+            --light-bg: #F7E7CE; /* Light beige background */
+            --card-bg: #FFF6E8; /* Very light beige/cream for cards */
+            --shadow-light: 0 4px 6px rgba(135, 120, 95, 0.1);
+            --shadow-medium: 0 10px 15px rgba(135, 120, 95, 0.2);
             --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
             --transition-fast: 0.2s;
             --transition-medium: 0.35s;
             --transition-slow: 0.5s;
             --border-radius: 12px;
             --border-radius-sm: 6px;
-            --glass-effect: rgba(255, 255, 255, 0.85);
+            --glass-effect: rgba(255, 246, 232, 0.85);
         }
-
         /* New Animations */
         @@keyframes float {
             0%, 100%
@@ -45,7 +44,6 @@
         }
 
         }
-
         @@keyframes gradientShift {
             0%
 
@@ -62,7 +60,6 @@
         }
 
         }
-
         @@keyframes neonGlow {
             0%, 100%
 
@@ -75,15 +72,91 @@
         }
 
         }
+        /* Modern Auth Buttons with Glassmorphism */
+        .auth-btn {
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 246, 232, 0.3);
+        }
+
+            .auth-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity var(--transition-fast);
+            }
+
+            .auth-btn:hover::before {
+                opacity: 1;
+            }
+
+        .auth-btn-register {
+            background: var(--glass-effect);
+            color: var(--primary-color);
+            border: 1px solid rgba(135, 120, 95, 0.2);
+        }
+
+            .auth-btn-register:hover {
+                background: var(--primary-gradient);
+                color: white;
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-medium);
+                border-color: transparent;
+            }
+
+        .auth-btn-login {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+            .auth-btn-login:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-medium);
+                animation: gradientShift 3s ease infinite;
+                background-size: 200% 200%;
+            }
+
+        /* Button ripple effect */
+        .auth-btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @@keyframes ripple {
+            to
+
+        {
+            transform: scale(4);
+            opacity: 0;
+        }
+
+        }
 
         /* Glass Morphism Effect */
         .glass {
             background: var(--glass-effect);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 246, 232, 0.2);
         }
-
         /* Modern Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
@@ -101,7 +174,6 @@
             ::-webkit-scrollbar-thumb:hover {
                 background: var(--hover-color);
             }
-
         /* Base Styles */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -110,13 +182,12 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-
         /* Typography */
         h1, h2, h3, h4, h5, h6 {
             font-weight: 700;
             letter-spacing: -0.5px;
+            color: var(--text-color);
         }
-
         /* Page Loader - Modernized */
         .page-loader {
             position: fixed;
@@ -154,7 +225,7 @@
         .loader-progress {
             width: 300px;
             height: 6px;
-            background: rgba(108, 92, 231, 0.1);
+            background: rgba(135, 120, 95, 0.1);
             border-radius: 3px;
             margin-top: 30px;
             overflow: hidden;
@@ -168,7 +239,6 @@
             animation: gradientShift 3s ease infinite;
             background-size: 200% 200%;
         }
-
         /* Modern Navbar */
         .navbar {
             background: var(--glass-effect) !important;
@@ -193,7 +263,6 @@
                 margin-right: 0.75rem;
                 font-size: 1.8rem;
             }
-
         /* Modern Navigation Links */
         .nav-link {
             font-weight: 600;
@@ -202,6 +271,7 @@
             border-radius: var(--border-radius-sm);
             transition: all var(--transition-medium) ease;
             position: relative;
+            color: var(--text-color) !important;
         }
 
             .nav-link::before {
@@ -229,7 +299,6 @@
             .nav-link:hover i {
                 transform: rotate(15deg);
             }
-
         /* Modern Dropdown */
         .dropdown-menu {
             border: none;
@@ -248,6 +317,7 @@
             transition: all var(--transition-fast) ease;
             border-radius: var(--border-radius-sm);
             margin: 0.25rem 0.5rem;
+            color: var(--text-color) !important;
         }
 
             .dropdown-item:hover {
@@ -261,7 +331,6 @@
                 margin-right: 10px;
                 text-align: center;
             }
-
         /* Modern Buttons */
         .btn {
             border-radius: var(--border-radius);
@@ -277,6 +346,7 @@
         .btn-primary {
             background: var(--primary-gradient);
             box-shadow: var(--shadow-light);
+            color: white;
         }
 
             .btn-primary:hover {
@@ -297,7 +367,6 @@
                 color: white;
                 border-color: transparent;
             }
-
         /* Modern Cards */
         .card {
             border: none;
@@ -305,6 +374,7 @@
             overflow: hidden;
             box-shadow: var(--shadow-light);
             transition: all var(--transition-medium) ease;
+            background-color: var(--card-bg);
         }
 
             .card:hover {
@@ -316,18 +386,18 @@
             object-fit: cover;
             height: 200px;
         }
-
         /* Modern Footer */
         footer {
             background: var(--glass-effect);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(255, 246, 232, 0.2);
         }
 
         .footer a {
             transition: all var(--transition-fast) ease;
             font-weight: 500;
+            color: var(--text-color) !important;
         }
 
             .footer a:hover {
@@ -342,8 +412,9 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(108, 92, 231, 0.1);
+            background: rgba(135, 120, 95, 0.1);
             transition: all var(--transition-medium) ease;
+            color: var(--text-color) !important;
         }
 
             .social-links a:hover {
@@ -351,32 +422,40 @@
                 color: white !important;
                 transform: translateY(-3px);
             }
-
         /* Modern Form Elements */
         .form-control {
             border-radius: var(--border-radius-sm);
             padding: 0.75rem 1rem;
-            border: 1px solid rgba(108, 92, 231, 0.2);
+            border: 1px solid rgba(135, 120, 95, 0.2);
+            background-color: var(--card-bg);
+            color: var(--text-color);
         }
 
             .form-control:focus {
                 border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
+                box-shadow: 0 0 0 0.25rem rgba(135, 120, 95, 0.25);
+                background-color: white;
             }
 
+        .form-label {
+            color: var(--text-color);
+        }
         /* Modern Alert */
         .alert {
             border-radius: var(--border-radius);
             border: none;
         }
 
+        .alert-danger {
+            background-color: rgba(178, 34, 34, 0.1);
+            color: var(--danger-color);
+        }
         /* Modern Badge */
         .badge {
             padding: 0.5rem 0.75rem;
             border-radius: var(--border-radius-sm);
             font-weight: 600;
         }
-
         /* Responsive Adjustments */
         @@media (max-width: 768px) {
             .navbar-brand
@@ -399,7 +478,6 @@
         }
 
         }
-
         /* Special Effects */
         .neon-text {
             animation: neonGlow 1.5s ease-in-out infinite alternate;
@@ -408,14 +486,12 @@
         .floating {
             animation: float 6s ease-in-out infinite;
         }
-
         /* Grid Layout */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
         }
-
         /* Modern Table */
         .table {
             border-radius: var(--border-radius);
@@ -427,23 +503,20 @@
                 color: white;
                 border: none;
             }
-
         /* Custom Checkbox */
         .form-check-input:checked {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-
         /* Loading Spinner */
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid rgba(108, 92, 231, 0.1);
+            border: 4px solid rgba(135, 120, 95, 0.1);
             border-top: 4px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-
         @@keyframes spin {
             0%
 
@@ -456,7 +529,6 @@
         }
 
         }
-
         /* Floating Action Button */
         .fab {
             position: fixed;
@@ -478,7 +550,6 @@
             .fab:hover {
                 transform: scale(1.1) rotate(15deg);
             }
-
         /* Timeline */
         .timeline {
             position: relative;
@@ -528,7 +599,6 @@
             <div class="progress-bar"></div>
         </div>
     </div>
-
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
@@ -620,11 +690,11 @@
                     else
                     {
                         <div class="d-flex align-items-center">
-                            <a class="btn btn-outline-primary me-2" asp-area="" asp-controller="Account" asp-action="Register">
-                                <i class="bi bi-person-plus"></i>Register
+                            <a class="btn auth-btn auth-btn-register me-2" asp-area="" asp-controller="Account" asp-action="Register">
+                                <i class="bi bi-person-plus me-2"></i>Register
                             </a>
-                            <a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">
-                                <i class="bi bi-box-arrow-in-right"></i>Login
+                            <a class="btn auth-btn auth-btn-login" asp-area="" asp-controller="Account" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
                             </a>
                         </div>
                     }
@@ -675,14 +745,12 @@
             const loader = document.querySelector('.page-loader');
             const progressBar = document.querySelector('.progress-bar');
             let progress = 0;
-
             // Simulate loading progress
             const loadingInterval = setInterval(() => {
                 progress += Math.random() * 15;
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(loadingInterval);
-
                     // Hide loader
                     setTimeout(() => {
                         loader.classList.add('hidden');
@@ -691,7 +759,6 @@
                 }
                 progressBar.style.width = `${Math.min(progress, 100)}%`;
             }, 150);
-
             // Ensure loader hides even if something fails
             setTimeout(() => {
                 if (progress < 100) {
@@ -703,7 +770,6 @@
                 }
             }, 3000);
         });
-
         // Enhanced dropdown transitions with better timing
         document.querySelectorAll('.dropdown').forEach(dropdown => {
             let showTimeout, hideTimeout;
@@ -732,7 +798,6 @@
                 this.querySelector('.dropdown-menu').classList.remove('showing');
             });
         });
-
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
@@ -746,7 +811,6 @@
                 }
             });
         });
-
         // Add loading states for buttons
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -754,7 +818,6 @@
                     const originalText = this.innerHTML;
                     this.classList.add('disabled');
                     this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Loading...';
-
                     // Simulate loading (remove in production)
                     setTimeout(() => {
                         this.classList.remove('disabled');
@@ -763,7 +826,6 @@
                 }
             });
         });
-
         // Navbar scroll effect
         let lastScrollTop = 0;
         const navbar = document.querySelector('.navbar');
@@ -778,7 +840,6 @@
             }
             lastScrollTop = scrollTop;
         });
-
         // Add ripple effect to buttons
         function createRipple(event) {
             const button = event.currentTarget;
@@ -798,7 +859,6 @@
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', createRipple);
         });
-
         // Add cart confirmation animation
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -806,9 +866,7 @@
                 const confirmation = document.createElement('div');
                 confirmation.className = 'cart-added-confirmation';
                 confirmation.innerHTML = '<i class="bi bi-check-circle"></i> Item added to cart!';
-
                 document.body.appendChild(confirmation);
-
                 // Remove after 3 seconds
                 setTimeout(() => {
                     confirmation.style.opacity = '0';
@@ -818,7 +876,6 @@
                 }, 3000);
             });
         });
-
         // Enhanced accessibility - keyboard navigation
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Tab') {
@@ -828,7 +885,6 @@
         document.addEventListener('mousedown', function() {
             document.body.classList.remove('using-keyboard');
         });
-
         // Show loading overlay for AJAX requests
         function showLoadingOverlay() {
             const overlay = document.createElement('div');
@@ -842,29 +898,23 @@
             document.body.appendChild(overlay);
             return overlay;
         }
-
         function hideLoadingOverlay(overlay) {
             overlay.classList.add('fade-out');
             setTimeout(() => overlay.remove(), 300);
         }
-
         // Example usage for cart operations
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const overlay = showLoadingOverlay();
-
                 // Simulate API call
                 setTimeout(() => {
                     hideLoadingOverlay(overlay);
-
                     // Show confirmation
                     const confirmation = document.createElement('div');
                     confirmation.className = 'cart-added-confirmation';
                     confirmation.innerHTML = '<i class="bi bi-check-circle"></i> Item added to cart!';
-
                     document.body.appendChild(confirmation);
-
                     // Remove after 3 seconds
                     setTimeout(() => {
                         confirmation.style.opacity = '0';

@@ -5,24 +5,32 @@
 
 <style>
     :root {
-        /* Premium Color Palette */
-        --primary-color: #6c5ce7;
-        --primary-dark: #5649c0;
-        --accent-color: #00cec9;
-        --light-bg: #f8f9ff;
-        --card-bg: #ffffff;
-        --text-dark: #2d3436;
-        --text-light: #f5f6fa;
-        --shadow-light: 0 4px 20px rgba(108, 92, 231, 0.1);
-        --shadow-medium: 0 8px 30px rgba(108, 92, 231, 0.2);
-        --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.15);
-        --border-radius: 16px;
-        --border-radius-sm: 8px;
+        /* Warm Beige Color Palette */
+        --primary-color: #87785F; /* Main brownish-gray */
+        --primary-dark: #7A6B50; /* Darker for hover states */
+        --primary-gradient: linear-gradient(135deg, #87785F, #A99A7D);
+        --accent-color: #A99A7D; /* Lighter accent color */
+        --success-color: #6B8E23; /* Olive green */
+        --warning-color: #DAA520; /* Goldenrod */
+        --danger-color: #B22222; /* Firebrick */
+        --text-dark: #3E3325; /* Dark brown for text */
+        --light-bg: #F7E7CE; /* Light beige background */
+        --card-bg: #FFF6E8; /* Very light beige/cream for cards */
+        --shadow-light: 0 4px 6px rgba(135, 120, 95, 0.1);
+        --shadow-medium: 0 10px 15px rgba(135, 120, 95, 0.2);
+        --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
+        --transition-fast: 0.2s;
+        --transition-medium: 0.35s;
+        --transition-slow: 0.5s;
+        --border-radius: 12px;
+        --border-radius-sm: 6px;
+        --glass-effect: rgba(255, 246, 232, 0.85);
     }
 
     body {
         background-color: var(--light-bg);
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text-dark);
     }
 
     .edit-product-container {
@@ -36,10 +44,13 @@
         box-shadow: var(--shadow-heavy);
         background: var(--card-bg);
         overflow: hidden;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 246, 232, 0.3);
     }
 
     .edit-product-header {
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        background: var(--primary-gradient);
         color: white;
         padding: 1.5rem;
         text-align: center;
@@ -49,6 +60,7 @@
         font-weight: 800;
         letter-spacing: -0.5px;
         margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .edit-product-body {
@@ -58,27 +70,33 @@
     .form-label {
         font-weight: 600;
         color: var(--text-dark);
+        margin-bottom: 0.5rem;
     }
 
     .form-control, .form-select, .form-file {
         border-radius: var(--border-radius-sm);
         padding: 0.75rem 1rem;
-        border: 1px solid rgba(108, 92, 231, 0.2);
-        transition: all 0.3s ease;
+        border: 1px solid rgba(135, 120, 95, 0.2);
+        transition: all var(--transition-medium) ease;
+        background-color: white;
+        color: var(--text-dark);
     }
 
         .form-control:focus, .form-select:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 0.25rem rgba(0, 206, 201, 0.15);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(135, 120, 95, 0.15);
+            background-color: white;
         }
 
     .form-control-plaintext {
         padding: 0.75rem 0;
+        color: var(--text-dark);
     }
 
     .text-danger {
         font-size: 0.85rem;
         margin-top: 0.25rem;
+        color: var(--danger-color);
     }
 
     .btn-submit {
@@ -87,25 +105,36 @@
         padding: 0.75rem;
         font-weight: 600;
         letter-spacing: 0.5px;
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-radius: var(--border-radius);
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
 
         .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-medium);
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
         }
 
     .btn-cancel {
-        border: 2px solid var(--primary-color);
+        background: var(--glass-effect);
+        border: 1px solid rgba(135, 120, 95, 0.2);
         color: var(--primary-color);
         padding: 0.75rem;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all var(--transition-medium) ease;
+        border-radius: var(--border-radius);
     }
 
         .btn-cancel:hover {
-            background: var(--primary-color);
+            background: var(--primary-gradient);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            border-color: transparent;
         }
 
     /* Image styling */
@@ -113,10 +142,17 @@
         max-width: 200px;
         max-height: 200px;
         border-radius: var(--border-radius-sm);
-        border: 1px solid rgba(108, 92, 231, 0.2);
+        border: 1px solid rgba(135, 120, 95, 0.2);
         padding: 0.5rem;
         margin-bottom: 1rem;
+        box-shadow: var(--shadow-light);
+        transition: all var(--transition-medium) ease;
     }
+
+        .current-image:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-medium);
+        }
 
     .image-preview-container {
         margin-top: 1rem;
@@ -127,27 +163,74 @@
         max-width: 200px;
         max-height: 200px;
         border-radius: var(--border-radius-sm);
-        border: 1px dashed rgba(108, 92, 231, 0.3);
+        border: 1px dashed rgba(135, 120, 95, 0.3);
         padding: 0.5rem;
+        box-shadow: var(--shadow-light);
+        transition: all var(--transition-medium) ease;
+    }
+
+        .image-preview:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-medium);
+        }
+
+    /* Button ripple effect */
+    .btn .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.7);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    @@keyframes ripple {
+        to
+
+    {
+        transform: scale(4);
+        opacity: 0;
+    }
+
+    }
+
+    @@keyframes gradientShift {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
     }
 
     /* Responsive adjustments */
     @@media (max-width: 768px) {
-        .edit-product-container {
-            padding: 0 1rem;
-        }
+        .edit-product-container
 
-        .edit-product-body {
-            padding: 1.5rem;
-        }
+    {
+        padding: 0 1rem;
+    }
 
-        .form-row {
-            flex-direction: column;
-        }
+    .edit-product-body {
+        padding: 1.5rem;
+    }
 
-        .form-label {
-            margin-bottom: 0.5rem;
-        }
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-label {
+        margin-bottom: 0.5rem;
+    }
+
     }
 </style>
 
@@ -249,6 +332,27 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        // Add ripple effect to buttons
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+            circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+            circle.classList.add("ripple");
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+            button.appendChild(circle);
+        }
+
+        document.querySelectorAll('.btn-submit, .btn-cancel').forEach(btn => {
+            btn.addEventListener('click', createRipple);
+        });
+
         // Image preview functionality
         document.getElementById('ImageFile').addEventListener('change', function(event) {
             const output = document.getElementById('previewImage');

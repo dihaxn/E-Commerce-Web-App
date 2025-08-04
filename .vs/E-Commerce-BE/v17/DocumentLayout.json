@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\views\\account\\password.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\models\\passworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\models\\passworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\models\\passworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|solutionrelative:e-commerce-be\\models\\passworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{528AD78E-0EE1-4822-997C-5757EE32725C}|E-Commerce-BE\\E-Commerce-BE.csproj|c:\\users\\ihanl\\onedrive\\desktop\\dai where fashion meets you\\e-commerce-be\\e-commerce-be\\views\\account\\profile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -150,7 +150,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "PasswordDto.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Models\\PasswordDto.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Models\\PasswordDto.cs",
@@ -169,20 +169,20 @@
               "RelativeDocumentMoniker": "E-Commerce-BE\\Views\\Account\\Password.cshtml",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Views\\Account\\Password.cshtml",
               "RelativeToolTip": "E-Commerce-BE\\Views\\Account\\Password.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-08-04T03:39:34.486Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "E-Commerce-BE\\Controllers\\AccountController.cs",
               "ToolTip": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Dai Where Fashion Meets You\\E-Commerce-BE\\E-Commerce-BE\\Controllers\\AccountController.cs",
               "RelativeToolTip": "E-Commerce-BE\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAKoAAAAAAAAAAAAwwL8AAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAMIAAAAAAAAAAAAiwOAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-01T04:01:28.027Z",
               "EditorCaption": ""

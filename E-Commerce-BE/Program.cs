@@ -2,6 +2,8 @@ using E_Commerce_BE.Models;
 using E_Commerce_BE.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using sib_api_v3_sdk.Client;
+using sib_api_v3_sdk.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +27,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
     // Other Identity configurations can go here
 })
-.AddEntityFrameworkStores<ApplicationDbContext>();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
+Configuration.Default.ApiKey.Add("api-key", builder.Configuration["BrevoSetting:CreateApiKeyRequest"]);
 
 var app = builder.Build();
 

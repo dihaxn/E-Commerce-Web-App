@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using E_Commerce_BE.Models;
+using E_Commerce_BE.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +13,14 @@ namespace E_Commerce_BE.Controllers
 
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IConfiguration configuration;
 
         public AccountController(UserManager<ApplicationUser>userManager,
-            SignInManager<ApplicationUser>signInManager)
+            SignInManager<ApplicationUser>signInManager  , IConfiguration configuration)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.configuration = configuration;
         }
 
         public IActionResult Register()
@@ -229,6 +233,57 @@ namespace E_Commerce_BE.Controllers
         public IActionResult AccessDenied()
         {
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            if (signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword([Required, EmailAddress] string email)
+        {
+            if (signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            ViewBag.Email = email;
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.EmailError = ModelState["email"]?.Errors.First().ErrorMessage  ?? "Invalid Email Address";
+                return View();
+            }
+
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                // generate password reset token
+                var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                string resetUrl = Url.ActionLink("ResetPassword", "Account", new { token }) ?? "URL Error";
+
+                string senderName = configuration["BrevoSettings:SenderName"] ?? "";
+                string senderEmail = configuration["BrevoSettings:SenderEmail"] ?? "";
+                string username = user.FirstName + " " + user.LastName;
+                string subject = "Password Reset";
+                string message = "Dear " + username + ",\n\n" +
+                                 "You can reset your password using the following link:\n\n" +
+                                 resetUrl + "\n\n" +
+                                 "Best Regards";
+
+                EmailSender.SendEmail(senderName, senderEmail, username, email, subject, message);
+
+            }
+
+            ViewBag.SuccessMessage = "If the email is registered, a password reset link has been sent to it.";
+            return View();
         }
     }
 }

@@ -14,5 +14,5 @@ namespace E_Commerce_BE.Models
             [Compare("NewPassword", ErrorMessage = "Confirm Password and Password do not match")]
             public string ConfirmPassword { get; set; } = "";
         }
-    }
+    
 }

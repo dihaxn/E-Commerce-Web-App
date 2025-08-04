@@ -150,3 +150,8 @@ C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Comm
 C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\FubarCoder.RestSharp.Portable.Core.dll
+C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\FubarCoder.RestSharp.Portable.HttpClient.dll
+C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\JsonSubTypes.dll
+C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\ihanl\OneDrive\Desktop\Dai Where Fashion Meets You\E-Commerce-BE\E-Commerce-BE\bin\Debug\net8.0\sib_api_v3_sdk.dll

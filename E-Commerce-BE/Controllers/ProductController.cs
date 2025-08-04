@@ -1,11 +1,12 @@
 ﻿using E_Commerce_BE.Models;
 using E_Commerce_BE.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_BE.Controllers
 {
-
+    [Authorize(Roles = "admin")]
     [Route("/Admin/[controller]/{action=Index}/{id?}")]
     public class ProductController : Controller
     {

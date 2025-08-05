@@ -1,4 +1,4 @@
-# E-Commerce BE 🛍️
+# E-Commerce Project 🛍️
 
 This is the backend for a full-featured e-commerce web application built with ASP.NET Core. It provides a RESTful API for managing products, users, orders, and more.
 

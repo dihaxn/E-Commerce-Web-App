@@ -40,6 +40,38 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Account/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/AdminOrders/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5PcmRlcnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/AdminOrders/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5PcmRlcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Cart/Confirm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxDb25maXJtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Cart/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Checkout/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hlY2tvdXRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/ClientOrders/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50T3JkZXJzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/ClientOrders/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50T3JkZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -74,6 +106,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Store/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcmVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Users/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/Users/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ihanl/OneDrive/Desktop/Dai Where Fashion Meets You/E-Commerce-BE/E-Commerce-BE/Views/_ViewImports.cshtml]

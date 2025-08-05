@@ -15,6 +15,7 @@ namespace E_Commerce_BE.Services
         }
 
         public DbSet<Product> Products /*dbname*/ { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
     }
 }

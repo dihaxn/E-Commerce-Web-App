@@ -1,46 +1,51 @@
 ﻿@{
+    ViewData["Title"] = "Confirm Order";
 }
 
+<div class="bg-gradient-to-r from-black via-gray-900 to-black text-white min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-gray-800/50 p-8 rounded-2xl shadow-2xl border border-gray-700">
+        <h2 class="text-3xl font-bold text-center text-white mb-6">Order Confirmation</h2>
+        <hr class="border-gray-700 mb-6" />
 
-<div class="mx-auto rounded border p-4" style="width: 420px">
-    <h2 class="text-center mb-3">Order Details</h2>
-    <hr />
-
-    @if (ViewBag.SuccessMessage != null)
-    {
-        <div class="alert alert-success" role="alert">@ViewBag.SuccessMessage</div>
-        <a class="btn btn-outline-primary" asp-controller="ClientOrders" asp-action="Index">Back</a>
-    }
-    else
-    {
-        <div class="row mb-3">
-            <div class="col-5">Delivery Address</div>
-            <div class="col-7">@ViewBag.DeliveryAddress</div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-5">Payment Method</div>
-            <div class="col-7">@ViewBag.PaymentMethod</div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-5">Total Amount</div>
-            <div class="col-7">@(ViewBag.Total)$</div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-5">Quantity</div>
-            <div class="col-7">@(ViewBag.CartSize)</div>
-        </div>
-
-
-        <form method="post">
-            <div class="row">
-                <div class="col-sm-6 d-grid">
-                    <button type="submit" class="btn btn-primary">Confirm</button>
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div class="bg-green-500/20 text-green-300 p-4 rounded-lg mb-6 border border-green-500/50 text-center">
+                <i class="bi bi-check-circle-fill text-4xl mb-3"></i>
+                <p>@ViewBag.SuccessMessage</p>
+            </div>
+            <a class="block w-full bg-brand-amber hover:bg-amber-600 text-white text-center font-bold py-3 px-4 rounded-lg transition-colors" asp-controller="ClientOrders" asp-action="Index">View My Orders</a>
+        }
+        else
+        {
+            <div class="space-y-4 text-lg">
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-400">Delivery Address:</span>
+                    <span class="text-right">@ViewBag.DeliveryAddress</span>
                 </div>
-                <div class="col-sm-6 d-grid">
-                    <a class="btn btn-outline-primary" asp-controller="Cart" asp-action="Index">Back</a>
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-400">Payment Method:</span>
+                    <span class="text-right">@ViewBag.PaymentMethod</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-400">Total Items:</span>
+                    <span class="text-right">@ViewBag.CartSize</span>
+                </div>
+                <div class="flex justify-between items-center pt-4 border-t border-gray-700 mt-4">
+                    <span class="text-xl font-bold text-white">Total Amount:</span>
+                    <span class="text-2xl font-bold text-brand-amber">@ViewBag.Total.ToString("C")</span>
                 </div>
             </div>
-        </form>
-    }
 
+            <form method="post" class="mt-8">
+                <div class="grid grid-cols-2 gap-4">
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors">
+                        <i class="bi bi-check-lg mr-2"></i>Confirm
+                    </button>
+                    <a class="w-full bg-gray-700 hover:bg-gray-600 text-white text-center font-bold py-3 rounded-lg transition-colors" asp-controller="Cart" asp-action="Index">
+                        <i class="bi bi-arrow-left mr-2"></i>Back
+                    </a>
+                </div>
+            </form>
+        }
+    </div>
 </div>

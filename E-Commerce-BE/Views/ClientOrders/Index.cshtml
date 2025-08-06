@@ -1,107 +1,78 @@
 ﻿@{
+    ViewData["Title"] = "My Orders";
 }
 
+<div class="bg-gradient-to-r from-black via-gray-900 to-black text-white min-h-screen p-4 md:p-8">
+    <div class="container mx-auto">
+        <h3 class="text-3xl font-bold text-center text-white mb-8">My Orders</h3>
 
-<h3 class="text-center mb-4">List of Orders</h3>
+        <div class="bg-gray-800/50 rounded-lg shadow-lg overflow-hidden border border-gray-700">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-900/70">
+                        <tr>
+                            <th class="p-4 font-semibold">Units</th>
+                            <th class="p-4 font-semibold">Total</th>
+                            <th class="p-4 font-semibold">Payment Method</th>
+                            <th class="p-4 font-semibold">Payment Status</th>
+                            <th class="p-4 font-semibold">Order Status</th>
+                            <th class="p-4 font-semibold">Date</th>
+                            <th class="p-4 font-semibold">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Order order in ViewBag.Orders)
+                        {
+                            int count = 0;
+                            decimal total = order.ShippingFee;
+                            foreach (OrderItem item in order.Items)
+                            {
+                                count += item.Quantity;
+                                total += item.Quantity * item.UnitPrice;
+                            }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Units</th>
-            <th>Total</th>
-            <th>Payment Method</th>
-            <th>Payment Status</th>
-            <th>Order Status</th>
-            <th>Date</th>
-            <th>Action</th>
-        </tr>
-    </thead>
+                            string paymentBadgeColor = "bg-red-500/20 text-red-300 border-red-500/50";
+                            if (order.PaymentStatus == "pending") paymentBadgeColor = "bg-yellow-500/20 text-yellow-300 border-yellow-500/50";
+                            else if (order.PaymentStatus == "accepted") paymentBadgeColor = "bg-green-500/20 text-green-300 border-green-500/50";
+                            else if (order.PaymentStatus == "canceled") paymentBadgeColor = "bg-gray-500/20 text-gray-300 border-gray-500/50";
 
-    <tbody>
-        @foreach (Order order in ViewBag.Orders)
-        {
-            int count = 0;
-            decimal total = order.ShippingFee;
-            foreach (OrderItem item in order.Items)
-            {
-                count += item.Quantity;
-                total += item.Quantity * item.UnitPrice;
-            }
+                            string orderBadgeColor = "bg-red-500/20 text-red-300 border-red-500/50";
+                            if (order.OrderStatus == "created") orderBadgeColor = "bg-yellow-500/20 text-yellow-300 border-yellow-500/50";
+                            else if (order.OrderStatus == "accepted") orderBadgeColor = "bg-green-500/20 text-green-300 border-green-500/50";
+                            else if (order.OrderStatus == "canceled") orderBadgeColor = "bg-gray-500/20 text-gray-300 border-gray-500/50";
+                            else if (order.OrderStatus == "shipped") orderBadgeColor = "bg-blue-500/20 text-blue-300 border-blue-500/50";
+                            else if (order.OrderStatus == "delivered") orderBadgeColor = "bg-green-500/20 text-green-300 border-green-500/50";
+                            else if (order.OrderStatus == "returned") orderBadgeColor = "bg-indigo-500/20 text-indigo-300 border-indigo-500/50";
+                            else if (order.OrderStatus == "deleted") orderBadgeColor = "bg-gray-600/20 text-gray-400 border-gray-600/50";
 
+                            <tr class="border-b border-gray-700 hover:bg-gray-800 transition-colors">
+                                <td class="p-4">@count</td>
+                                <td class="p-4 font-semibold">@total.ToString("C")</td>
+                                <td class="p-4">@order.PaymentMethod</td>
+                                <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-medium border @paymentBadgeColor">@order.PaymentStatus</span></td>
+                                <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-medium border @orderBadgeColor">@order.OrderStatus</span></td>
+                                <td class="p-4">@order.CreatedAt.ToString("MM/dd/yyyy")</td>
+                                <td class="p-4">
+                                    <a class="bg-brand-amber hover:bg-amber-600 text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors" asp-controller="ClientOrders" asp-action="Details"
+                                       asp-route-id="@order.Id">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-            string paymentBadgeColor = "bg-danger";
-            if (order.PaymentStatus == "pending")
-            {
-                paymentBadgeColor = "bg-warning text-dark";
-            }
-            else if (order.PaymentStatus == "accepted")
-            {
-                paymentBadgeColor = "bg-success";
-            }
-            else if (order.PaymentStatus == "canceled")
-            {
-                paymentBadgeColor = "bg-secondary";
-            }
-
-
-            string orderBadgeColor = "bg-danger";
-            if (order.OrderStatus == "created")
-            {
-                orderBadgeColor = "bg-warning text-dark";
-            }
-            else if (order.OrderStatus == "accepted")
-            {
-                orderBadgeColor = "bg-success";
-            }
-            else if (order.OrderStatus == "canceled")
-            {
-                orderBadgeColor = "bg-secondary";
-            }
-            else if (order.OrderStatus == "shipped")
-            {
-                orderBadgeColor = "bg-primary";
-            }
-            else if (order.OrderStatus == "delivered")
-            {
-                orderBadgeColor = "bg-success";
-            }
-            else if (order.OrderStatus == "returned")
-            {
-                orderBadgeColor = "bg-info text-dark";
-            }
-            else if (order.OrderStatus == "deleted")
-            {
-                orderBadgeColor = "bg-dark";
-            }
-
-            <tr>
-                <td>@count</td>
-                <td>@(total)$</td>
-                <td>@order.PaymentMethod</td>
-                <td><span class="badge rounded-pill @paymentBadgeColor">@order.PaymentStatus</span></td>
-                <td><span class="badge rounded-pill @orderBadgeColor">@order.OrderStatus</span></td>
-                <td>@order.CreatedAt.ToString("MM/dd/yyyy")</td>
-                <td>
-                    <a class="btn btn-primary btn-sm" asp-controller="ClientOrders" asp-action="Details"
-                       asp-route-id="@order.Id">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-
-<nav>
-    <ul class="pagination">
-        @for (int i = 1; i <= ViewBag.TotalPages; i++)
-        {
-            string active = "";
-            if (i == ViewBag.PageIndex) active = "active";
-
-            <li class="page-item @active">
-                <a class="page-link" asp-route-pageIndex=@i>@i</a>
-            </li>
-        }
-    </ul>
-</nav>
+        <nav class="mt-8">
+            <ul class="flex justify-center space-x-2">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    string activeClass = i == ViewBag.PageIndex ? "bg-brand-amber text-white" : "bg-gray-800 text-gray-300 hover:bg-gray-700";
+                    <li class="page-item">
+                        <a class="page-link px-4 py-2 rounded-lg transition-colors @activeClass" asp-route-pageIndex="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

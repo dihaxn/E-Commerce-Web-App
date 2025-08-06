@@ -21,26 +21,26 @@
 }
 <style>
     :root {
-        /* Warm Beige Color Palette */
-        --primary-color: #87785F; /* Main brownish-gray */
-        --primary-dark: #7A6B50; /* Darker for hover states */
-        --primary-gradient: linear-gradient(135deg, #87785F, #A99A7D);
-        --accent-color: #A99A7D; /* Lighter accent color */
-        --success-color: #6B8E23; /* Olive green */
-        --warning-color: #DAA520; /* Goldenrod */
-        --danger-color: #B22222; /* Firebrick */
-        --text-dark: #3E3325; /* Dark brown for text */
-        --light-bg: #F7E7CE; /* Light beige background */
-        --card-bg: #FFF6E8; /* Very light beige/cream for cards */
-        --shadow-light: 0 4px 6px rgba(135, 120, 95, 0.1);
-        --shadow-medium: 0 10px 15px rgba(135, 120, 95, 0.2);
-        --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
+        --primary-color: #f59e0b; /* brand-amber */
+        --primary-dark: #d97706; /* darker amber */
+        --primary-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+        --accent-color: #f59e0b;
+        --success-color: #22c55e; /* green-500 */
+        --warning-color: #eab308; /* yellow-500 */
+        --danger-color: #ef4444; /* red-500 */
+        --text-dark: #e5e7eb; /* gray-200 */
+        --text-light: #9ca3af; /* gray-400 */
+        --light-bg: #111827; /* gray-900 */
+        --card-bg: #1f2937; /* brand-gray */
+        --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.2);
+        --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.25);
         --transition-fast: 0.2s;
         --transition-medium: 0.35s;
         --transition-slow: 0.5s;
         --border-radius: 12px;
         --border-radius-sm: 6px;
-        --glass-effect: rgba(255, 246, 232, 0.85);
+        --glass-effect: rgba(31, 41, 55, 0.85); /* brand-gray with opacity */
     }
 
     body {
@@ -145,14 +145,14 @@
         padding: 0.75rem 1rem;
         font-size: 1rem;
         transition: all var(--transition-medium) ease;
-        background: white;
+        background: var(--light-bg);
         color: var(--text-dark);
     }
 
         .search-input:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(135, 120, 95, 0.2);
-            background: white;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+            background: var(--light-bg);
             outline: none;
         }
 
@@ -200,11 +200,11 @@
         }
 
             .table-enhanced tbody tr:nth-child(even) {
-                background: rgba(255, 246, 232, 0.3);
+                background: rgba(255, 246, 232, 0.05);
             }
 
             .table-enhanced tbody tr:hover {
-                background: rgba(135, 120, 95, 0.1);
+                background: rgba(245, 158, 11, 0.1);
             }
 
         .table-enhanced tbody td {
@@ -416,7 +416,7 @@
                             <td>@product.Name</td>
                             <td>@product.Brand</td>
                             <td>
-                                <span class="badge" style="background: var(--glass-effect); border: 1px solid rgba(135, 120, 95, 0.2); color: var(--text-dark);">@product.Category</span>
+                                <span class="badge" style="background: var(--glass-effect); border: 1px solid rgba(245, 158, 11, 0.2); color: var(--text-dark);">@product.Category</span>
                             </td>
                             <td>
                                 <strong>@product.Price.ToString("C")</strong>

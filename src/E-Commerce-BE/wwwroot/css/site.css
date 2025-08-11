@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-brand-dark font-sans text-gray-300;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-bold text-white;
+    }
+}
+
+@layer components {
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-sm tracking-wide transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-dark focus:ring-brand-amber disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    .btn-primary {
+        @apply bg-brand-amber text-white shadow-lg hover:bg-amber-500;
+    }
+    .btn-primary-pulse {
+        @apply bg-brand-amber text-white shadow-lg hover:bg-amber-500 animate-pulse;
+    }
+    .btn-outline {
+        @apply bg-transparent border-2 border-brand-amber text-brand-amber hover:bg-brand-amber hover:text-white;
+    }
+    .btn-success {
+        @apply bg-green-600 text-white shadow-lg hover:bg-green-500;
+    }
+    .btn-danger {
+        @apply bg-red-600 text-white shadow-lg hover:bg-red-500;
+    }
+
+    /* Navigation */
+    .nav-link {
+        @apply relative text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-amber after:transition-all after:duration-300 hover:after:w-full;
+    }
+    .nav-link-mobile {
+        @apply block text-gray-300 hover:bg-brand-amber/10 hover:text-brand-amber px-3 py-2 rounded-md text-base font-medium transition-colors;
+    }
+
+    /* Dropdown */
+    .dropdown-item {
+        @apply flex items-center space-x-3 px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-sm;
+    }
+    .dropdown-item i {
+        @apply text-brand-amber;
+    }
+    .dropdown-item-danger {
+        @apply text-red-400 hover:bg-red-500/20 hover:text-red-300;
+    }
+    .dropdown-item-danger i {
+        @apply text-red-400;
+    }
+
+    /* Forms */
+    .form-input {
+        @apply w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-amber focus:border-brand-amber transition-all;
+    }
+    .form-label {
+        @apply block mb-2 text-sm font-medium text-gray-400;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-gray-800/50 border border-gray-700 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-brand-amber/50;
+    }
+
+    /* Footer */
+    .footer-heading {
+        @apply text-lg font-semibold text-white border-b-2 border-brand-amber pb-2 w-fit;
+    }
+    .footer-link {
+        @apply flex items-center hover:text-brand-amber transition-colors;
+    }
+    .footer-link span {
+        @apply mr-2 text-brand-amber transition-transform;
+    }
+    .footer-link:hover span {
+        @apply translate-x-1;
+    }
+    .social-link {
+        @apply bg-gray-800 p-2 rounded-full hover:bg-brand-amber transition-all duration-300;
+    }
+    .social-link i {
+        @apply text-gray-400;
+    }
+    .social-link:hover i {
+        @apply text-white;
+    }
+    .category-link {
+        @apply block p-3 bg-gray-800/50 rounded-lg hover:bg-brand-amber/10 transition-all border border-gray-700 hover:border-brand-amber/50 hover:shadow-lg;
+    }
+    .contact-icon-wrapper {
+        @apply bg-brand-amber/20 p-2 rounded-lg;
+    }
+    .contact-icon-wrapper i {
+        @apply text-brand-amber;
+    }
+    .payment-icon {
+        @apply bg-gray-800 p-2 rounded-lg border border-gray-700;
+    }
+    .payment-icon i {
+        @apply text-brand-amber;
+    }
+}

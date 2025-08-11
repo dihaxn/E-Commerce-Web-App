@@ -1,0 +1,91 @@
+﻿@model List<ApplicationUser>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "User Management";
+
+    var roleBadges = new Dictionary<string, string>
+{
+{ "admin", "badge-danger" },
+{ "seller", "badge-warning" },
+{ "client", "badge-info" }
+};
+
+    string GetRoleBadge(IList<string> roles)
+    {
+        if (roles.Contains("admin")) return roleBadges["admin"];
+        if (roles.Contains("seller")) return roleBadges["seller"];
+        if (roles.Contains("client")) return roleBadges["client"];
+        return "badge-secondary";
+    }
+}
+
+<div class="container mx-auto p-4 md:p-8">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl animate-fade-in-down">
+            <i class="bi bi-people-fill"></i> User Management
+        </h1>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-16">
+            <i class="bi bi-person-x text-6xl text-gray-600"></i>
+            <h3 class="mt-4 text-2xl font-semibold text-white">No Users Found</h3>
+            <p class="mt-2 text-gray-400">There are currently no users to display.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-container bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+            <table class="table w-full text-left text-gray-300">
+                <thead class="bg-gray-900 text-gray-400 uppercase text-sm">
+                    <tr>
+                        <th class="p-4">Name</th>
+                        <th class="p-4">Email</th>
+                        <th class="p-4">Phone</th>
+                        <th class="p-4">Roles</th>
+                        <th class="p-4">Created At</th>
+                        <th class="p-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        var roles = await UserManager.GetRolesAsync(user);
+                        <tr class="border-t border-gray-700 hover:bg-gray-700/50 transition-colors">
+                            <td class="p-4">@(user.FirstName + " " + user.LastName)</td>
+                            <td class="p-4">@user.Email</td>
+                            <td class="p-4">@user.PhoneNumber</td>
+                            <td class="p-4">
+                                <span class="badge @GetRoleBadge(roles)">@string.Join(", ", roles)</span>
+                            </td>
+                            <td class="p-4">@user.CreateAt.ToString("MMM dd, yyyy")</td>
+                            <td class="p-4">
+                                <a class="btn btn-outline btn-sm" asp-controller="Users" asp-action="Details"
+                                    asp-route-id="@user.Id">
+                                    <i class="bi bi-person-lines-fill"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <nav class="mt-8" aria-label="Page navigation">
+            <ul class="flex justify-center items-center space-x-2">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li>
+                        <a class="pagination-link @(i == ViewBag.PageIndex ? "pagination-active" : "")"
+                            asp-route-pageIndex="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

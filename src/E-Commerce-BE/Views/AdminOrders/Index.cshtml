@@ -1,0 +1,101 @@
+﻿@using E_Commerce_BE.Models
+@{
+    ViewData["Title"] = "Order Management";
+    var orders = ViewBag.Orders as List<Order>;
+
+    var paymentBadges = new Dictionary<string, string>
+{
+{ "pending", "badge-warning" },
+{ "accepted", "badge-success" },
+{ "canceled", "badge-secondary" }
+};
+    string GetPaymentBadge(string status) => paymentBadges.GetValueOrDefault(status, "badge-secondary");
+
+    var orderBadges = new Dictionary<string, string>
+{
+{ "created", "badge-warning" },
+{ "accepted", "badge-success" },
+{ "shipped", "badge-info" },
+{ "delivered", "badge-success" },
+{ "returned", "badge-secondary" },
+{ "canceled", "badge-danger" },
+{ "deleted", "badge-secondary" }
+};
+    string GetOrderBadge(string status) => orderBadges.GetValueOrDefault(status, "badge-secondary");
+}
+
+<div class="container mx-auto p-4 md:p-8">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl animate-fade-in-down">
+            <i class="bi bi-receipt-cutoff"></i> Order Management
+        </h1>
+    </div>
+
+    @if (orders == null || !orders.Any())
+    {
+        <div class="text-center py-16">
+            <i class="bi bi-box-seam text-6xl text-gray-600"></i>
+            <h3 class="mt-4 text-2xl font-semibold text-white">No Orders Found</h3>
+            <p class="mt-2 text-gray-400">There are currently no orders to display.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-container bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+            <table class="table w-full text-left text-gray-300">
+                <thead class="bg-gray-900 text-gray-400 uppercase text-sm">
+                    <tr>
+                        <th class="p-4">ID</th>
+                        <th class="p-4">Client</th>
+                        <th class="p-4">Units</th>
+                        <th class="p-4">Total</th>
+                        <th class="p-4">Payment Method</th>
+                        <th class="p-4">Payment Status</th>
+                        <th class="p-4">Order Status</th>
+                        <th class="p-4">Date</th>
+                        <th class="p-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Order order in orders)
+                    {
+                        int count = order.Items.Sum(item => item.Quantity);
+                        decimal total = order.ShippingFee + order.Items.Sum(item => item.Quantity * item.UnitPrice);
+
+                        <tr class="border-t border-gray-700 hover:bg-gray-700/50 transition-colors">
+                            <td class="p-4">@order.Id</td>
+                            <td class="p-4">@(order.Client.FirstName + " " + order.Client.LastName)</td>
+                            <td class="p-4">@count</td>
+                            <td class="p-4 font-semibold">@total.ToString("C")</td>
+                            <td class="p-4">@order.PaymentMethod</td>
+                            <td class="p-4"><span
+                                    class="badge @GetPaymentBadge(order.PaymentStatus)">@order.PaymentStatus</span></td>
+                            <td class="p-4"><span class="badge @GetOrderBadge(order.OrderStatus)">@order.OrderStatus</span></td>
+                            <td class="p-4">@order.CreatedAt.ToString("MMM dd, yyyy")</td>
+                            <td class="p-4">
+                                <a class="btn btn-outline btn-sm" asp-controller="AdminOrders" asp-action="Details"
+                                    asp-route-id="@order.Id">
+                                    <i class="bi bi-pencil-square"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <nav class="mt-8" aria-label="Page navigation">
+            <ul class="flex justify-center items-center space-x-2">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li>
+                        <a class="pagination-link @(i == ViewBag.PageIndex ? "pagination-active" : "")"
+                            asp-route-pageIndex="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

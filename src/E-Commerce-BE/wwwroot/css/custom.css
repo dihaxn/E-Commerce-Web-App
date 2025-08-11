@@ -1,0 +1,25 @@
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937; /* bg-gray-800 */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #f59e0b; /* brand-amber */
+    border-radius: 10px;
+    border: 3px solid #1f2937; /* bg-gray-800 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #fbbf24; /* amber-300 */
+}
+
+/* For Firefox */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #f59e0b #1f2937;
+}

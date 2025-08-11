@@ -1,0 +1,88 @@
+﻿@model RegisterDto
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="mx-auto max-w-2xl my-12 p-4 sm:p-6 lg:p-8">
+    <div class="card">
+        <div class="bg-gradient-to-r from-amber-500 to-amber-600 p-6 text-center">
+            <h1 class="text-3xl font-bold text-white tracking-wider">Create Your Account</h1>
+        </div>
+
+        <div class="p-8">
+            <div asp-validation-summary="ModelOnly" class="text-red-500 bg-red-500/10 p-3 rounded-lg mb-6" role="alert">
+            </div>
+
+            <form method="post" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="FirstName" class="form-label">First Name</label>
+                        <input asp-for="FirstName" class="form-input" placeholder="Enter your first name">
+                        <span asp-validation-for="FirstName" class="text-red-500 text-xs mt-1"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="LastName" class="form-label">Last Name*</label>
+                        <input asp-for="LastName" class="form-input" placeholder="Enter your last name">
+                        <span asp-validation-for="LastName" class="text-red-500 text-xs mt-1"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label asp-for="Email" class="form-label">Email Address*</label>
+                    <input asp-for="Email" class="form-input" placeholder="Enter your email">
+                    <span asp-validation-for="Email" class="text-red-500 text-xs mt-1"></span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-input" placeholder="Enter your phone">
+                        <span asp-validation-for="PhoneNumber" class="text-red-500 text-xs mt-1"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Address" class="form-label">Address</label>
+                        <input asp-for="Address" class="form-input" placeholder="Enter your address">
+                        <span asp-validation-for="Address" class="text-red-500 text-xs mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="Password" class="form-label">Password*</label>
+                        <input asp-for="Password" type="password" class="form-input" placeholder="Create password">
+                        <span asp-validation-for="Password" class="text-red-500 text-xs mt-1"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="ConfirmPassword" class="form-label">Confirm Password*</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-input"
+                            placeholder="Confirm password">
+                        <span asp-validation-for="ConfirmPassword" class="text-red-500 text-xs mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="pt-6 space-y-4">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-person-plus-fill"></i>Create Account
+                    </button>
+
+                    <div class="flex items-center my-6">
+                        <div class="flex-grow border-t border-gray-700"></div>
+                        <span class="mx-4 text-gray-500 text-sm">or</span>
+                        <div class="flex-grow border-t border-gray-700"></div>
+                    </div>
+
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline w-full">
+                        <i class="bi bi-arrow-left-circle-fill"></i>Already have an account? Login
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,165 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Order Details";
+
+    var paymentBadges = new Dictionary<string, string>
+    {
+        { "pending", "badge-warning" },
+        { "accepted", "badge-success" },
+        { "canceled", "badge-secondary" }
+    };
+    string GetPaymentBadge(string status) => paymentBadges.GetValueOrDefault(status, "badge-secondary");
+
+    var orderBadges = new Dictionary<string, string>
+    {
+        { "created", "badge-warning" },
+        { "accepted", "badge-success" },
+        { "shipped", "badge-info" },
+        { "delivered", "badge-success" },
+        { "returned", "badge-secondary" },
+        { "canceled", "badge-danger" },
+        { "deleted", "badge-secondary" }
+    };
+    string GetOrderBadge(string status) => orderBadges.GetValueOrDefault(status, "badge-secondary");
+}
+
+<div class="container mx-auto p-4 md:p-8">
+    <div class="flex justify-between items-center mb-8">
+        <a class="btn btn-outline" asp-controller="AdminOrders" asp-action="Index">
+            <i class="bi bi-arrow-left"></i> Back to Orders
+        </a>
+        <h1 class="text-3xl font-bold text-white">Order Details</h1>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Order & Client Info -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Order Info -->
+            <div class="card p-6">
+                <h4 class="text-2xl font-bold text-white mb-4">Order Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div><span class="font-semibold text-gray-400">Order ID:</span> @Model.Id</div>
+                    <div><span class="font-semibold text-gray-400">Order Date:</span> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
+                    <div class="md:col-span-2"><span class="font-semibold text-gray-400">Delivery Address:</span> @Model.DeliveryAddress</div>
+                    <div><span class="font-semibold text-gray-400">Payment Method:</span> @Model.PaymentMethod</div>
+                    <div>
+                        <span class="font-semibold text-gray-400">Payment Status:</span>
+                        <span class="badge @GetPaymentBadge(Model.PaymentStatus)">@Model.PaymentStatus</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-gray-400">Order Status:</span>
+                        <span class="badge @GetOrderBadge(Model.OrderStatus)">@Model.OrderStatus</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Info -->
+            <div class="card p-6">
+                <h4 class="text-2xl font-bold text-white mb-4">Client Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div>
+                        <span class="font-semibold text-gray-400">Name:</span>
+                        <a class="text-amber-400 hover:underline" asp-controller="Users" asp-action="Details" asp-route-id="@Model.Client.Id">
+                            @(Model.Client.FirstName + " " + Model.Client.LastName)
+                        </a>
+                    </div>
+                    <div><span class="font-semibold text-gray-400">Total Orders:</span> @ViewBag.NumOrders</div>
+                    <div><span class="font-semibold text-gray-400">Email:</span> @Model.Client.Email</div>
+                    <div><span class="font-semibold text-gray-400">Phone:</span> @Model.Client.PhoneNumber</div>
+                    <div class="md:col-span-2"><span class="font-semibold text-gray-400">Address:</span> @Model.Client.Address</div>
+                    <div class="md:col-span-2"><span class="font-semibold text-gray-400">Registered:</span> @Model.Client.CreateAt.ToString("yyyy-MM-dd")</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Actions & Totals -->
+        <div class="space-y-8">
+            <!-- Actions -->
+            <div class="card p-6">
+                <h4 class="text-2xl font-bold text-white mb-4">Actions</h4>
+                <form method="get" asp-controller="AdminOrders" asp-action="Edit" class="space-y-4">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div>
+                        <label class="form-label" for="payment_status">Payment Status</label>
+                        <select class="form-input" name="payment_status" asp-for="PaymentStatus">
+                            <option value="pending">Pending</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="canceled">Canceled</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" for="order_status">Order Status</label>
+                        <select class="form-input" name="order_status" asp-for="OrderStatus">
+                            <option value="created">Created</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="returned">Returned</option>
+                            <option value="canceled">Canceled</option>
+                            <option value="deleted">Deleted</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-save-fill"></i> Update Status
+                    </button>
+                </form>
+            </div>
+
+            <!-- Totals -->
+            <div class="card p-6">
+                <h4 class="text-2xl font-bold text-white mb-4">Totals</h4>
+                @{ decimal subtotal = Model.Items.Sum(i => i.UnitPrice * i.Quantity); }
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-400">Subtotal:</span>
+                        <span class="text-white">@subtotal.ToString("C")</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-400">Shipping Fee:</span>
+                        <span class="text-white">@Model.ShippingFee.ToString("C")</span>
+                    </div>
+                    <hr class="border-gray-700 my-2" />
+                    <div class="flex justify-between text-xl font-bold">
+                        <span class="text-white">Total:</span>
+                        <span class="text-amber-400">@((subtotal + Model.ShippingFee).ToString("C"))</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items Table -->
+    <div class="mt-8">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Product</th>
+                        <th class="text-center">Unit Price</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td style="width: 80px;">
+                                <img src="/products/@item.Product.ImageFileName" width="80" class="rounded-lg" alt="@item.Product.Name" />
+                            </td>
+                            <td>
+                                <a class="text-white hover:text-amber-400 font-semibold" asp-controller="Store" asp-action="Details" asp-route-id="@item.Product.Id">
+                                    @item.Product.Name
+                                </a>
+                                <div class="text-sm text-gray-400">@item.Product.Category</div>
+                            </td>
+                            <td class="text-center">@item.UnitPrice.ToString("C")</td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-right font-semibold">@((item.UnitPrice * item.Quantity).ToString("C"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

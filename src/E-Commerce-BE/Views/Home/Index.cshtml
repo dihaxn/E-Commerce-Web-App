@@ -1,0 +1,135 @@
+﻿@model List<Product>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section class="bg-gradient-to-r from-black via-gray-900 to-black relative overflow-hidden"
+    style="background-image: url('/images/banner.jpg'); background-size: cover; background-position: center;">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-900/50 via-gray-900 to-black opacity-60"></div>
+    <div class="container mx-auto px-6 py-20 lg:py-28 relative z-10">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2 text-white text-center lg:text-left">
+                <h1 data-animate="slide-in-left" class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 opacity-0">
+                    <span class="block tracking-tight">The Future of Tech</span>
+                    <span
+                        class="block bg-clip-text text-transparent bg-gradient-to-r from-amber-300 to-brand-amber mt-2">Is
+                        Here</span>
+                </h1>
+                <p data-animate="slide-in-left"
+                    class="text-lg lg:text-xl text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 opacity-0 [animation-delay:0.2s]">
+                    Discover a universe of cutting-edge electronics. From powerful laptops to immersive entertainment
+                    systems, find it all at unbeatable prices.
+                </p>
+                <div data-animate="slide-in-left" class="mt-10 opacity-0 [animation-delay:0.3s]">
+                    <a href="#products"
+                        class="btn btn-primary btn-ripple animate-pulse-glow-amber !px-8 !py-4 !rounded-full !font-bold transform hover:scale-105">
+                        <span class="flex items-center"><i class="bi bi-rocket-takeoff-fill mr-2"></i>Explore Now</span>
+                    </a>
+                </div>
+            </div>
+
+            <div data-animate="slide-in-right" class="lg:w-1/2 text-center opacity-0 [animation-delay:0.4s]">
+                <div class="relative inline-block">
+                    <img src="/images/hero.png"
+                        class="relative z-10 max-w-full h-auto transition-transform duration-500 animate-bounce-gentle"
+                        alt="Assortment of modern electronic devices" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="products" class="bg-gradient-to-r from-black via-gray-900 to-black py-16 lg:py-24">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-14">
+            <h2 data-animate="fade-in-up" class="text-3xl md:text-4xl font-bold text-white mb-4 opacity-0">
+                Newest Arrivals
+            </h2>
+            <div data-animate="fade-in-up"
+                class="w-28 h-1 bg-gradient-to-r from-brand-amber to-amber-500 mx-auto rounded-full opacity-0 [animation-delay:0.1s]">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            @{
+                string[] delays = { "[animation-delay:0.1s]", "[animation-delay:0.2s]", "[animation-delay:0.3s]",
+                        "[animation-delay:0.4s]" };
+                int cardIndex = 0;
+            }
+            @foreach (var product in Model)
+            {
+                <div data-animate="fade-in-up" class="card h-full flex flex-col opacity-0 @delays[cardIndex % 4]">
+                    <div class="bg-gray-800 rounded-t-2xl overflow-hidden group">
+                        <div class="relative p-4 bg-black/20">
+                            <div class="aspect-square flex items-center justify-center overflow-hidden rounded-xl">
+                                <img src="/products/@product.ImageFileName"
+                                    class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                                    alt="@product.Name" />
+                            </div>
+                        </div>
+
+                        <div class="p-6 flex-1 flex flex-col bg-gray-800 rounded-b-2xl">
+                            <h3
+                                class="text-lg font-bold text-white mb-2 group-hover:text-brand-amber transition-colors duration-300 line-clamp-2 leading-tight">
+                                @product.Name
+                            </h3>
+                            <p class="text-sm text-gray-400 mb-4">
+                                By <span class="font-medium text-gray-300">@product.Brand</span>
+                            </p>
+
+                            <div class="my-auto pt-2 pb-4">
+                                <span
+                                    class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-amber-300 to-brand-amber">
+                                    $@product.Price.ToString("N2")
+                                </span>
+                            </div>
+
+                            <div class="mt-auto space-y-3">
+                                <a class="block w-full bg-gray-700 btn-ripple text-white text-center py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-gray-600 transform hover:-translate-y-1"
+                                    asp-controller="Store" asp-action="Details" asp-route-id="@product.Id">
+                                    <i class="bi bi-eye mr-2"></i>View Details
+                                </a>
+                                <button type="button"
+                                    class="w-full bg-gradient-to-r from-brand-amber to-amber-600 btn-ripple text-black py-3 rounded-xl font-bold transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20 transform hover:-translate-y-1"
+                                    onclick="addToCart(this, @product.Id)">
+                                    <span class="flex items-center justify-center">
+                                        <span class="button-text">Add to Cart</span>
+                                        <i class="bi bi-cart-plus ml-2 text-lg"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                cardIndex++;
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const animation = entry.target.getAttribute('data-animate');
+                        if (animation) {
+                            entry.target.classList.add(`animate-${animation}`);
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('[data-animate]').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+}

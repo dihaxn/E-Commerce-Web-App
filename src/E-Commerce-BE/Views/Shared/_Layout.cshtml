@@ -1,0 +1,350 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Best Store - Premium Shopping Experience</title>
+    <link rel="icon" href="/images/icon.png" />
+
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-r from-black via-gray-900 to-black font-sans text-gray-300">
+
+    <header
+        class="sticky top-0 z-[100] shadow-lg border-b border-gray-800 bg-gradient-to-r from-black via-gray-900 to-black">
+        <nav x-data="{ mobileMenuOpen: false, adminDropdownOpen: false, clientDropdownOpen: false }"
+            class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20">
+
+                <div class="flex items-center">
+                    <a class="flex items-center space-x-3 group transition-transform duration-300 hover:scale-105"
+                        asp-controller="Home" asp-action="Index">
+                        <div class="p-2 rounded-lg transition-transform duration-300 group-hover:rotate-12 shadow-md">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 16H3V21H8V16Z" fill="#f59e0b" />
+                                <path d="M21 16H16V21H21V16Z" fill="#f59e0b" />
+                                <path d="M8 8H3V13H8V8Z" fill="#f59e0b" />
+                                <path d="M21 8H16V13H21V8Z" fill="#f59e0b" />
+                                <path d="M14.5 3L12 6L9.5 3H5V8H9.5L12 11L14.5 8H19V3H14.5Z" fill="#f59e0b" />
+                            </svg>
+                        </div>
+                        <span
+                            class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-amber to-amber-300">
+                            Best Store
+                        </span>
+                    </a>
+                </div>
+
+                <div class="hidden md:flex items-baseline space-x-8">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="nav-link" asp-controller="Store" asp-action="Index">Store</a>
+                    <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                </div>
+
+                <div class="flex items-center space-x-2 md:space-x-4">
+
+                    @if (User.IsInRole("client"))
+                    {
+                        <a class="relative group p-3 rounded-full hover:bg-brand-amber/10 transition-all duration-300"
+                            asp-controller="Cart" asp-action="Index" title="View cart">
+                            <i class="bi bi-cart4 text-brand-amber text-xl"></i>
+                            <span id="CartSize"
+                                class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full min-w-[20px] h-5 shadow-sm">
+                                0
+                            </span>
+                        </a>
+                    }
+
+                    <button @@click="mobileMenuOpen = !mobileMenuOpen"
+                        class="md:hidden hover:bg-brand-amber/10 rounded-lg p-2 transition-colors text-gray-300"
+                        type="button" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="bi bi-list text-2xl"></i>
+                    </button>
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var appUser = await UserManager.GetUserAsync(User);
+
+                        if (User.IsInRole("admin"))
+                        {
+                            <div @@click.away="adminDropdownOpen = false" class="hidden md:block ml-4 relative">
+                                <button @@click="adminDropdownOpen = !adminDropdownOpen"
+                                    class="flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-all duration-300 shadow-lg focus:outline-none transform hover:scale-105">
+                                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="bi bi-person-gear text-white"></i>
+                                    </div>
+                                    <span class="font-medium text-sm">@(appUser?.FirstName ?? "Admin") (Admin)</span>
+                                    <i class="bi bi-chevron-down ml-1 text-sm transition-transform"
+                                        :class="{'rotate-180': adminDropdownOpen}"></i>
+                                </button>
+
+                                <ul x-show="adminDropdownOpen" x-cloak x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 transform scale-95"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-150"
+                                    x-transition:leave-start="opacity-100 transform scale-100"
+                                    x-transition:leave-end="opacity-0 transform scale-95"
+                                    class="absolute right-0 bg-slate-800 rounded-xl shadow-xl border border-slate-700 py-2 mt-2 w-48 z-50">
+                                    <li><a class="dropdown-item" asp-controller="Product" asp-action="Index"><i
+                                                class="bi bi-box-seam"></i><span>Products</span></a></li>
+                                    <li><a class="dropdown-item" asp-controller="AdminOrders" asp-action="Index"><i
+                                                class="bi bi-receipt"></i><span>Orders</span></a></li>
+                                    <li><a class="dropdown-item" asp-controller="Users" asp-action="Index"><i
+                                                class="bi bi-people"></i><span>Users</span></a></li>
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i
+                                                class="bi bi-person"></i><span>Profile</span></a></li>
+                                    <li>
+                                        <hr class="border-slate-600 my-2">
+                                    </li>
+                                    <li><a class="dropdown-item dropdown-item-danger" asp-controller="Account"
+                                            asp-action="Logout"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else if (User.IsInRole("client"))
+                        {
+                            <div @@click.away="clientDropdownOpen = false" class="hidden md:block ml-4 relative">
+                                <button @@click="clientDropdownOpen = !clientDropdownOpen"
+                                    class="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg focus:outline-none transform hover:scale-105">
+                                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="bi bi-person-check text-white"></i>
+                                    </div>
+                                    <span class="font-medium text-sm">@(appUser?.FirstName ?? User.Identity?.Name ??
+                                                                        "User")</span>
+                                    <i class="bi bi-chevron-down ml-1 text-sm transition-transform"
+                                        :class="{'rotate-180': clientDropdownOpen}"></i>
+                                </button>
+                                <ul x-show="clientDropdownOpen" x-cloak x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 transform scale-95"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-150"
+                                    x-transition:leave-start="opacity-100 transform scale-100"
+                                    x-transition:leave-end="opacity-0 transform scale-95"
+                                    class="absolute right-0 bg-slate-800 rounded-xl shadow-xl border border-slate-700 py-2 mt-2 w-48 z-50">
+                                    <li><a class="dropdown-item" asp-controller="ClientOrders" asp-action="Index"><i
+                                                class="bi bi-bag-check"></i><span>My Orders</span></a></li>
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i
+                                                class="bi bi-person"></i><span>Profile</span></a></li>
+                                    <li>
+                                        <hr class="border-slate-600 my-2">
+                                    </li>
+                                    <li><a class="dropdown-item dropdown-item-danger" asp-controller="Account"
+                                            asp-action="Logout"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="hidden md:flex items-center space-x-2">
+                            <a class="btn btn-outline" asp-controller="Account" asp-action="Register">
+                                <i class="bi bi-person-plus mr-2"></i>Register
+                            </a>
+                            <a class="btn btn-primary" asp-controller="Account" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right mr-2"></i>Login
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div x-show="mobileMenuOpen" x-cloak x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform -translate-y-4"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 transform translate-y-0"
+                x-transition:leave-end="opacity-0 transform -translate-y-4" class="md:hidden" id="mobile-menu">
+                <div
+                    class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gradient-to-r from-black via-gray-900 to-black backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg mt-2">
+                    <a class="nav-link-mobile" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="nav-link-mobile" asp-controller="Store" asp-action="Index">Store</a>
+                    <a class="nav-link-mobile" asp-controller="Home" asp-action="AboutUs">About Us</a>
+
+                    <div class="pt-4 border-t border-gray-700">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="px-3 py-2">
+                                <p class="text-sm font-medium text-gray-500">Logged in as:</p>
+                                <p class="text-base font-medium text-gray-200">@User.Identity?.Name</p>
+                            </div>
+                            <a class="nav-link-mobile" asp-controller="Account" asp-action="Profile">Profile</a>
+                            <a class="nav-link-mobile" asp-controller="Account" asp-action="Logout">Logout</a>
+                        }
+                        else
+                        {
+                            <div class="flex flex-col space-y-3 px-3 py-2">
+                                <a class="btn btn-primary w-full" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="btn btn-outline w-full" asp-controller="Account"
+                                    asp-action="Register">Register</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="min-h-screen">
+        @RenderBody()
+    </main>
+
+    <div x-data="{ visible: false }"
+        x-init="window.addEventListener('scroll', () => { visible = window.scrollY > 300 })" x-show="visible" x-cloak
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform translate-y-4"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform translate-y-4" class="fixed bottom-8 right-8 z-50">
+        <button @@click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            class="btn btn-primary-pulse flex items-center justify-center w-12 h-12 rounded-full">
+            <i class="bi bi-arrow-up text-xl font-bold"></i>
+        </button>
+    </div>
+
+    <footer class="bg-gradient-to-r from-black via-gray-900 to-black text-gray-400 border-t border-gray-800">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 rounded-lg">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 16H3V21H8V16Z" fill="#f59e0b" />
+                                <path d="M21 16H16V21H21V16Z" fill="#f59e0b" />
+                                <path d="M8 8H3V13H8V8Z" fill="#f59e0b" />
+                                <path d="M21 8H16V13H21V8Z" fill="#f59e0b" />
+                                <path d="M14.5 3L12 6L9.5 3H5V8H9.5L12 11L14.5 8H19V3H14.5Z" fill="#f59e0b" />
+                            </svg>
+                        </div>
+                        <h1
+                            class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-amber to-amber-200">
+                            Best Store</h1>
+                    </div>
+                    <p class="text-sm text-gray-300/80">Where quality meets affordability. We bring you the best
+                        products with exceptional service and unbeatable prices.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="footer-link"><span>→</span>About Us</a></li>
+                        <li><a href="#" class="footer-link"><span>→</span>Contact</a></li>
+                        <li><a href="#" class="footer-link"><span>→</span>FAQ</a></li>
+                        <li><a href="#" class="footer-link"><span>→</span>Support</a></li>
+                        <li><a href="#" class="footer-link"><span>→</span>Returns</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="footer-heading">Categories</h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        <a href="#" class="category-link">
+                            <span class="font-medium">Electronics</span>
+                            <span class="block text-xs mt-1">Latest tech</span>
+                        </a>
+                        <a href="#" class="category-link">
+                            <span class="font-medium">Fashion</span>
+                            <span class="block text-xs mt-1">Trending styles</span>
+                        </a>
+                        <a href="#" class="category-link">
+                            <span class="font-medium">Home &amp; Garden</span>
+                            <span class="block text-xs mt-1">For your space</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="footer-heading">Contact Us</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center space-x-3">
+                            <div class="contact-icon-wrapper"><i class="bi bi-telephone"></i></div>
+                            <span>+1 (888) 123-4567</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="contact-icon-wrapper"><i class="bi bi-envelope"></i></div>
+                            <span>info@beststore.com</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="contact-icon-wrapper"><i class="bi bi-geo-alt"></i></div>
+                            <span>123 Store St, Shopping District, NY</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-800">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div class="flex-1 text-center md:text-left">
+                        <h4 class="font-medium mb-3 text-white">We Accept</h4>
+                        <div class="flex space-x-3 justify-center md:justify-start">
+                            <div class="payment-icon"><i class="bi bi-credit-card-2-front text-xl"></i></div>
+                            <div class="payment-icon"><i class="bi bi-paypal text-xl"></i></div>
+                            <div class="payment-icon"><i class="bi bi-apple text-xl"></i></div>
+                            <div class="payment-icon"><i class="bi bi-google text-xl"></i></div>
+                        </div>
+                    </div>
+                    <div class="flex-1 text-center md:text-right">
+                        <h4 class="font-medium mb-3 text-white">Secure Payment</h4>
+                        <div class="flex items-center space-x-2 justify-center md:justify-end">
+                            <div class="p-2 bg-brand-amber/10 rounded-lg border border-brand-amber/30">
+                                <i class="bi bi-shield-check text-green-400 text-xl"></i>
+                            </div>
+                            <span class="text-sm">256-bit SSL Encryption</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-800 text-center text-gray-500 text-sm">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 16H3V21H8V16Z" fill="#f59e0b" />
+                            <path d="M21 16H16V21H21V16Z" fill="#f59e0b" />
+                            <path d="M8 8H3V13H8V8Z" fill="#f59e0b" />
+                            <path d="M21 8H16V13H21V8Z" fill="#f59e0b" />
+                            <path d="M14.5 3L12 6L9.5 3H5V8H9.5L12 11L14.5 8H19V3H14.5Z" fill="#f59e0b" />
+                        </svg>
+                        <span>&copy; @DateTime.Now.Year - Best Store - </span>
+                        <a asp-controller="Home" asp-action="AboutUs"
+                            class="hover:text-brand-amber transition-colors">About Us</a>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex space-x-6">
+                        <a href="#" class="hover:text-brand-amber transition-colors">Terms of Service</a>
+                        <a href="#" class="hover:text-brand-amber transition-colors">Returns & Exchanges</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="~/js/cart.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

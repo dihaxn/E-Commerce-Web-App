@@ -1,0 +1,230 @@
+:root {
+    --primary-color: #f59e0b; /* brand-amber */
+    --primary-dark: #d97706; /* darker amber */
+    --primary-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+    --accent-color: #f59e0b;
+    --success-color: #22c55e; /* green-500 */
+    --warning-color: #eab308; /* yellow-500 */
+    --danger-color: #ef4444; /* red-500 */
+    --text-dark: #e5e7eb; /* gray-200 */
+    --text-light: #9ca3af; /* gray-400 */
+    --light-bg: #111827; /* gray-900 */
+    --card-bg: #1f2937; /* brand-gray */
+    --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 10px 15px rgba(0, 0, 0, 0.2);
+    --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.25);
+    --transition-fast: 0.2s;
+    --transition-medium: 0.35s;
+    --transition-slow: 0.5s;
+    --border-radius: 12px;
+    --border-radius-sm: 6px;
+    --glass-effect: rgba(31, 41, 55, 0.85); /* brand-gray with opacity */
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-dark);
+}
+
+.product-form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.product-form-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-heavy);
+    background: var(--card-bg);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 246, 232, 0.3);
+}
+
+.product-form-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.product-form-title {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.product-form-body {
+    padding: 2rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select, .form-file {
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(135, 120, 95, 0.2);
+    transition: all var(--transition-medium) ease;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(245, 158, 11, 0.15);
+        background-color: var(--light-bg);
+    }
+
+.form-file {
+    padding: 0.5rem;
+}
+
+.text-danger {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    color: var(--danger-color);
+}
+
+.btn-submit {
+    background: var(--primary-gradient);
+    border: none;
+    padding: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: var(--border-radius);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        animation: gradientShift 3s ease infinite;
+        background-size: 200% 200%;
+    }
+
+.btn-cancel {
+    background: var(--glass-effect);
+    border: 1px solid rgba(135, 120, 95, 0.2);
+    color: var(--primary-color);
+    padding: 0.75rem;
+    font-weight: 600;
+    transition: all var(--transition-medium) ease;
+    border-radius: var(--border-radius);
+}
+
+    .btn-cancel:hover {
+        background: var(--primary-gradient);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        border-color: transparent;
+    }
+
+/* Image preview */
+.image-preview-container {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.image-preview {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: var(--border-radius-sm);
+    border: 1px dashed rgba(245, 158, 11, 0.3);
+    padding: 0.5rem;
+    box-shadow: var(--shadow-light);
+    transition: all var(--transition-medium) ease;
+}
+
+    .image-preview:hover {
+        border-color: var(--primary-color);
+        box-shadow: var(--shadow-medium);
+    }
+
+/* Button ripple effect */
+.btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to
+
+{
+    transform: scale(4);
+    opacity: 0;
+}
+
+}
+
+@keyframes gradientShift {
+    0%
+
+{
+    background-position: 0% 50%;
+}
+
+50% {
+    background-position: 100% 50%;
+}
+
+100% {
+    background-position: 0% 50%;
+}
+
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .product-form-container
+
+{
+    padding: 0 1rem;
+}
+
+.product-form-body {
+    padding: 1.5rem;
+}
+
+.form-row {
+    flex-direction: column;
+}
+
+.form-label {
+    margin-bottom: 0.5rem;
+}
+
+}
+.form-control-plaintext {
+    padding: 0.75rem 0;
+    color: var(--text-dark);
+}
+.current-image {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid rgba(135, 120, 95, 0.2);
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-light);
+    transition: all var(--transition-medium) ease;
+}
+
+    .current-image:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-medium);
+    }

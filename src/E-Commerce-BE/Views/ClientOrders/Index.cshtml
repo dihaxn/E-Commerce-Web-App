@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "My Orders";
+
+    var paymentBadges = new Dictionary<string, string>
+{
+{ "pending", "badge-warning" },
+{ "accepted", "badge-success" },
+{ "canceled", "badge-secondary" }
+};
+    string GetPaymentBadge(string status) => paymentBadges.GetValueOrDefault(status, "badge-secondary");
+
+    var orderBadges = new Dictionary<string, string>
+{
+{ "created", "badge-warning" },
+{ "accepted", "badge-success" },
+{ "shipped", "badge-info" },
+{ "delivered", "badge-success" },
+{ "returned", "badge-secondary" },
+{ "canceled", "badge-danger" },
+{ "deleted", "badge-secondary" }
+};
+    string GetOrderBadge(string status) => orderBadges.GetValueOrDefault(status, "badge-secondary");
+}
+
+<div class="container mx-auto p-4 md:p-8">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl animate-fade-in-down">
+            My Orders
+        </h1>
+    </div>
+
+    @if (!ViewBag.Orders.Any())
+    {
+        <div class="text-center py-16">
+            <i class="bi bi-box-seam text-6xl text-gray-600"></i>
+            <h3 class="mt-4 text-2xl font-semibold text-white">No Orders Yet</h3>
+            <p class="mt-2 text-gray-400">
+                You haven't placed any orders. When you do, they will appear here.
+            </p>
+            <a asp-action="Index" asp-controller="Store" class="btn btn-primary mt-6">
+                <i class="bi bi-shop"></i> Start Shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Units</th>
+                        <th>Total</th>
+                        <th>Payment Method</th>
+                        <th>Payment Status</th>
+                        <th>Order Status</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Order order in ViewBag.Orders)
+                    {
+                        int count = order.Items.Sum(item => item.Quantity);
+                        decimal total = order.ShippingFee + order.Items.Sum(item => item.Quantity * item.UnitPrice);
+
+                        <tr>
+                            <td>@count</td>
+                            <td class="font-semibold">@total.ToString("C")</td>
+                            <td>@order.PaymentMethod</td>
+                            <td><span class="badge @GetPaymentBadge(order.PaymentStatus)">@order.PaymentStatus</span></td>
+                            <td><span class="badge @GetOrderBadge(order.OrderStatus)">@order.OrderStatus</span></td>
+                            <td>@order.CreatedAt.ToString("MM/dd/yyyy")</td>
+                            <td>
+                                <a class="btn btn-outline btn-sm" asp-controller="ClientOrders" asp-action="Details"
+                                    asp-route-id="@order.Id">
+                                    <i class="bi bi-receipt"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <nav class="mt-8" aria-label="Page navigation">
+            <ul class="flex justify-center items-center space-x-2">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li>
+                        <a class="pagination-link @(i == ViewBag.PageIndex ? "pagination-active" : "")"
+                            asp-route-pageIndex="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

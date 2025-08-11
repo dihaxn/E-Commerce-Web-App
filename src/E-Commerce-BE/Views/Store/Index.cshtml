@@ -1,0 +1,110 @@
+﻿@model StoreSearchModel
+@using E_Commerce_BE.Models
+@{
+    ViewData["Title"] = "Store";
+    var products = ViewBag.Products as List<Product>;
+}
+
+<div class="container mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl animate-fade-in-down">
+            Our Products
+        </h1>
+        <p class="mt-4 text-lg text-gray-400 animate-fade-in-up">
+            Discover our curated selection of high-quality electronics and accessories.
+        </p>
+    </div>
+
+    <div class="card mb-8">
+        <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+            <select name="brand" asp-for="Brand" onchange="this.form.submit()" class="form-input">
+                <option value="">All Brands</option>
+                <option value="Samsung">Samsung</option>
+                <option value="Apple">Apple</option>
+                <option value="Nokia">Nokia</option>
+                <option value="HP">HP</option>
+            </select>
+            <select name="category" asp-for="Category" onchange="this.form.submit()" class="form-input">
+                <option value="">All Categories</option>
+                <option value="Phones">Phones</option>
+                <option value="Computers">Computers</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Printers">Printers</option>
+                <option value="Cameras">Cameras</option>
+                <option value="Other">Other</option>
+            </select>
+            <select name="sort" asp-for="Sort" onchange="this.form.submit()" class="form-input">
+                <option value="newest">Sort by Newest</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+            </select>
+            <div class="flex">
+                <input name="search" asp-for="Search" placeholder="Search by Name..." class="form-input rounded-r-none">
+                <button type="submit" class="btn btn-primary rounded-l-none">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    @if (products == null || !products.Any())
+    {
+        <div class="text-center py-16">
+            <i class="bi bi-emoji-frown text-6xl text-gray-600"></i>
+            <h3 class="mt-4 text-2xl font-semibold text-white">No Products Found</h3>
+            <p class="mt-2 text-gray-400">
+                Your search for "@Model.Search" in "@(string.IsNullOrEmpty(Model.Category) ? "all categories" :
+                            Model.Category)" did not match any products.
+            </p>
+            <a asp-action="Index" asp-controller="Store" class="btn btn-primary mt-6">
+                <i class="bi bi-arrow-clockwise"></i> Reset Search
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            @foreach (var product in products)
+            {
+                <div class="card product-card">
+                    <div class="p-6">
+                        <a asp-controller="Store" asp-action="Details" asp-route-id="@product.Id">
+                            <img src="/products/@product.ImageFileName" class="w-full h-48 object-contain rounded-lg"
+                                alt="@product.Name" />
+                        </a>
+                    </div>
+                    <div class="p-6 bg-gray-900/70 flex flex-col flex-grow">
+                        <h5 class="text-xl font-bold text-white mb-2 flex-grow">@product.Name</h5>
+                        <p class="text-gray-400 text-sm mb-4">
+                            @product.Brand / @product.Category
+                        </p>
+                        <div class="text-2xl font-bold text-amber-400 mb-4">@product.Price.ToString("C")</div>
+                        <div class="flex flex-col space-y-2 mt-auto">
+                            <a class="btn btn-outline" asp-controller="Store" asp-action="Details" asp-route-id="@product.Id">
+                                <i class="bi bi-info-circle-fill"></i> Details
+                            </a>
+                            <button type="button" class="btn btn-primary" onclick="addToCart(this, @product.Id)">
+                                <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <nav class="mt-12" aria-label="Page navigation">
+            <ul class="flex justify-center items-center space-x-2">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li>
+                        <a class="pagination-link @(i == ViewBag.PageIndex ? "pagination-active" : "")" asp-route-pageIndex="@i"
+                            asp-route-search="@Model.Search" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category"
+                            asp-route-sort="@Model.Sort">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

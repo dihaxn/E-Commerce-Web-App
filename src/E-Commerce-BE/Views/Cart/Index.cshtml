@@ -1,4 +1,4 @@
-﻿@model CheckoutDto
+﻿@model E_Commerce_BE.Models.CartViewModel
 @{
     ViewData["Title"] = "Shopping Cart";
 }
@@ -14,14 +14,9 @@
         <!-- Cart Items -->
         <div class="lg:col-span-2">
             <div class="card">
-                @if (ViewBag.ErrorMessage != null)
-                {
-                    <div class="alert alert-warning m-6">
-                        @ViewBag.ErrorMessage
-                    </div>
-                }
+                @* Error message block removed for now, can be re-added if needed *@
 
-                @if (!ViewBag.CartItems.Any())
+                @if (!Model.CartItems.Any())
                 {
                     <div class="p-8 text-center">
                         <i class="bi bi-cart-x text-6xl text-gray-600"></i>
@@ -37,7 +32,7 @@
                 else
                 {
                     <div class="space-y-4 p-6">
-                        @foreach (var item in ViewBag.CartItems)
+                        @foreach (var item in Model.CartItems)
                         {
                             <div class="flex flex-col md:flex-row items-center bg-gray-900/70 p-4 rounded-lg border border-gray-700 hover:border-amber-500 transition-colors duration-300">
                                 <img src="/products/@item.Product.ImageFileName" width="100" class="rounded-lg mb-4 md:mb-0" alt="@item.Product.Name">
@@ -74,7 +69,7 @@
                 {
                     <div class="flex justify-between items-center mb-4">
                         <span class="text-gray-400">Subtotal:</span>
-                        <span class="text-xl font-bold text-white">@ViewBag.Subtotal.ToString("C")</span>
+                        <span class="text-xl font-bold text-white">@Model.Subtotal.ToString("C")</span>
                     </div>
                     <p class="text-center text-gray-400 mb-4">You need to login to proceed.</p>
                     <div class="grid grid-cols-1 gap-4">
@@ -111,15 +106,15 @@
                         <div class="space-y-3">
                             <div class="flex justify-between text-gray-300">
                                 <span>Subtotal:</span>
-                                <span class="font-semibold">@ViewBag.Subtotal.ToString("C")</span>
+                                <span class="font-semibold">@Model.Subtotal.ToString("C")</span>
                             </div>
                             <div class="flex justify-between text-gray-300">
                                 <span>Shipping:</span>
-                                <span class="font-semibold">@ViewBag.ShippingFee.ToString("C")</span>
+                                <span class="font-semibold">@Model.ShippingFee.ToString("C")</span>
                             </div>
                             <div class="flex justify-between text-xl font-bold text-white">
                                 <span>Total:</span>
-                                <span class="text-amber-400">@ViewBag.Total.ToString("C")</span>
+                                <span class="text-amber-400">@Model.Total.ToString("C")</span>
                             </div>
                         </div>
 

@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body class="bg-gradient-to-r from-black via-gray-900 to-black font-sans text-gray-300">
@@ -118,7 +119,7 @@
                         {
                             <div @@click.away="clientDropdownOpen = false" class="hidden md:block ml-4 relative">
                                 <button @@click="clientDropdownOpen = !clientDropdownOpen"
-                                    class="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg focus:outline-none transform hover:scale-105">
+                                    class="flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-all duration-300 shadow-lg focus:outline-none transform hover:scale-105">
                                     <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                                         <i class="bi bi-person-check text-white"></i>
                                     </div>

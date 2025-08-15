@@ -1,103 +1,727 @@
-﻿@model List<Product>
-@{
-    ViewData["Title"] = "Home Page";
+﻿@section Styles {
+    <style>
+        :root {
+            --dark-blue: #0f172a;
+            --mid-blue: #1e293b;
+            --light-blue: #334155;
+            --amber-500: #f59e0b;
+            --amber-400: #fbbf24;
+            --amber-300: #fcd34d;
+            --light-text: #e2e8f0;
+            --medium-text: #cbd5e1;
+            --dark-text: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0f1d;
+            color: var(--light-text);
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Hero Banner Styles */
+        .home-banner {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--dark-blue) 0%, var(--mid-blue) 50%, var(--dark-blue) 100%);
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .home-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
+            animation: float-glow 20s ease-in-out infinite;
+        }
+
+        .home-banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.7) 50%, rgba(15, 23, 42, 0.95) 100%);
+            z-index: 1;
+        }
+
+        .home-banner-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Enhanced Typography */
+        .home-banner h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .home-banner .highlight {
+            background: linear-gradient(135deg, var(--amber-500) 0%, var(--amber-400) 50%, var(--amber-500) 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            animation: shimmer 3s ease-in-out infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        .home-banner .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--amber-500), var(--amber-400), var(--amber-500));
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+            border-radius: 2px;
+        }
+
+        .home-banner .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            font-weight: 600;
+            color: var(--light-text);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .home-banner .description {
+            font-size: clamp(1rem, 2.5vw, 1.125rem);
+            color: var(--medium-text);
+            line-height: 1.7;
+            max-width: 32rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2.5rem;
+        }
+
+        /* Enhanced CTA Button */
+        .home-banner .cta-btn {
+            background: linear-gradient(135deg, var(--amber-500) 0%, var(--amber-400) 100%);
+            color: var(--dark-blue);
+            font-weight: 700;
+            border-radius: 9999px;
+            padding: 1.25rem 3rem;
+            font-size: 1.125rem;
+            box-shadow: 
+                0 8px 32px rgba(245, 158, 11, 0.3),
+                0 4px 16px rgba(245, 158, 11, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .home-banner .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .home-banner .cta-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 16px 48px rgba(245, 158, 11, 0.4),
+                0 8px 24px rgba(245, 158, 11, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .home-banner .cta-btn:hover::before {
+            left: 100%;
+        }
+
+        .home-banner .cta-btn:active {
+            transform: translateY(-2px) scale(1.01);
+        }
+
+        /* Enhanced Hero Image */
+        .home-banner .hero-img-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 2rem;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 8px 32px rgba(245, 158, 11, 0.2);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .home-banner .hero-img-container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(135deg, var(--amber-500), var(--amber-400), var(--amber-500));
+            background-size: 200% 200%;
+            border-radius: 2.5rem;
+            animation: border-glow 4s ease-in-out infinite;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .home-banner .hero-img-container:hover .hero-img {
+            transform: scale(1.05) rotateY(5deg);
+            box-shadow: 
+                0 32px 80px rgba(0, 0, 0, 0.5),
+                0 16px 48px rgba(245, 158, 11, 0.3);
+        }
+
+        .home-banner .hero-img-container:hover::before {
+            animation: border-glow 2s ease-in-out infinite;
+        }
+
+        /* Floating Elements Animation */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(245, 158, 11, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 8s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            left: 85%;
+            animation-delay: 2s;
+            animation-duration: 10s;
+        }
+
+        .floating-element:nth-child(3) {
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+            animation-duration: 12s;
+        }
+
+        /* Enhanced Animations */
+        .animate-fade-in-down {
+            animation: fadeInDown 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .animate-fade-in-right {
+            animation: fadeInRight 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        /* Staggered Animation Delays */
+        .animate-fade-in-down[data-delay="1"] { animation-delay: 0.2s; }
+        .animate-fade-in-down[data-delay="2"] { animation-delay: 0.4s; }
+        .animate-fade-in-down[data-delay="3"] { animation-delay: 0.6s; }
+
+        .animate-fade-in-up[data-delay="1"] { animation-delay: 0.3s; }
+        .animate-fade-in-up[data-delay="2"] { animation-delay: 0.5s; }
+        .animate-fade-in-up[data-delay="3"] { animation-delay: 0.7s; }
+
+        .animate-fade-in-right[data-delay="1"] { animation-delay: 0.4s; }
+        .animate-fade-in-right[data-delay="2"] { animation-delay: 0.6s; }
+        .animate-fade-in-right[data-delay="3"] { animation-delay: 0.8s; }
+
+        /* Keyframe Animations */
+        @@keyframes fadeInDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes fadeInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @@keyframes shimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: -200% 0; }
+        }
+
+        @@keyframes float-glow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        @@keyframes border-glow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @@keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(-10px) rotate(240deg); }
+        }
+
+        /* Products Section */
+        .products-section {
+            background: linear-gradient(to right, #000, #1a202c, #000);
+            padding: 5rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--amber-300), var(--amber-400));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .section-divider {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--amber-500), var(--amber-400));
+            margin: 0 auto 1.5rem;
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: var(--medium-text);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .product-image {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 180px;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--amber-500);
+            color: var(--dark-blue);
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            color: var(--amber-400);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .product-description {
+            color: var(--medium-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            min-height: 80px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--amber-500), var(--amber-400));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-details, .btn-cart {
+            flex: 1;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-details {
+            background: transparent;
+            border: 1px solid var(--amber-500);
+            color: var(--amber-500);
+        }
+
+        .btn-details:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .btn-cart {
+            background: linear-gradient(to right, var(--amber-500), var(--amber-400));
+            color: var(--dark-blue);
+            border: none;
+        }
+
+        .btn-cart:hover {
+            background: linear-gradient(to right, var(--amber-400), var(--amber-300));
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: var(--dark-blue);
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--amber-500);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .feature-description {
+            color: var(--medium-text);
+            line-height: 1.7;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 1024px) {
+            .home-banner {
+                min-height: 80vh;
+            }
+            
+            .home-banner .cta-btn {
+                padding: 1rem 2.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .home-banner {
+                min-height: 70vh;
+                text-align: center;
+            }
+            
+            .home-banner .cta-btn {
+                padding: 0.875rem 2rem;
+                font-size: 0.95rem;
+            }
+            
+            .home-banner .hero-img-container::before {
+                display: none;
+            }
+
+            .home-banner-content .flex-container {
+                flex-direction: column;
+            }
+        }
+
+        @@media (max-width: 640px) {
+            .home-banner {
+                min-height: 60vh;
+            }
+            
+            .home-banner .cta-btn {
+                padding: 0.75rem 1.75rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Utility Classes */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+
+        .flex-item {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .mt-10 {
+            margin-top: 2.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 0.75rem;
+        }
+    </style>
 }
 
-<section class="bg-gradient-to-r from-black via-gray-900 to-black relative overflow-hidden"
-    style="background-image: url('/images/banner.jpg'); background-size: cover; background-position: center;">
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-900/50 via-gray-900 to-black opacity-60"></div>
-    <div class="container mx-auto px-6 py-20 lg:py-28 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center gap-12">
-            <div class="lg:w-1/2 text-white text-center lg:text-left">
-                <h1 data-animate="slide-in-left" class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 opacity-0">
-                    <span class="block tracking-tight">The Future of Tech</span>
-                    <span
-                        class="block bg-clip-text text-transparent bg-gradient-to-r from-amber-300 to-brand-amber mt-2">Is
-                        Here</span>
+<!-- Hero Banner -->
+<section class="home-banner">
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+    <div class="home-banner-overlay"></div>
+    <div class="home-banner-content">
+        <div class="flex-container">
+            <div class="flex-item">
+                <h1 class="animate-fade-in-down">
+                    <span class="block">Welcome to <span class="highlight">Best Store</span></span>
+                    <span class="block subtitle mt-3">Your Premium Shopping Destination</span>
                 </h1>
-                <p data-animate="slide-in-left"
-                    class="text-lg lg:text-xl text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 opacity-0 [animation-delay:0.2s]">
-                    Discover a universe of cutting-edge electronics. From powerful laptops to immersive entertainment
-                    systems, find it all at unbeatable prices.
+                <p class="description animate-fade-in-up" data-delay="1">
+                    Discover the latest in tech, fashion, and more. Shop with confidence and enjoy unbeatable prices and
+                    service.
                 </p>
-                <div data-animate="slide-in-left" class="mt-10 opacity-0 [animation-delay:0.3s]">
-                    <a href="#products"
-                        class="btn btn-primary btn-ripple animate-pulse-glow-amber !px-8 !py-4 !rounded-full !font-bold transform hover:scale-105">
-                        <span class="flex items-center"><i class="bi bi-rocket-takeoff-fill mr-2"></i>Explore Now</span>
+                <div class="mt-10 animate-fade-in-up" data-delay="2">
+                    <a href="#products" class="cta-btn">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                        <span>Shop Now</span>
                     </a>
                 </div>
             </div>
-
-            <div data-animate="slide-in-right" class="lg:w-1/2 text-center opacity-0 [animation-delay:0.4s]">
-                <div class="relative inline-block">
-                    <img src="/images/hero.png"
-                        class="relative z-10 max-w-full h-auto transition-transform duration-500 animate-bounce-gentle"
-                        alt="Assortment of modern electronic devices" />
+            <div class="flex-item animate-fade-in-right" data-delay="1">
+                <div class="hero-img-container">
+                    <img src="/images/hero.png" class="hero-img" alt="Assortment of modern electronic devices" />
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section id="products" class="bg-gradient-to-r from-black via-gray-900 to-black py-16 lg:py-24">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-14">
-            <h2 data-animate="fade-in-up" class="text-3xl md:text-4xl font-bold text-white mb-4 opacity-0">
-                Newest Arrivals
-            </h2>
-            <div data-animate="fade-in-up"
-                class="w-28 h-1 bg-gradient-to-r from-brand-amber to-amber-500 mx-auto rounded-full opacity-0 [animation-delay:0.1s]">
-            </div>
+<!-- Products Section -->
+<section id="products" class="products-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Newest Arrivals</h2>
+            <div class="section-divider"></div>
+            <p class="section-subtitle">
+                Discover our premium selection of cutting-edge products. 
+                All products come with quality assurance and excellent service.
+            </p>
         </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+        
+        <div class="products-grid">
             @{
-                string[] delays = { "[animation-delay:0.1s]", "[animation-delay:0.2s]", "[animation-delay:0.3s]",
-                        "[animation-delay:0.4s]" };
                 int cardIndex = 0;
             }
             @foreach (var product in Model)
             {
-                <div data-animate="fade-in-up" class="card h-full flex flex-col opacity-0 @delays[cardIndex % 4]">
-                    <div class="bg-gray-800 rounded-t-2xl overflow-hidden group">
-                        <div class="relative p-4 bg-black/20">
-                            <div class="aspect-square flex items-center justify-center overflow-hidden rounded-xl">
-                                <img src="/products/@product.ImageFileName"
-                                    class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
-                                    alt="@product.Name" />
-                            </div>
-                        </div>
-
-                        <div class="p-6 flex-1 flex flex-col bg-gray-800 rounded-b-2xl">
-                            <h3
-                                class="text-lg font-bold text-white mb-2 group-hover:text-brand-amber transition-colors duration-300 line-clamp-2 leading-tight">
-                                @product.Name
-                            </h3>
-                            <p class="text-sm text-gray-400 mb-4">
-                                By <span class="font-medium text-gray-300">@product.Brand</span>
-                            </p>
-
-                            <div class="my-auto pt-2 pb-4">
-                                <span
-                                    class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-amber-300 to-brand-amber">
-                                    $@product.Price.ToString("N2")
-                                </span>
-                            </div>
-
-                            <div class="mt-auto space-y-3">
-                                <a class="block w-full bg-gray-700 btn-ripple text-white text-center py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-gray-600 transform hover:-translate-y-1"
-                                    asp-controller="Store" asp-action="Details" asp-route-id="@product.Id">
-                                    <i class="bi bi-eye mr-2"></i>View Details
-                                </a>
-                                <button type="button"
-                                    class="w-full bg-gradient-to-r from-brand-amber to-amber-600 btn-ripple text-black py-3 rounded-xl font-bold transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20 transform hover:-translate-y-1"
-                                    onclick="addToCart(this, @product.Id)">
-                                    <span class="flex items-center justify-center">
-                                        <span class="button-text">Add to Cart</span>
-                                        <i class="bi bi-cart-plus ml-2 text-lg"></i>
-                                    </span>
+                <div class="product-card animate-fade-in-up" data-delay="@(cardIndex % 4)">
+                    <div class="product-image">
+                        <img src="/products/@product.ImageFileName" alt="@product.Name">
+                        @if (cardIndex == 0)
+                        {
+                            <span class="product-badge">New</span>
+                        }
+                        else if (cardIndex == 1)
+                        {
+                            <span class="product-badge">Best Seller</span>
+                        }
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">@product.Category</span>
+                        <h3 class="product-title">@product.Name</h3>
+                        <p class="product-description">
+                            By <strong>@product.Brand</strong> - @product.Description
+                        </p>
+                        <div class="product-price">$@product.Price.ToString("N2")</div>
+                        <div class="product-actions">
+                            <a href="@Url.Action("Details", "Store", new { id = product.Id })" class="btn-details">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                            @if (User.IsInRole("client"))
+                            {
+                                <button class="btn-cart" onclick="addToCart(this, @product.Id)">
+                                    <i class="bi bi-cart-plus"></i> Add
                                 </button>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -107,29 +731,115 @@
     </div>
 </section>
 
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>Why Choose Us</h2>
+            <div class="section-divider"></div>
+            <p class="section-subtitle">
+                We're committed to providing the best shopping experience for our customers
+            </p>
+        </div>
+        
+        <div class="features-container">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <h3 class="feature-title">Fast Shipping</h3>
+                <p class="feature-description">
+                    Get your products delivered quickly with our reliable shipping service. 
+                    Free shipping on orders over $50.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3 class="feature-title">Quality Assurance</h3>
+                <p class="feature-description">
+                    All products are carefully selected and tested to ensure the highest quality 
+                    and customer satisfaction.
+                </p>
+            </div>
+            
+            <!-- <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <h3 class="feature-title">24/7 Support</h3>
+                <p class="feature-description">
+                    Our customer support team is available around the clock to assist you 
+                    with any questions or concerns.
+                </p>
+            </div> -->
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
+                <h3 class="feature-title">Easy Returns</h3>
+                <p class="feature-description">
+                    Not satisfied? Return within 30 days for a full refund. 
+                    We make returns simple and hassle-free.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation for product cards on scroll
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const animation = entry.target.getAttribute('data-animate');
-                        if (animation) {
-                            entry.target.classList.add(`animate-${animation}`);
-                        }
-                        observer.unobserve(entry.target);
+                        entry.target.style.opacity = "1";
+                        entry.target.style.transform = "translateY(0)";
                     }
                 });
-            }, observerOptions);
-
-            document.querySelectorAll('[data-animate]').forEach(el => {
-                observer.observe(el);
+            }, {
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('.product-card').forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Add to cart animation
+            document.querySelectorAll('.btn-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Animation effect
+                    const originalContent = this.innerHTML;
+                    this.innerHTML = '<i class="bi bi-check"></i> Added';
+                    this.style.background = 'linear-gradient(to right, #10b981, #34d399)';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalContent;
+                        this.style.background = 'linear-gradient(to right, #f59e0b, #fbbf24)';
+                    }, 1500);
+                });
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
             });
         });
     </script>
+
 }

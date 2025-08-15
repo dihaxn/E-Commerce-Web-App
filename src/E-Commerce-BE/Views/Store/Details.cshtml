@@ -1,20 +1,140 @@
 ﻿@model Product
 
-<div class="container mx-auto px-4 py-12">
-    <div class="card">
+@section Styles {
+    <style>
+        /* ---------- Page background & fonts ---------- */
+        body {
+            background: linear-gradient(180deg, #0f1724 0%, #071026 100%);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: #e6eef8;
+        }
+
+        /* ---------- Card / background ---------- */
+        .card-details {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.6), rgba(30, 41, 59, 0.45));
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.06);
+            overflow: hidden;
+        }
+
+        /* ---------- Product image ---------- */
+        .product-image-container img {
+            transition: transform 420ms cubic-bezier(.2, .9, .3, 1), filter 420ms;
+            backface-visibility: hidden;
+        }
+
+        .product-image-container:hover img {
+            transform: scale(1.06);
+            filter: saturate(1.05) contrast(1.02);
+        }
+
+        /* ---------- Price pop animation ---------- */
+        @@keyframes pricePop {
+            0% {
+                transform: translateY(6px) scale(0.98);
+                opacity: 0;
+            }
+
+            60% {
+                transform: translateY(-2px) scale(1.06);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .animate-price-pop {
+            display: inline-block;
+            animation: pricePop 520ms cubic-bezier(.175, .885, .32, 1.275);
+        }
+
+        /* ---------- Badge subtle pulse ---------- */
+        @@keyframes badgePulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            }
+
+            70% {
+                transform: scale(1.03);
+                box-shadow: 0 8px 30px rgba(99, 102, 241, 0.06);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            }
+        }
+
+        .badge-stock {
+            animation: badgePulse 3000ms ease-in-out infinite;
+            opacity: .95;
+        }
+
+        /* ---------- Button micro interactions ---------- */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ripple::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0;
+            transition: transform 450ms ease-out, opacity 450ms;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .btn-ripple.ripple-on::after {
+            transform: translate(-50%, -50%) scale(120);
+            opacity: 0;
+        }
+
+        /* ---------- Toast subtle fade ---------- */
+        #site-toast {
+            transition: opacity 300ms ease;
+        }
+
+        #site-toast.opacity-0 {
+            opacity: 0;
+        }
+    </style>
+}
+
+<div class="container mx-auto px-4 py-12 max-w-6xl">
+    <div class="card-details rounded-2xl shadow-xl">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center p-8">
             <!-- Product Image -->
-            <div class="rounded-xl overflow-hidden">
-                <img src="/products/@Model.ImageFileName" class="w-full h-auto object-contain" alt="@Model.Name" />
+            <div
+                class="product-image-container rounded-xl overflow-hidden group flex items-center justify-center bg-slate-800/30 p-6">
+                <img src="/products/@Model.ImageFileName" class="w-full max-h-[520px] object-contain"
+                    alt="@Model.Name" />
             </div>
 
             <!-- Product Details -->
             <div>
-                <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">@Model.Name</h1>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight tracking-tight">@Model.Name
+                </h1>
 
                 <div class="flex items-center space-x-4 mb-6">
-                    <span class="text-4xl font-bold text-amber-400">@Model.Price.ToString("C")</span>
-                    <span class="badge badge-success">In Stock</span>
+                    <span id="price"
+                        class="text-4xl font-bold text-amber-400 animate-price-pop">@Model.Price.ToString("C")</span>
+                    <span
+                        class="badge-stock badge badge-success px-3 py-1 rounded-full transition-shadow duration-300 hover:shadow-md transform hover:-translate-y-0.5">In
+                        Stock</span>
                 </div>
 
                 <div class="space-y-4 text-gray-300 mb-8">
@@ -24,7 +144,7 @@
                     </div>
                     <div class="flex items-center">
                         <span class="font-semibold text-gray-400 w-24">Category:</span>
-                        <span class="badge badge-info">@Model.Category</span>
+                        <span class="badge badge-info inline-block px-3 py-1 rounded">@Model.Category</span>
                     </div>
                 </div>
 
@@ -32,11 +152,56 @@
                     @Model.Description
                 </div>
 
-                <button type="button" class="btn btn-primary btn-lg w-full" onclick="addToCart(this, @Model.Id)">
-                    <i class="bi bi-cart-plus-fill"></i>
-                    Add to Cart
-                </button>
+                @if (User.IsInRole("client"))
+                {
+                    <button id="addToCartBtn" type="button"
+                        class="btn btn-primary btn-lg w-full py-4 text-lg flex items-center justify-center gap-3 transform transition-all duration-300 hover:scale-[1.02] active:translate-y-0.5 btn-ripple"
+                        onclick="addToCartWithEffect(this, @Model.Id)">
+                        <i class="bi bi-cart-plus-fill text-xl"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                }
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function addToCartWithEffect(btn, id) {
+            if (!btn) return;
+
+            // Call original addToCart from cart.js
+            addToCart(btn, id);
+
+            // visual ripple (uses CSS pseudo-element)
+            btn.classList.add('ripple-on');
+            setTimeout(() => btn.classList.remove('ripple-on'), 500);
+
+            // price pulse animation when adding to cart
+            const priceEl = document.getElementById('price');
+            if (priceEl) {
+                priceEl.classList.remove('animate-price-pop');
+                void priceEl.offsetWidth; // reflow to restart animation
+                priceEl.classList.add('animate-price-pop');
+            }
+
+            // small success toast (in-page)
+            showToast('Added to cart');
+        }
+
+        function showToast(message) {
+            const existing = document.getElementById('site-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'site-toast';
+            toast.className = 'fixed bottom-6 right-6 bg-gray-800 text-white py-3 px-4 rounded-lg shadow-lg backdrop-blur-sm border border-gray-700';
+            toast.style.zIndex = 9999;
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('opacity-0'), 1800);
+            setTimeout(() => toast.remove(), 2300);
+        }
+    </script>
+}

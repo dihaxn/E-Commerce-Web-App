@@ -25,28 +25,29 @@ namespace E_Commerce_BE.Controllers
             List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
             decimal subtotal = CartHelper.GetSubtotal(cartItems);
 
+            var model = new CartViewModel
+            {
+                CartItems = cartItems,
+                Subtotal = subtotal,
+                ShippingFee = shippingFee,
+                Total = subtotal + shippingFee
+            };
 
-            ViewBag.CartItems = cartItems;
-            ViewBag.ShippingFee = shippingFee;
-            ViewBag.Subtotal = subtotal;
-            ViewBag.Total = subtotal + shippingFee;
-
-            return View();
+            return View(model);
         }
 
 
         [Authorize]
         [HttpPost]
-        public IActionResult Index(CheckoutDto model)
+        public IActionResult Index(CartViewModel model)
         {
             List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
             decimal subtotal = CartHelper.GetSubtotal(cartItems);
 
-
-            ViewBag.CartItems = cartItems;
-            ViewBag.ShippingFee = shippingFee;
-            ViewBag.Subtotal = subtotal;
-            ViewBag.Total = subtotal + shippingFee;
+            model.CartItems = cartItems;
+            model.Subtotal = subtotal;
+            model.ShippingFee = shippingFee;
+            model.Total = subtotal + shippingFee;
 
             if (!ModelState.IsValid)
             {
@@ -56,14 +57,12 @@ namespace E_Commerce_BE.Controllers
             // Check if shopping cart is empty or not
             if (cartItems.Count == 0)
             {
-                ViewBag.ErrorMessage = "Your cart is empty";
+                ModelState.AddModelError(string.Empty, "Your cart is empty");
                 return View(model);
             }
 
-
             TempData["DeliveryAddress"] = model.DeliveryAddress;
             TempData["PaymentMethod"] = model.PaymentMethod;
-
 
             if (model.PaymentMethod == "paypal" || model.PaymentMethod == "credit_card")
             {

@@ -2,22 +2,22 @@
     ViewData["Title"] = "About Us";
 }
 
-<div class="py-20 px-4 sm:px-6 lg:px-8">
+<div class="py-12 px-4 sm:px-6 lg:px-8 md:py-20">
     <div class="max-w-7xl mx-auto">
         <div class="text-center">
-            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl animate-fade-in-down">
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl animate-fade-in-down">
                 About <span class="text-amber-400">Best Store</span>
             </h1>
-            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-400 animate-fade-in-up">
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-400 sm:text-xl animate-fade-in-up">
                 Your one-stop destination for premium products and an unparalleled shopping experience.
             </p>
         </div>
 
-        <div class="mt-20">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div class="mt-24 md:mt-32">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <div class="space-y-8">
                     <div>
-                        <h2 class="text-3xl font-bold text-white">Our Mission</h2>
+                        <h2 class="text-3xl font-bold text-white lg:text-4xl">Our Mission</h2>
                         <p class="mt-4 text-lg text-gray-400">
                             At Best Store, our mission is to redefine the online shopping landscape by offering a
                             curated selection of high-quality products that blend innovation, style, and affordability.
@@ -26,7 +26,7 @@
                         </p>
                     </div>
                     <div>
-                        <h2 class="text-3xl font-bold text-white">Our Vision</h2>
+                        <h2 class="text-3xl font-bold text-white lg:text-4xl">Our Vision</h2>
                         <p class="mt-4 text-lg text-gray-400">
                             We envision a world where everyone has access to the products that enhance their lives. We
                             aim to be a trusted global brand, known not just for our products, but for our commitment to
@@ -34,20 +34,23 @@
                         </p>
                     </div>
                 </div>
-                <div class="relative flex items-center justify-center">
-                    <div class="absolute inset-0 bg-gradient-to-r from-amber-500 to-purple-600 rounded-lg transform -rotate-3"></div>
+                <div class="relative flex items-center justify-center min-h-[250px] sm:min-h-[300px]">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-amber-500 to-purple-600 rounded-lg transform -rotate-3">
+                    </div>
                     <div class="relative card p-8 transform rotate-1 hover:rotate-0 transition-transform duration-300">
-                        <i class="bi bi-gem text-8xl text-amber-400"></i>
+                        <i class="bi bi-gem text-7xl sm:text-8xl text-amber-400"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mt-24">
-            <h2 class="text-3xl font-bold text-center text-white">Why Choose Us?</h2>
-            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div class="mt-20 md:mt-24">
+            <h2 class="text-3xl font-bold text-center text-white lg:text-4xl">Why Choose Us?</h2>
+            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="card-hover p-8 text-center">
-                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-amber-500/20 text-amber-400 mx-auto mb-6">
+                    <div
+                        class="flex items-center justify-center h-16 w-16 rounded-full bg-amber-500/20 text-amber-400 mx-auto mb-6">
                         <i class="bi bi-patch-check-fill text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-white">Quality Guaranteed</h3>
@@ -56,7 +59,8 @@
                     </p>
                 </div>
                 <div class="card-hover p-8 text-center">
-                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-amber-500/20 text-amber-400 mx-auto mb-6">
+                    <div
+                        class="flex items-center justify-center h-16 w-16 rounded-full bg-amber-500/20 text-amber-400 mx-auto mb-6">
                         <i class="bi bi-truck text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-white">Fast & Free Shipping</h3>
@@ -64,8 +68,9 @@
                         Reliable shipping on all orders, ensuring your products arrive promptly.
                     </p>
                 </div>
-                <div class="card-hover p-8 text-center">
-                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-amber-500/20 text-amber-400 mx-auto mb-6">
+                <div class="card-hover p-8 text-center sm:col-span-2 lg:col-span-1">
+                    <div
+                        class="flex items-center justify-center h-16 w-16 rounded-full bg-amber-500/20 text-amber-400 mx-auto mb-6">
                         <i class="bi bi-headset text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-white">24/7 Support</h3>

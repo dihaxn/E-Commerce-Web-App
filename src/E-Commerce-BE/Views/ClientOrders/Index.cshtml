@@ -47,7 +47,7 @@
 
 <div class="container mx-auto p-4 md:p-8">
     <div class="text-center mb-12">
-        <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl animate-fade-in-down">
+        <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl animate-fade-in-down">
             My Orders
         </h1>
     </div>
@@ -70,17 +70,17 @@
     }
     else
     {
-        <div class="table-container bg-gray-900 rounded-lg shadow-lg overflow-hidden">
-            <table class="table w-full text-left text-gray-300">
+        <div class="table-container bg-gray-900 rounded-lg shadow-lg overflow-x-auto">
+            <table class="table w-full text-left text-gray-300 min-w-[800px]">
                 <thead class="bg-gray-800/50 text-gray-400 uppercase text-sm">
                     <tr>
-                        <th class="p-4">Units</th>
-                        <th class="p-4">Total</th>
-                        <th class="p-4">Payment Method</th>
-                        <th class="p-4">Payment Status</th>
-                        <th class="p-4">Order Status</th>
-                        <th class="p-4">Date</th>
-                        <th class="p-4"></th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Units</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Total</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Payment Method</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Payment Status</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Order Status</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Date</th>
+                        <th class="p-3 md:p-4"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,14 +90,14 @@
                         decimal total = order.ShippingFee + order.Items.Sum(item => item.Quantity * item.UnitPrice);
 
                         <tr class="border-t border-gray-700 hover:bg-gray-800/60 transition-colors">
-                            <td class="p-4">@count</td>
-                            <td class="p-4 font-semibold text-white">@total.ToString("C")</td>
-                            <td class="p-4">@order.PaymentMethod</td>
-                            <td class="p-4"><span class="badge @GetPaymentBadge(order.PaymentStatus)">@order.PaymentStatus</span></td>
-                            <td class="p-4"><span class="badge @GetOrderBadge(order.OrderStatus)">@order.OrderStatus</span></td>
-                            <td class="p-4">@order.CreatedAt.ToString("MM/dd/yyyy")</td>
-                            <td class="p-4 text-right">
-                                <a class="btn btn-outline btn-sm" asp-controller="ClientOrders" asp-action="Details"
+                            <td class="p-3 md:p-4">@count</td>
+                            <td class="p-3 md:p-4 font-semibold text-white whitespace-nowrap">@total.ToString("C")</td>
+                            <td class="p-3 md:p-4 whitespace-nowrap">@order.PaymentMethod</td>
+                            <td class="p-3 md:p-4 whitespace-nowrap"><span class="badge @GetPaymentBadge(order.PaymentStatus)">@order.PaymentStatus</span></td>
+                            <td class="p-3 md:p-4 whitespace-nowrap"><span class="badge @GetOrderBadge(order.OrderStatus)">@order.OrderStatus</span></td>
+                            <td class="p-3 md:p-4 whitespace-nowrap">@order.CreatedAt.ToString("MM/dd/yyyy")</td>
+                            <td class="p-3 md:p-4 text-right">
+                                <a class="btn btn-outline btn-sm whitespace-nowrap" asp-controller="ClientOrders" asp-action="Details"
                                    asp-route-id="@order.Id">
                                     <i class="bi bi-receipt"></i> Details
                                 </a>

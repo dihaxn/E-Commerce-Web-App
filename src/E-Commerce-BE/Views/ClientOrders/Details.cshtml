@@ -52,20 +52,21 @@
     </a>
 
     <div class="text-center mb-12">
+        <!-- This heading is already responsive -->
         <h1 class="text-4xl sm:text-5xl font-extrabold text-white">Order Details</h1>
     </div>
 
     <div class="bg-gray-900/70 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl">
         <h4 class="text-2xl font-bold text-white mb-6">Order Information</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-gray-300">
-            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-36 flex-shrink-0">Order ID:</span> <span class="text-white">@Model.Id</span></div>
-            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-36 flex-shrink-0">Order Date:</span> <span class="text-white">@Model.CreatedAt.ToString("MMMM dd, yyyy")</span></div>
-            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-36 flex-shrink-0">Payment Method:</span> <span class="text-white">@Model.PaymentMethod</span></div>
-            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-36 flex-shrink-0">Delivery Address:</span> <span class="text-white">@Model.DeliveryAddress</span></div>
-            <div class="flex items-center"><span class="font-semibold text-gray-400 w-36 flex-shrink-0">Payment Status:</span>
+            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-full sm:w-36 flex-shrink-0">Order ID:</span> <span class="text-white">@Model.Id</span></div>
+            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-full sm:w-36 flex-shrink-0">Order Date:</span> <span class="text-white">@Model.CreatedAt.ToString("MMMM dd, yyyy")</span></div>
+            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-full sm:w-36 flex-shrink-0">Payment Method:</span> <span class="text-white">@Model.PaymentMethod</span></div>
+            <div class="flex flex-col sm:flex-row"><span class="font-semibold text-gray-400 w-full sm:w-36 flex-shrink-0">Delivery Address:</span> <span class="text-white">@Model.DeliveryAddress</span></div>
+            <div class="flex items-center"><span class="font-semibold text-gray-400 w-full sm:w-36 flex-shrink-0">Payment Status:</span>
                 <span class="badge @GetPaymentBadge(Model.PaymentStatus)">@Model.PaymentStatus</span>
             </div>
-            <div class="flex items-center"><span class="font-semibold text-gray-400 w-36 flex-shrink-0">Order Status:</span>
+            <div class="flex items-center"><span class="font-semibold text-gray-400 w-full sm:w-36 flex-shrink-0">Order Status:</span>
                 <span class="badge @GetOrderBadge(Model.OrderStatus)">@Model.OrderStatus</span>
             </div>
         </div>
@@ -73,40 +74,44 @@
 
     <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         
-        <div class="table-container bg-gray-900/70 border border-white/10 rounded-2xl shadow-lg overflow-hidden backdrop-blur-xl lg:col-span-2">
-            <table class="table w-full text-left text-gray-300">
-                <thead class="bg-gray-800/50 text-gray-400 uppercase text-sm">
-                    <tr>
-                        <th class="p-4" colspan="2">Product</th>
-                        <th class="p-4 text-center">Units</th>
-                        <th class="p-4 text-right">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        decimal subtotal = 0;
-                        foreach (var item in Model.Items)
-                        {
-                            subtotal += item.UnitPrice * item.Quantity;
-                            <tr class="border-b border-gray-700 last:border-b-0">
-                                <td class="p-4 w-24">
-                                    <img src="/products/@item.Product.ImageFileName" class="rounded-lg w-20 h-20 object-contain" alt="@item.Product.Name" />
-                                </td>
-                                <td class="p-4">
-                                    <a class="text-white hover:text-amber-400 font-semibold" asp-controller="Store"
-                                       asp-action="Details" asp-route-id="@item.Product.Id">
-                                        @item.Product.Name
-                                    </a>
-                                    <div class="text-sm text-gray-400">@item.Product.Category</div>
-                                    <div class="text-sm text-gray-500">@item.UnitPrice.ToString("C")</div>
-                                </td>
-                                <td class="p-4 text-center">@item.Quantity</td>
-                                <td class="p-4 text-right font-semibold text-white">@((item.UnitPrice * item.Quantity).ToString("C"))</td>
-                            </tr>
+        <div class="bg-gray-900/70 border border-white/10 rounded-2xl shadow-lg backdrop-blur-xl lg:col-span-2">
+            <!-- CHANGED: Added a wrapper div to allow horizontal scrolling on mobile -->
+            <div class="overflow-x-auto">
+                <!-- CHANGED: Added a min-width to prevent the table from collapsing too much -->
+                <table class="table w-full text-left text-gray-300 min-w-[700px]">
+                    <thead class="bg-gray-800/50 text-gray-400 uppercase text-sm">
+                        <tr>
+                            <th class="p-4 whitespace-nowrap" colspan="2">Product</th>
+                            <th class="p-4 text-center whitespace-nowrap">Units</th>
+                            <th class="p-4 text-right whitespace-nowrap">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            decimal subtotal = 0;
+                            foreach (var item in Model.Items)
+                            {
+                                subtotal += item.UnitPrice * item.Quantity;
+                                <tr class="border-b border-gray-700 last:border-b-0">
+                                    <td class="p-4 w-24">
+                                        <img src="/products/@item.Product.ImageFileName" class="rounded-lg w-20 h-20 object-contain" alt="@item.Product.Name" />
+                                    </td>
+                                    <td class="p-4">
+                                        <a class="text-white hover:text-amber-400 font-semibold" asp-controller="Store"
+                                           asp-action="Details" asp-route-id="@item.Product.Id">
+                                            @item.Product.Name
+                                        </a>
+                                        <div class="text-sm text-gray-400">@item.Product.Category</div>
+                                        <div class="text-sm text-gray-500">@item.UnitPrice.ToString("C")</div>
+                                    </td>
+                                    <td class="p-4 text-center">@item.Quantity</td>
+                                    <td class="p-4 text-right font-semibold text-white whitespace-nowrap">@((item.UnitPrice * item.Quantity).ToString("C"))</td>
+                                </tr>
+                            }
                         }
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="w-full bg-gray-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">

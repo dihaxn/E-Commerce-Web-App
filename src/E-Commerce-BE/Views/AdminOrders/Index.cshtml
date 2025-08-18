@@ -4,29 +4,53 @@
     var orders = ViewBag.Orders as List<Order>;
 
     var paymentBadges = new Dictionary<string, string>
-{
-{ "pending", "badge-warning" },
-{ "accepted", "badge-success" },
-{ "canceled", "badge-secondary" }
-};
+    {
+        { "pending", "badge-warning" },
+        { "accepted", "badge-success" },
+        { "canceled", "badge-secondary" }
+    };
     string GetPaymentBadge(string status) => paymentBadges.GetValueOrDefault(status, "badge-secondary");
 
     var orderBadges = new Dictionary<string, string>
-{
-{ "created", "badge-warning" },
-{ "accepted", "badge-success" },
-{ "shipped", "badge-info" },
-{ "delivered", "badge-success" },
-{ "returned", "badge-secondary" },
-{ "canceled", "badge-danger" },
-{ "deleted", "badge-secondary" }
-};
+    {
+        { "created", "badge-warning" },
+        { "accepted", "badge-success" },
+        { "shipped", "badge-info" },
+        { "delivered", "badge-success" },
+        { "returned", "badge-secondary" },
+        { "canceled", "badge-danger" }
+    };
     string GetOrderBadge(string status) => orderBadges.GetValueOrDefault(status, "badge-secondary");
+}
+
+@section Styles {
+    <!-- ADDED: CSS for status badges -->
+    <style>
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: .75em;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.375rem;
+            text-transform: capitalize;
+        }
+
+        .badge-success { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .badge-warning { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-info { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .badge-secondary { background-color: rgba(107, 114, 128, 0.2); color: #6b7280; }
+    </style>
 }
 
 <div class="container mx-auto p-4 md:p-8">
     <div class="text-center mb-12">
-        <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl animate-fade-in-down">
+        <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl animate-fade-in-down">
             <i class="bi bi-receipt-cutoff"></i> Order Management
         </h1>
     </div>
@@ -41,19 +65,21 @@
     }
     else
     {
-        <div class="table-container bg-gray-900 rounded-lg shadow-lg overflow-hidden">
-            <table class="table w-full text-left text-gray-300">
-                <thead class="bg-gray-900 text-gray-400 uppercase text-sm">
+        <!-- CHANGED: Added overflow-x-auto for horizontal scrolling on small screens -->
+        <div class="table-container bg-gray-900 rounded-lg shadow-lg overflow-x-auto">
+            <!-- CHANGED: Added a min-width to the table to ensure proper spacing -->
+            <table class="table w-full text-left text-gray-300 min-w-[1000px]">
+                <thead class="bg-gray-800/50 text-gray-400 uppercase text-sm">
                     <tr>
-                        <th class="p-4">ID</th>
-                        <th class="p-4">Client</th>
-                        <th class="p-4">Units</th>
-                        <th class="p-4">Total</th>
-                        <th class="p-4">Payment Method</th>
-                        <th class="p-4">Payment Status</th>
-                        <th class="p-4">Order Status</th>
-                        <th class="p-4">Date</th>
-                        <th class="p-4">Actions</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">ID</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Client</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Units</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Total</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Payment Method</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Payment Status</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Order Status</th>
+                        <th class="p-3 md:p-4 whitespace-nowrap">Date</th>
+                        <th class="p-3 md:p-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,19 +88,18 @@
                         int count = order.Items.Sum(item => item.Quantity);
                         decimal total = order.ShippingFee + order.Items.Sum(item => item.Quantity * item.UnitPrice);
 
-                        <tr class="border-t border-gray-700 hover:bg-gray-700/50 transition-colors">
-                            <td class="p-4">@order.Id</td>
-                            <td class="p-4">@(order.Client.FirstName + " " + order.Client.LastName)</td>
-                            <td class="p-4">@count</td>
-                            <td class="p-4 font-semibold">@total.ToString("C")</td>
-                            <td class="p-4">@order.PaymentMethod</td>
-                            <td class="p-4"><span
-                                    class="badge @GetPaymentBadge(order.PaymentStatus)">@order.PaymentStatus</span></td>
-                            <td class="p-4"><span class="badge @GetOrderBadge(order.OrderStatus)">@order.OrderStatus</span></td>
-                            <td class="p-4">@order.CreatedAt.ToString("MMM dd, yyyy")</td>
-                            <td class="p-4">
-                                <a class="btn btn-outline btn-sm" asp-controller="AdminOrders" asp-action="Details"
-                                    asp-route-id="@order.Id">
+                        <tr class="border-t border-gray-700 hover:bg-gray-800/60 transition-colors">
+                            <td class="p-3 md:p-4">@order.Id</td>
+                            <td class="p-3 md:p-4 whitespace-nowrap">@(order.Client.FirstName + " " + order.Client.LastName)</td>
+                            <td class="p-3 md:p-4">@count</td>
+                            <td class="p-3 md:p-4 font-semibold whitespace-nowrap">@total.ToString("C")</td>
+                            <td class="p-3 md:p-4 whitespace-nowrap">@order.PaymentMethod</td>
+                            <td class="p-3 md:p-4 whitespace-nowrap"><span class="badge @GetPaymentBadge(order.PaymentStatus)">@order.PaymentStatus</span></td>
+                            <td class="p-3 md:p-4 whitespace-nowrap"><span class="badge @GetOrderBadge(order.OrderStatus)">@order.OrderStatus</span></td>
+                            <td class="p-3 md:p-4 whitespace-nowrap">@order.CreatedAt.ToString("MMM dd, yyyy")</td>
+                            <td class="p-3 md:p-4">
+                                <a class="btn btn-outline btn-sm whitespace-nowrap" asp-controller="AdminOrders" asp-action="Details"
+                                   asp-route-id="@order.Id">
                                     <i class="bi bi-pencil-square"></i> Details
                                 </a>
                             </td>
@@ -90,7 +115,7 @@
                 {
                     <li>
                         <a class="pagination-link @(i == ViewBag.PageIndex ? "pagination-active" : "")"
-                            asp-route-pageIndex="@i">
+                           asp-route-pageIndex="@i">
                             @i
                         </a>
                     </li>

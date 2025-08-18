@@ -48,19 +48,25 @@
     </div>
 
     @if (products == null || !products.Any())
-    {
-        <div class="text-center py-16">
-            <i class="bi bi-emoji-frown text-6xl text-gray-600"></i>
-            <h3 class="mt-4 text-2xl font-semibold text-white">No Products Found</h3>
-            <p class="mt-2 text-gray-400">
-                Your search for "@Model.Search" in "@(string.IsNullOrEmpty(Model.Category) ? "all categories" :
-                            Model.Category)" did not match any products.
-            </p>
-            <a asp-action="Index" asp-controller="Store" class="btn btn-primary mt-6">
-                <i class="bi bi-arrow-clockwise"></i> Reset Search
-            </a>
-        </div>
-    }
+        {
+            <div class="text-center py-16">
+                <i class="bi bi-emoji-frown text-6xl text-gray-600"></i>
+                <h3 class="mt-4 text-2xl font-semibold text-white">No Products Found</h3>
+                <p class="mt-2 text-gray-400">
+                    @if (!string.IsNullOrWhiteSpace(Model.Search))
+                    {
+                        <span>Your search for "<strong>@Model.Search</strong>" in "@(string.IsNullOrEmpty(Model.Category) ? "all categories" : Model.Category)" did not match any products.</span>
+                    }
+                    else
+                    {
+                        <span>No products found in @((string.IsNullOrEmpty(Model.Category) ? "all categories" : Model.Category))</span>
+                    }
+                </p>
+                <a asp-action="Index" asp-controller="Store" class="btn btn-primary mt-6">
+                    <i class="bi bi-arrow-clockwise"></i> Reset Search
+                </a>
+            </div>
+        }
     else
     {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

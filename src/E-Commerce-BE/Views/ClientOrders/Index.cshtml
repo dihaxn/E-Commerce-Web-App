@@ -29,7 +29,10 @@
         </h1>
     </div>
 
-    @if (!ViewBag.Orders.Any())
+    @{
+        var orders = ViewBag.Orders as List<E_Commerce_BE.Models.Order>;
+    }
+    @if (orders == null || !orders.Any())
     {
         <div class="text-center py-16">
             <i class="bi bi-box-seam text-6xl text-gray-600"></i>

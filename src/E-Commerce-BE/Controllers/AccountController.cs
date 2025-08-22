@@ -10,22 +10,23 @@ namespace E_Commerce_BE.Controllers
 {
     public class AccountController : Controller
     {
-
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
+        private readonly RateLimitingService rateLimitingService;
 
         public AccountController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+            SignInManager<ApplicationUser> signInManager, IConfiguration configuration,
+            RateLimitingService rateLimitingService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
+            this.rateLimitingService = rateLimitingService;
         }
 
         public IActionResult Register()
         {
-
             if (signInManager.IsSignedIn(User))
             {
                 return RedirectToAction("Index", "Home");
@@ -34,6 +35,7 @@ namespace E_Commerce_BE.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             if (signInManager.IsSignedIn(User))
@@ -41,9 +43,24 @@ namespace E_Commerce_BE.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-
             if (!ModelState.IsValid)
             {
+                return View(registerDto);
+            }
+
+            // Rate limiting check
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            if (rateLimitingService.IsRateLimited(clientIp, "register"))
+            {
+                ModelState.AddModelError("", "Too many registration attempts. Please try again later.");
+                return View(registerDto);
+            }
+
+            // Check if email already exists
+            var existingUser = await userManager.FindByEmailAsync(registerDto.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Email", "Email address is already registered.");
                 return View(registerDto);
             }
 
@@ -56,21 +73,17 @@ namespace E_Commerce_BE.Controllers
                 Email = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber,
                 Address = registerDto.Address,
-                CreateAt = DateTime.Now,
+                CreateAt = DateTime.UtcNow,
             };
 
             var result = await userManager.CreateAsync(user, registerDto.Password);
 
-
             if (result.Succeeded)
             {
-
                 await userManager.AddToRoleAsync(user, "client");
-
                 await signInManager.SignInAsync(user, false);
 
                 return RedirectToAction("Index", "Home");
-
             }
 
             foreach (var error in result.Errors)
@@ -86,14 +99,11 @@ namespace E_Commerce_BE.Controllers
             if (signInManager.IsSignedIn(User))
             {
                 await signInManager.SignOutAsync();
-
             }
             return RedirectToAction("Index", "Home");
         }
 
-
         public IActionResult Login()
-
         {
             if (signInManager.IsSignedIn(User))
             {
@@ -102,16 +112,33 @@ namespace E_Commerce_BE.Controllers
             return View();
         }
 
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             if (signInManager.IsSignedIn(User))
             {
                 return RedirectToAction("Index", "Home");
             }
+
             if (!ModelState.IsValid)
             {
+                return View(loginDto);
+            }
+
+            // Rate limiting check
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            if (rateLimitingService.IsRateLimited(clientIp, "login"))
+            {
+                var status = rateLimitingService.GetRateLimitStatus(clientIp, "login");
+                if (status.IsLockedOut)
+                {
+                    ViewBag.ErrorMessage = $"Account temporarily locked due to too many failed attempts. Please try again in {status.TimeUntilReset.Minutes} minutes.";
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = $"Too many login attempts. {status.RemainingAttempts} attempts remaining.";
+                }
                 return View(loginDto);
             }
 
@@ -119,17 +146,28 @@ namespace E_Commerce_BE.Controllers
 
             if (result.Succeeded)
             {
+                // Reset rate limiting on successful login
+                rateLimitingService.RecordSuccessfulAttempt(clientIp, "login");
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-
-                ViewBag.ErrorMessage = "Invalid login attempt. Please try again.";
+                // Record failed attempt
+                rateLimitingService.RecordFailedAttempt(clientIp, "login");
+                
+                var status = rateLimitingService.GetRateLimitStatus(clientIp, "login");
+                if (status.IsLockedOut)
+                {
+                    ViewBag.ErrorMessage = $"Account temporarily locked due to too many failed attempts. Please try again in {status.TimeUntilReset.Minutes} minutes.";
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = $"Invalid login attempt. {status.RemainingAttempts} attempts remaining.";
+                }
             }
 
             return View(loginDto);
         }
-
 
         [Authorize]
         public async Task<IActionResult> Profile()
@@ -154,6 +192,7 @@ namespace E_Commerce_BE.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Profile(ProfileDto profileDto)
         {
             if (!ModelState.IsValid)
@@ -179,8 +218,6 @@ namespace E_Commerce_BE.Controllers
 
             var result = await userManager.UpdateAsync(appUser);
 
-
-
             if (result.Succeeded)
             {
                 ViewBag.SuccessMessage = "Profile updated successfully";
@@ -191,20 +228,17 @@ namespace E_Commerce_BE.Controllers
             }
 
             return View(profileDto);
-
-
         }
 
         [Authorize]
         public IActionResult Password()
         {
-
             return View();
         }
 
-
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Password(PasswordDto passwordDto)
         {
             if (!ModelState.IsValid)
@@ -218,6 +252,7 @@ namespace E_Commerce_BE.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             // update the password
             var result = await userManager.ChangePasswordAsync(appUser,
                 passwordDto.CurrentPassword, passwordDto.NewPassword);
@@ -249,6 +284,7 @@ namespace E_Commerce_BE.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword([Required, EmailAddress] string email)
         {
             if (signInManager.IsSignedIn(User))
@@ -261,6 +297,14 @@ namespace E_Commerce_BE.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.EmailError = ModelState["email"]?.Errors.First().ErrorMessage ?? "Invalid Email Address";
+                return View();
+            }
+
+            // Rate limiting for password reset
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            if (rateLimitingService.IsRateLimited(clientIp, "password_reset"))
+            {
+                ViewBag.ErrorMessage = "Too many password reset attempts. Please try again later.";
                 return View();
             }
 
@@ -282,13 +326,11 @@ namespace E_Commerce_BE.Controllers
                                  "Best Regards";
 
                 EmailSender.SendEmail(senderName, senderEmail, username, email, subject, message);
-
             }
 
             ViewBag.SuccessMessage = "If the email is registered, a password reset link has been sent to it.";
             return View();
         }
-
 
         public IActionResult ResetPassword(string? token)
         {
@@ -306,6 +348,7 @@ namespace E_Commerce_BE.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(string? token, PasswordResetDto model)
         {
             if (signInManager.IsSignedIn(User))
@@ -317,8 +360,6 @@ namespace E_Commerce_BE.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
-
 
             if (!ModelState.IsValid)
             {
@@ -347,9 +388,6 @@ namespace E_Commerce_BE.Controllers
             }
             return View(model);
         }
-
-
-
-
     }
 }
+

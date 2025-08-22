@@ -1,0 +1,5 @@
+# This file ensures the products directory is tracked in git
+# while the actual product images are ignored
+# 
+# The .gitignore file excludes wwwroot/products/* but keeps this directory
+# This maintains the folder structure for the application to work properly

@@ -5,33 +5,32 @@ namespace E_Commerce_BE.Services
 {
     public class CartHelper
     {
+        private static SecureCookieService? _cookieService;
+
+        public static void Initialize(SecureCookieService cookieService)
+        {
+            _cookieService = cookieService;
+        }
+
         public static Dictionary<int, int> GetCartDictionary(HttpRequest request, HttpResponse response)
         {
-            string cookieValue = request.Cookies["shopping_cart"] ?? "";
+            if (_cookieService == null)
+            {
+                throw new InvalidOperationException("CartHelper not initialized. Call Initialize() first.");
+            }
 
             try
             {
-                var cart = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(cookieValue));
-                Console.WriteLine("[CartHelper] cart=" + cookieValue + " -> " + cart);
-                var dictionary = JsonSerializer.Deserialize<Dictionary<int, int>>(cart);
-                if (dictionary != null)
-                {
-                    return dictionary;
-                }
+                var cart = _cookieService.GetShoppingCartCookie(request);
+                return cart ?? new Dictionary<int, int>();
             }
             catch (Exception)
             {
+                // If there's any error, clear the cookie and return empty cart
+                _cookieService.DeleteSecureCookie(response, "shopping_cart");
+                return new Dictionary<int, int>();
             }
-
-            if (cookieValue.Length > 0)
-            {
-                // This cookie is not valid => delete it
-                response.Cookies.Delete("shopping_cart");
-            }
-
-            return new Dictionary<int, int>();
         }
-
 
         public static int GetCartSize(HttpRequest request, HttpResponse response)
         {
@@ -43,11 +42,10 @@ namespace E_Commerce_BE.Services
             }
             return cartSize;
         }
+
         public static List<OrderItem> GetCartItems(HttpRequest request, HttpResponse response, ApplicationDbContext context)
         {
-
             var cartItems = new List<OrderItem>();
-
             var cartDictionary = GetCartDictionary(request, response);
 
             foreach (var pair in cartDictionary)
@@ -70,7 +68,6 @@ namespace E_Commerce_BE.Services
             return cartItems;
         }
 
-
         public static decimal GetSubtotal(List<OrderItem> cartItems)
         {
             decimal subtotal = 0;
@@ -81,6 +78,26 @@ namespace E_Commerce_BE.Services
             }
 
             return subtotal;
+        }
+
+        public static void UpdateCart(HttpRequest request, HttpResponse response, Dictionary<int, int> cartData)
+        {
+            if (_cookieService == null)
+            {
+                throw new InvalidOperationException("CartHelper not initialized. Call Initialize() first.");
+            }
+
+            _cookieService.SetShoppingCartCookie(response, cartData);
+        }
+
+        public static void ClearCart(HttpRequest request, HttpResponse response)
+        {
+            if (_cookieService == null)
+            {
+                throw new InvalidOperationException("CartHelper not initialized. Call Initialize() first.");
+            }
+
+            _cookieService.DeleteSecureCookie(response, "shopping_cart");
         }
     }
 }

@@ -12,19 +12,20 @@ namespace E_Commerce_BE.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IWebHostEnvironment environment;
+        private readonly SecureFileUploadService fileUploadService;
         private readonly int pageSize = 5;
 
-        public ProductController(ApplicationDbContext context, IWebHostEnvironment environment)
+        public ProductController(ApplicationDbContext context, IWebHostEnvironment environment,
+            SecureFileUploadService fileUploadService)
         {
             this.context = context;
             this.environment = environment;
+            this.fileUploadService = fileUploadService;
         }
 
-        public IActionResult Index(int pageIndex  , string? search , string? column , string? orderBy)
+        public IActionResult Index(int pageIndex, string? search, string? column, string? orderBy)
         {
-
             IQueryable<Product> query = context.Products;
-
 
             // Search functionality
             if (search != null)
@@ -33,7 +34,7 @@ namespace E_Commerce_BE.Controllers
             }
 
             // Sort functionality
-            string[] validColumns = { "Id", "Name", "Brand", "Category","Price", "CreatedAt" };
+            string[] validColumns = { "Id", "Name", "Brand", "Category", "Price", "CreatedAt" };
             string[] validOrderBy = { "desc", "asc" };
 
             if (!validColumns.Contains(column))
@@ -54,7 +55,7 @@ namespace E_Commerce_BE.Controllers
                 }
                 else
                 {
-                    query = query.OrderByDescending(p => p.Id);
+                    query = query.OrderByDescending(p => p.Name);
                 }
             }
             else if (column == "Brand")
@@ -101,8 +102,8 @@ namespace E_Commerce_BE.Controllers
                     query = query.OrderByDescending(p => p.CreatedAt);
                 }
             }
-            else { 
-            
+            else
+            {
                 if (orderBy == "asc")
                 {
                     query = query.OrderBy(p => p.Id);
@@ -113,11 +114,8 @@ namespace E_Commerce_BE.Controllers
                 }
             }
 
-
-                // query = query.OrderByDescending(p => p.Id);
-
-                // pagination
-                if (pageIndex < 1)
+            // pagination
+            if (pageIndex < 1)
             {
                 pageIndex = 1;
             }
@@ -144,28 +142,26 @@ namespace E_Commerce_BE.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ProductDto productDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProductDto productDto)
         {
             if (productDto.ImageFile == null)
             {
-
                 ModelState.AddModelError("ImageFile", "The image file is required");
             }
 
             if (!ModelState.IsValid)
             {
-
                 return View(productDto);
             }
 
-            // save the image file
-            string newFileName = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            newFileName += Path.GetExtension(productDto.ImageFile!.FileName);
+            // Use secure file upload service
+            var (isValid, fileName, errorMessage) = await fileUploadService.ValidateAndSaveFileAsync(productDto.ImageFile!);
 
-            string imageFullPath = environment.WebRootPath + "/products/" + newFileName;
-            using (var stream = System.IO.File.Create(imageFullPath))
+            if (!isValid)
             {
-                productDto.ImageFile.CopyTo(stream);
+                ModelState.AddModelError("ImageFile", errorMessage);
+                return View(productDto);
             }
 
             // save the new product in the database
@@ -176,8 +172,8 @@ namespace E_Commerce_BE.Controllers
                 Category = productDto.Category,
                 Price = productDto.Price,
                 Description = productDto.Description,
-                ImageFileName = newFileName,
-                CreatedAt = DateTime.Now,
+                ImageFileName = fileName,
+                CreatedAt = DateTime.UtcNow,
             };
 
             context.Products.Add(product);
@@ -185,7 +181,6 @@ namespace E_Commerce_BE.Controllers
 
             return RedirectToAction("Index", "Product");
         }
-
 
         public IActionResult Edit(int id)
         {
@@ -211,21 +206,18 @@ namespace E_Commerce_BE.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, ProductDto productDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ProductDto productDto)
         {
-
             var product = context.Products.Find(id);
 
             if (product == null)
             {
-
                 return RedirectToAction("Index", "Product");
             }
 
             if (!ModelState.IsValid)
             {
-
-
                 ViewData["ProductId"] = product.Id;
                 ViewData["ImageFileName"] = product.ImageFileName;
                 ViewData["CreatedAt"] = product.CreatedAt.ToString("MM/dd/yyyy");
@@ -233,27 +225,24 @@ namespace E_Commerce_BE.Controllers
             }
 
             // update the image file if it is not null
-
             string newFileName = product.ImageFileName;
             if (productDto.ImageFile != null)
             {
-                newFileName = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                newFileName += Path.GetExtension(productDto.ImageFile!.FileName);
+                var (isValid, fileName, errorMessage) = await fileUploadService.ValidateAndSaveFileAsync(productDto.ImageFile);
 
-
-
-                string imageFullPath = environment.WebRootPath + "/products/" + newFileName;
-                using (var stream = System.IO.File.Create(imageFullPath))
+                if (!isValid)
                 {
-                    productDto.ImageFile.CopyTo(stream);
-
+                    ModelState.AddModelError("ImageFile", errorMessage);
+                    ViewData["ProductId"] = product.Id;
+                    ViewData["ImageFileName"] = product.ImageFileName;
+                    ViewData["CreatedAt"] = product.CreatedAt.ToString("MM/dd/yyyy");
+                    return View(productDto);
                 }
-                // delete the old image file
-                string oldImageFullPath = environment.WebRootPath + "/products/" + product.ImageFileName;
-                System.IO.File.Delete(oldImageFullPath);
 
+                // Delete the old image file
+                fileUploadService.DeleteFile(product.ImageFileName);
+                newFileName = fileName;
             }
-
 
             // update the product in the database
             product.Name = productDto.Name;
@@ -266,11 +255,10 @@ namespace E_Commerce_BE.Controllers
             context.SaveChanges();
 
             return RedirectToAction("Index", "Product");
-
-
         }
 
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var product = context.Products.Find(id);
@@ -278,14 +266,14 @@ namespace E_Commerce_BE.Controllers
             {
                 return RedirectToAction("Index", "Product");
             }
-            // delete the image file
-            string imageFullPath = environment.WebRootPath + "/products/" + product.ImageFileName;
-            System.IO.File.Delete(imageFullPath);
+
+            // Delete the image file using secure service
+            fileUploadService.DeleteFile(product.ImageFileName);
+
             // delete the product from the database
             context.Products.Remove(product);
             context.SaveChanges(true);
             return RedirectToAction("Index", "Product");
-
         }
     }
 }

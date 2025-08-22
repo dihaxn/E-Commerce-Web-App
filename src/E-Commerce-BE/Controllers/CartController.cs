@@ -10,13 +10,15 @@ namespace E_Commerce_BE.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly SecureCookieService cookieService;
         private readonly decimal shippingFee;
 
-        public CartController(ApplicationDbContext context, IConfiguration configuration
-            , UserManager<ApplicationUser> userManager)
+        public CartController(ApplicationDbContext context, IConfiguration configuration,
+            UserManager<ApplicationUser> userManager, SecureCookieService cookieService)
         {
             this.context = context;
             this.userManager = userManager;
+            this.cookieService = cookieService;
             shippingFee = configuration.GetValue<decimal>("CartSettings:ShippingFee");
         }
 
@@ -36,9 +38,9 @@ namespace E_Commerce_BE.Controllers
             return View(model);
         }
 
-
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Index(CartViewModel model)
         {
             List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
@@ -72,8 +74,6 @@ namespace E_Commerce_BE.Controllers
             return RedirectToAction("Confirm");
         }
 
-
-
         public IActionResult Confirm()
         {
             List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
@@ -84,11 +84,9 @@ namespace E_Commerce_BE.Controllers
                 cartSize += item.Quantity;
             }
 
-
             string deliveryAddress = TempData["DeliveryAddress"] as string ?? "";
             string paymentMethod = TempData["PaymentMethod"] as string ?? "";
             TempData.Keep();
-
 
             if (cartSize == 0 || deliveryAddress.Length == 0 || paymentMethod.Length == 0)
             {
@@ -98,21 +96,19 @@ namespace E_Commerce_BE.Controllers
             ViewBag.DeliveryAddress = deliveryAddress;
             ViewBag.PaymentMethod = paymentMethod;
             ViewBag.Total = total;
-            ViewBag.CartSize = cartSize;
 
             return View();
         }
 
-
-        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Confirm(int any)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirm()
         {
-            var cartItems = CartHelper.GetCartItems(Request, Response, context);
+            List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
+            decimal total = CartHelper.GetSubtotal(cartItems) + shippingFee;
 
             string deliveryAddress = TempData["DeliveryAddress"] as string ?? "";
             string paymentMethod = TempData["PaymentMethod"] as string ?? "";
-            TempData.Keep();
 
             if (cartItems.Count == 0 || deliveryAddress.Length == 0 || paymentMethod.Length == 0)
             {
@@ -125,7 +121,7 @@ namespace E_Commerce_BE.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // save the order
+            // Create the order
             var order = new Order
             {
                 ClientId = appUser.Id,
@@ -134,21 +130,79 @@ namespace E_Commerce_BE.Controllers
                 DeliveryAddress = deliveryAddress,
                 PaymentMethod = paymentMethod,
                 PaymentStatus = "pending",
-                PaymentDetails = "",
-                OrderStatus = "created",
-                CreatedAt = DateTime.Now,
+                OrderStatus = "pending",
+                CreatedAt = DateTime.UtcNow,
             };
 
             context.Orders.Add(order);
             context.SaveChanges();
 
+            // Clear the shopping cart
+            CartHelper.ClearCart(Request, Response);
 
-            // delete the shopping cart cookie
-            Response.Cookies.Delete("shopping_cart");
+            return RedirectToAction("Index", "Home");
+        }
 
-            ViewBag.SuccessMessage = "Order created successfully";
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddToCart(int productId, int quantity = 1)
+        {
+            if (quantity <= 0)
+            {
+                return Json(new { success = false, message = "Invalid quantity" });
+            }
 
-            return View();
+            var cartData = CartHelper.GetCartDictionary(Request, Response);
+            
+            if (cartData.ContainsKey(productId))
+            {
+                cartData[productId] += quantity;
+            }
+            else
+            {
+                cartData[productId] = quantity;
+            }
+
+            CartHelper.UpdateCart(Request, Response, cartData);
+
+            return Json(new { success = true, cartSize = CartHelper.GetCartSize(Request, Response) });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateCart(int productId, int quantity)
+        {
+            if (quantity <= 0)
+            {
+                return Json(new { success = false, message = "Invalid quantity" });
+            }
+
+            var cartData = CartHelper.GetCartDictionary(Request, Response);
+            
+            if (cartData.ContainsKey(productId))
+            {
+                cartData[productId] = quantity;
+                CartHelper.UpdateCart(Request, Response, cartData);
+                return Json(new { success = true, cartSize = CartHelper.GetCartSize(Request, Response) });
+            }
+
+            return Json(new { success = false, message = "Product not found in cart" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RemoveFromCart(int productId)
+        {
+            var cartData = CartHelper.GetCartDictionary(Request, Response);
+            
+            if (cartData.ContainsKey(productId))
+            {
+                cartData.Remove(productId);
+                CartHelper.UpdateCart(Request, Response, cartData);
+                return Json(new { success = true, cartSize = CartHelper.GetCartSize(Request, Response) });
+            }
+
+            return Json(new { success = false, message = "Product not found in cart" });
         }
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj": {}
+    "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj": {}
   },
   "projects": {
-    "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj": {
+    "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj",
+        "projectUniqueName": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj",
         "projectName": "E-Commerce-BE",
-        "projectPath": "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj",
+        "projectPath": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj",
         "packagesPath": "C:\\Users\\ihanl\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\obj\\",
+        "outputPath": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -64,6 +64,10 @@
               "target": "Package",
               "version": "[8.0.18, )"
             },
+            "Stripe.net": {
+              "target": "Package",
+              "version": "[48.5.0, )"
+            },
             "sib_api_v3_sdk": {
               "target": "Package",
               "version": "[4.0.2, )"
@@ -88,18 +92,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj": {
+    "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj",
         "projectName": "E-Commerce-BE.Tests",
-        "projectPath": "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj",
+        "projectPath": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\E-Commerce-BE.Tests.csproj",
         "packagesPath": "C:\\Users\\ihanl\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\obj\\",
+        "outputPath": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\tests\\E-Commerce-BE.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -120,8 +124,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj": {
-                "projectPath": "c:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj"
+              "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj": {
+                "projectPath": "C:\\Users\\ihanl\\OneDrive\\Desktop\\Parttime-work\\E-Commerce-Web-App\\src\\E-Commerce-BE\\E-Commerce-BE.csproj"
               }
             }
           }
@@ -183,7 +187,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

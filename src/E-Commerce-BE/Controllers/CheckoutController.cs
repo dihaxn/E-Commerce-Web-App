@@ -5,15 +5,15 @@ using E_Commerce_BE.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace E_Commerce_BE.Controllers
 {
     [Authorize]
     public class CheckoutController : Controller
     {
-        private string PaypalClientId { get; set; } = "";
-        private string PaypalSecret { get; set; } = "";
-        private string PaypalUrl { get; set; } = "";
+        private string StripePublishableKey { get; set; } = "";
+        private string StripeSecretKey { get; set; } = "";
 
         private readonly decimal shippingFee;
         private readonly ApplicationDbContext context;
@@ -22,9 +22,11 @@ namespace E_Commerce_BE.Controllers
         public CheckoutController(IConfiguration configuration, ApplicationDbContext context
             , UserManager<ApplicationUser> userManager)
         {
-            PaypalClientId = configuration["PaypalSettings:ClientId"]!;
-            PaypalSecret = configuration["PaypalSettings:Secret"]!;
-            PaypalUrl = configuration["PaypalSettings:Url"]!;
+            StripePublishableKey = configuration["StripeSettings:PublishableKey"]!;
+            StripeSecretKey = configuration["StripeSettings:SecretKey"]!;
+            
+            // Configure Stripe
+            StripeConfiguration.ApiKey = StripeSecretKey;
 
             shippingFee = configuration.GetValue<decimal>("CartSettings:ShippingFee");
             this.context = context;
@@ -41,122 +43,80 @@ namespace E_Commerce_BE.Controllers
 
             ViewBag.DeliveryAddress = deliveryAddress;
             ViewBag.Total = total;
-            ViewBag.PaypalClientId = PaypalClientId;
+            ViewBag.StripePublishableKey = StripePublishableKey;
             return View();
         }
 
 
         [HttpPost]
-        public async Task<JsonResult> CreateOrder()
+        public async Task<JsonResult> CreatePaymentIntent()
         {
             List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
             decimal totalAmount = CartHelper.GetSubtotal(cartItems) + shippingFee;
 
-
-
-            // create the request body
-            JsonObject createOrderRequest = new JsonObject();
-            createOrderRequest.Add("intent", "CAPTURE");
-
-            JsonObject amount = new JsonObject();
-            amount.Add("currency_code", "USD");
-            amount.Add("value", totalAmount);
-
-            JsonObject purchaseUnit1 = new JsonObject();
-            purchaseUnit1.Add("amount", amount);
-
-            JsonArray purchaseUnits = new JsonArray();
-            purchaseUnits.Add(purchaseUnit1);
-
-            createOrderRequest.Add("purchase_units", purchaseUnits);
-
-
-            // get access token
-            string accessToken = await GetPaypalAccessToken();
-
-            // send request
-            string url = PaypalUrl + "/v2/checkout/orders";
-
-
-            using (var client = new HttpClient())
+            try
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
-                requestMessage.Content = new StringContent(createOrderRequest.ToString(), null, "application/json");
-
-                var httpResponse = await client.SendAsync(requestMessage);
-
-                if (httpResponse.IsSuccessStatusCode)
+                var options = new PaymentIntentCreateOptions
                 {
-                    var strResponse = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResponse = JsonNode.Parse(strResponse);
-
-                    if (jsonResponse != null)
+                    Amount = (long)(totalAmount * 100), // Convert to cents
+                    Currency = "usd",
+                    PaymentMethodTypes = new List<string>
                     {
-                        string paypalOrderId = jsonResponse["id"]?.ToString() ?? "";
-
-                        return new JsonResult(new { Id = paypalOrderId });
+                        "card"
+                    },
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "user_id", User.Identity?.Name ?? "" },
+                        { "delivery_address", TempData["DeliveryAddress"]?.ToString() ?? "" }
                     }
-                }
+                };
+
+                var service = new PaymentIntentService();
+                var paymentIntent = await service.CreateAsync(options);
+
+                return new JsonResult(new { client_secret = paymentIntent.ClientSecret });
             }
-
-
-            return new JsonResult(new { Id = "" });
+            catch (StripeException ex)
+            {
+                return new JsonResult(new { error = ex.Message });
+            }
         }
 
 
         [HttpPost]
         public async Task<JsonResult> CompleteOrder([FromBody] JsonObject data)
         {
-            var orderId = data?["orderID"]?.ToString();
+            var paymentIntentId = data?["paymentIntentId"]?.ToString();
             var deliveryAddress = data?["deliveryAddress"]?.ToString();
 
-            if (orderId == null || deliveryAddress == null)
+            if (paymentIntentId == null || deliveryAddress == null)
             {
-                return new JsonResult("error");
+                return new JsonResult(new { success = false, message = "Missing payment or delivery information" });
             }
 
-            // get access token
-            string accessToken = await GetPaypalAccessToken();
-
-
-            string url = PaypalUrl + "/v2/checkout/orders/" + orderId + "/capture";
-
-
-            using (var client = new HttpClient())
+            try
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+                var service = new PaymentIntentService();
+                var paymentIntent = await service.GetAsync(paymentIntentId);
 
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
-                requestMessage.Content = new StringContent("", null, "application/json");
-
-                var httpResponse = await client.SendAsync(requestMessage);
-
-                if (httpResponse.IsSuccessStatusCode)
+                if (paymentIntent.Status == "succeeded")
                 {
-                    var strResponse = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResponse = JsonNode.Parse(strResponse);
-
-                    if (jsonResponse != null)
-                    {
-                        string paypalOrderStatus = jsonResponse["status"]?.ToString() ?? "";
-                        if (paypalOrderStatus == "COMPLETED")
-                        {
-                            // save the order in the database
-                            await SaveOrder(jsonResponse.ToString(), deliveryAddress);
-
-                            return new JsonResult("success");
-                        }
-                    }
+                    // Save the order in the database
+                    await SaveOrder(paymentIntent, deliveryAddress);
+                    return new JsonResult(new { success = true, message = "Order completed successfully" });
+                }
+                else
+                {
+                    return new JsonResult(new { success = false, message = "Payment not completed" });
                 }
             }
-
-
-            return new JsonResult("error");
+            catch (StripeException ex)
+            {
+                return new JsonResult(new { success = false, message = ex.Message });
+            }
         }
 
-        private async Task SaveOrder(string paypalResponse, string deliveryAddress)
+        private async Task SaveOrder(PaymentIntent paymentIntent, string deliveryAddress)
         {
             // get cart items
             var cartItems = CartHelper.GetCartItems(Request, Response, context);
@@ -174,9 +134,9 @@ namespace E_Commerce_BE.Controllers
                 Items = cartItems,
                 ShippingFee = shippingFee,
                 DeliveryAddress = deliveryAddress,
-                PaymentMethod = "paypal",
+                PaymentMethod = "credit_card",
                 PaymentStatus = "accepted",
-                PaymentDetails = paypalResponse,
+                PaymentDetails = $"Stripe Payment Intent: {paymentIntent.Id}, Amount: {paymentIntent.Amount / 100.0m:C}",
                 OrderStatus = "pending",
                 CreatedAt = DateTime.Now,
             };
@@ -184,56 +144,11 @@ namespace E_Commerce_BE.Controllers
             context.Orders.Add(order);
             context.SaveChanges();
 
-
             // delete the shopping cart cookie
             Response.Cookies.Delete("shopping_cart");
         }
 
 
-
-        /*
-        public async Task<string> Token()
-        {
-            return await GetPaypalAccessToken();
-        }
-        */
-
-        private async Task<string> GetPaypalAccessToken()
-        {
-            string accessToken = "";
-
-
-            string url = PaypalUrl + "/v1/oauth2/token";
-
-            using (var client = new HttpClient())
-            {
-                string credentials64 =
-                    Convert.ToBase64String(Encoding.UTF8.GetBytes(PaypalClientId + ":" + PaypalSecret));
-
-                client.DefaultRequestHeaders.Add("Authorization", "Basic " + credentials64);
-
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
-                requestMessage.Content = new StringContent("grant_type=client_credentials", null
-                    , "application/x-www-form-urlencoded");
-
-                var httpResponse = await client.SendAsync(requestMessage);
-
-
-                if (httpResponse.IsSuccessStatusCode)
-                {
-                    var strResponse = await httpResponse.Content.ReadAsStringAsync();
-
-                    var jsonResponse = JsonNode.Parse(strResponse);
-                    if (jsonResponse != null)
-                    {
-                        accessToken = jsonResponse["access_token"]?.ToString() ?? "";
-                    }
-                }
-            }
-
-
-            return accessToken;
-        }
     }
 }
 

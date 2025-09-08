@@ -43,37 +43,43 @@ To get a local copy up and running follow these simple example steps.
 ### Installation
 
 1. **Clone the repo**
+
    ```sh
    git clone https://github.com/your_username/E-Commerce-BE.git
    ```
 
 2. **Navigate to the project directory**
+
    ```sh
    cd E-Commerce-BE/E-Commerce-BE
    ```
 
 3. **Install NPM packages**
+
    ```sh
    npm install
    ```
 
 4. **Build Tailwind CSS**
+
    ```sh
    npm run build-css-once
    ```
 
 5. **Configure security settings**
+
    - Copy `appsettings.json` and set your secure values
    - Set environment variables for production:
      ```bash
      ConnectionStrings__DefaultConnection="your-connection-string"
      BrevoSettings__ApiKey="your-api-key"
-     PayPalSettings__ClientId="your-client-id"
-     PayPalSettings__Secret="your-secret"
+     StripeSettings__PublishableKey="your-publishable-key"
+     StripeSettings__SecretKey="your-secret-key"
      CookieEncryptionKey="your-32-char-encryption-key"
      ```
 
 6. **Apply migrations**
+
    ```sh
    dotnet ef database update
    ```
@@ -86,6 +92,7 @@ To get a local copy up and running follow these simple example steps.
 ## 🔐 **Security Configuration**
 
 ### **Required Environment Variables**
+
 ```bash
 # Database
 ConnectionStrings__DefaultConnection="your-connection-string"
@@ -95,16 +102,17 @@ BrevoSettings__ApiKey="your-brevo-api-key"
 BrevoSettings__SenderName="Store Name"
 BrevoSettings__SenderEmail="noreply@store.com"
 
-# Payment Gateway (PayPal)
-PayPalSettings__ClientId="your-paypal-client-id"
-PayPalSettings__Secret="your-paypal-secret"
-PayPalSettings__Url="https://www.paypal.com"
+# Payment Gateway (Stripe)
+StripeSettings__PublishableKey="your-stripe-publishable-key"
+StripeSettings__SecretKey="your-stripe-secret-key"
+StripeSettings__WebhookSecret="your-stripe-webhook-secret"
 
 # Security
 CookieEncryptionKey="32-character-encryption-key"
 ```
 
 ### **Security Features Enabled**
+
 - ✅ CSRF Protection
 - ✅ Rate Limiting
 - ✅ Secure File Uploads
@@ -150,6 +158,7 @@ Contributions are what make the open source community such an amazing place to l
 5. Open a Pull Request
 
 ### **Security Contributions**
+
 - Report security vulnerabilities to security@yourstore.com
 - Follow responsible disclosure practices
 - Test security features thoroughly

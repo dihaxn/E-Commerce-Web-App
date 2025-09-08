@@ -2,7 +2,7 @@
     ViewData["Title"] = "Checkout";
 }
 
-<script src="https://www.paypal.com/sdk/js?client-id=@(ViewBag.PaypalClientId)&currency=USD"></script>
+<script src="https://js.stripe.com/v3/"></script>
 
 <div class="bg-gradient-to-r from-black via-gray-900 to-black text-white min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-gray-800/50 p-8 rounded-2xl shadow-2xl border border-gray-700">
@@ -20,67 +20,193 @@
         </div>
 
         <div id="notification-container" class="mb-6"></div>
-        <div id="paypal-button-container"></div>
+        
+        <!-- Credit Card Payment Form -->
+        <form id="payment-form" class="space-y-4">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Card Information</label>
+                    <div id="card-element" class="p-3 bg-gray-700 border border-gray-600 rounded-lg">
+                        <!-- Stripe Elements will create form elements here -->
+                    </div>
+                    <div id="card-errors" class="text-red-400 text-sm mt-2"></div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Expiry Date</label>
+                        <div id="card-expiry-element" class="p-3 bg-gray-700 border border-gray-600 rounded-lg">
+                            <!-- Stripe Elements will create form elements here -->
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">CVC</label>
+                        <div id="card-cvc-element" class="p-3 bg-gray-700 border border-gray-600 rounded-lg">
+                            <!-- Stripe Elements will create form elements here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="submit-payment" class="w-full bg-brand-amber text-black font-bold py-3 px-4 rounded-lg hover:bg-yellow-400 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span id="button-text">Pay @ViewBag.Total.ToString("C")</span>
+                <div id="spinner" class="hidden">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-black inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                </div>
+            </button>
+        </form>
     </div>
 </div>
 
 <script>
-    paypal.Buttons({
+    // Initialize Stripe
+    const stripe = Stripe('@ViewBag.StripePublishableKey');
+    const elements = stripe.elements();
+
+    // Create card elements
+    const cardElement = elements.create('card', {
         style: {
-            layout: 'vertical',
-            color: 'gold',
-            shape: 'rect',
-            label: 'paypal'
+            base: {
+                fontSize: '16px',
+                color: '#ffffff',
+                '::placeholder': {
+                    color: '#9ca3af',
+                },
+            },
+            invalid: {
+                color: '#ef4444',
+            },
         },
-        async createOrder() {
-            const response = await fetch("@Url.ActionLink("CreateOrder", "Checkout")", {
-                method: "POST"
+    });
+
+    const cardExpiryElement = elements.create('cardExpiry', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#ffffff',
+                '::placeholder': {
+                    color: '#9ca3af',
+                },
+            },
+            invalid: {
+                color: '#ef4444',
+            },
+        },
+    });
+
+    const cardCvcElement = elements.create('cardCvc', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#ffffff',
+                '::placeholder': {
+                    color: '#9ca3af',
+                },
+            },
+            invalid: {
+                color: '#ef4444',
+            },
+        },
+    });
+
+    // Mount the elements
+    cardElement.mount('#card-element');
+    cardExpiryElement.mount('#card-expiry-element');
+    cardCvcElement.mount('#card-cvc-element');
+
+    // Handle real-time validation errors from the card Element
+    cardElement.on('change', function(event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    // Handle form submission
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const submitButton = document.getElementById('submit-payment');
+        const buttonText = document.getElementById('button-text');
+        const spinner = document.getElementById('spinner');
+
+        // Disable the submit button
+        submitButton.disabled = true;
+        buttonText.classList.add('hidden');
+        spinner.classList.remove('hidden');
+
+        try {
+            // Create payment intent
+            const response = await fetch('@Url.ActionLink("CreatePaymentIntent", "Checkout")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
 
-            const order = await response.json();
-            return order.id;
-        },
+            const { client_secret, error } = await response.json();
 
-        async onApprove(data) {
-            const response = await fetch("@Url.ActionLink("CompleteOrder", "Checkout")", {
-                method: "POST",
+            if (error) {
+                throw new Error(error);
+            }
+
+            // Confirm payment with Stripe
+            const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(client_secret, {
+                payment_method: {
+                    card: cardElement,
+                }
+            });
+
+            if (stripeError) {
+                throw new Error(stripeError.message);
+            }
+
+            // Complete the order
+            const completeResponse = await fetch('@Url.ActionLink("CompleteOrder", "Checkout")', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    orderID: data.orderID,
-                    deliveryAddress: "@ViewBag.DeliveryAddress"
+                    paymentIntentId: paymentIntent.id,
+                    deliveryAddress: '@ViewBag.DeliveryAddress'
                 })
             });
 
-            const details = await response.json();
+            const result = await completeResponse.json();
 
-            if (details === "success") {
+            if (result.success) {
                 document.getElementById("notification-container").innerHTML = `
                     <div class='bg-green-500/20 text-green-300 p-4 rounded-lg border border-green-500/50'>
-                        <strong>The order is created successfully!</strong>
+                        <strong>${result.message}</strong>
                     </div>`;
+                
+                // Redirect to orders page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '@Url.ActionLink("Index", "ClientOrders")';
+                }, 2000);
             } else {
-                document.getElementById("notification-container").innerHTML = `
-                    <div class='bg-red-500/20 text-red-300 p-4 rounded-lg border border-red-500/50'>
-                        <strong>Failed to create the order!</strong>
-                    </div>`;
+                throw new Error(result.message);
             }
-        },
 
-        onCancel(data) {
-            document.getElementById("notification-container").innerHTML = `
-                <div class='bg-yellow-500/20 text-yellow-300 p-4 rounded-lg border border-yellow-500/50'>
-                    <strong>Payment Canceled!</strong>
-                </div>`;
-        },
-
-        onError(err) {
+        } catch (error) {
             document.getElementById("notification-container").innerHTML = `
                 <div class='bg-red-500/20 text-red-300 p-4 rounded-lg border border-red-500/50'>
-                    <strong>An error occurred! Please retry later.</strong>
+                    <strong>Error: ${error.message}</strong>
                 </div>`;
+        } finally {
+            // Re-enable the submit button
+            submitButton.disabled = false;
+            buttonText.classList.remove('hidden');
+            spinner.classList.add('hidden');
         }
-    }).render('#paypal-button-container');
+    });
 </script>
 

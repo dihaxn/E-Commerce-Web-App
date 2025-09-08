@@ -25,9 +25,9 @@ namespace E_Commerce_BE.Tests.Controllers
                 .Options;
 
             var inMemorySettings = new Dictionary<string, string> {
-                {"PaypalSettings:ClientId", "test_client_id"},
-                {"PaypalSettings:Secret", "test_secret"},
-                {"PaypalSettings:Url", "https://api.sandbox.paypal.com"},
+                {"StripeSettings:PublishableKey", "pk_test_123"},
+                {"StripeSettings:SecretKey", "sk_test_123"},
+                {"StripeSettings:WebhookSecret", "whsec_123"},
                 {"CartSettings:ShippingFee", "5.00"}
             };
 
@@ -36,9 +36,9 @@ namespace E_Commerce_BE.Tests.Controllers
                 .Build();
 
             _configuration = new Mock<IConfiguration>();
-            _configuration.Setup(c => c["PaypalSettings:ClientId"]).Returns("test_client_id");
-            _configuration.Setup(c => c["PaypalSettings:Secret"]).Returns("test_secret");
-            _configuration.Setup(c => c["PaypalSettings:Url"]).Returns("https://api.sandbox.paypal.com");
+            _configuration.Setup(c => c["StripeSettings:PublishableKey"]).Returns("pk_test_123");
+            _configuration.Setup(c => c["StripeSettings:SecretKey"]).Returns("sk_test_123");
+            _configuration.Setup(c => c["StripeSettings:WebhookSecret"]).Returns("whsec_123");
             _configuration.Setup(c => c.GetSection("CartSettings:ShippingFee")).Returns(configuration.GetSection("CartSettings:ShippingFee"));
 
 

@@ -17,7 +17,7 @@ namespace E_Commerce_BE.Models
         public string DeliveryAddress { get; set; } = "";
         public string PaymentMethod { get; set; } = "";
         public string PaymentStatus { get; set; } = "";
-        public string PaymentDetails { get; set; } = ""; // to store paypal details
+        public string PaymentDetails { get; set; } = ""; // to store payment details (Stripe, etc.)
         public string OrderStatus { get; set; } = "";
         public DateTime CreatedAt { get; set; }
     }

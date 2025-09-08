@@ -72,7 +72,7 @@ namespace E_Commerce_BE.Services
                     FailedAttempts = info.FailedAttempts,
                     RemainingAttempts = Math.Max(0, _maxAttempts - info.FailedAttempts),
                     LockoutEnd = info.LockoutEnd,
-                    TimeUntilReset = info.IsLockedOut ? info.LockoutEnd - DateTime.UtcNow : TimeSpan.Zero
+                    TimeUntilReset = info.IsLockedOut && info.LockoutEnd.HasValue ? info.LockoutEnd.Value - DateTime.UtcNow : TimeSpan.Zero
                 };
             }
 

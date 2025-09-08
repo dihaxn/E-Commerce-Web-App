@@ -27,7 +27,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             errorNumbersToAdd: null);
         
         sqlOptions.CommandTimeout(30);
-        sqlOptions.EnableSensitiveDataLogging(builder.Environment.IsDevelopment());
+        
     });
 });
 
@@ -73,8 +73,8 @@ builder.Services.AddScoped<SecureFileUploadService>();
 builder.Services.AddScoped<SecureCookieService>();
 builder.Services.AddSingleton<RateLimitingService>();
 builder.Services.AddScoped<DatabaseConfigurationService>();
-builder.Services.AddScoped<HttpsConfigurationService>();
-builder.Services.AddScoped<MonitoringService>();
+builder.Services.AddSingleton<HttpsConfigurationService>();
+builder.Services.AddSingleton<MonitoringService>();
 builder.Services.AddScoped<BackupService>();
 
 // Configure Brevo API
@@ -173,68 +173,69 @@ using (var scope = app.Services.CreateScope())
     await DatabaseInitializer.SeedDataAsync(userManager, roleManager);
 }
 
-// Start background services
-var rateLimitingService = app.Services.GetService<RateLimitingService>();
-if (rateLimitingService != null)
+// Start background services in a scope
+using (var backgroundScope = app.Services.CreateScope())
 {
-    _ = Task.Run(async () =>
+    var rateLimitingService = backgroundScope.ServiceProvider.GetService<RateLimitingService>();
+    if (rateLimitingService != null)
     {
-        while (true)
+        _ = System.Threading.Tasks.Task.Run(async () =>
         {
-            await Task.Delay(TimeSpan.FromMinutes(5));
-            rateLimitingService.CleanupExpiredEntries();
-        }
-    });
-}
+            while (true)
+            {
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromMinutes(5));
+                rateLimitingService.CleanupExpiredEntries();
+            }
+        });
+    }
 
-// Start monitoring service
-var monitoringService = app.Services.GetService<MonitoringService>();
-if (monitoringService != null)
-{
-    _ = Task.Run(async () =>
+    var monitoringService = backgroundScope.ServiceProvider.GetService<MonitoringService>();
+    if (monitoringService != null)
     {
-        while (true)
+        _ = System.Threading.Tasks.Task.Run(async () =>
         {
-            await Task.Delay(TimeSpan.FromMinutes(10));
-            try
+            while (true)
             {
-                await monitoringService.PerformHealthCheckAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromMinutes(10));
+                try
+                {
+                    await monitoringService.PerformHealthCheckAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't crash the background task
+                    var logger = backgroundScope.ServiceProvider.GetService<ILogger<Program>>();
+                    logger?.LogError(ex, "Background health check failed");
+                }
             }
-            catch (Exception ex)
-            {
-                // Log error but don't crash the background task
-                var logger = app.Services.GetService<ILogger<Program>>();
-                logger?.LogError(ex, "Background health check failed");
-            }
-        }
-    });
-}
+        });
+    }
 
-// Start backup service (daily at 2 AM)
-var backupService = app.Services.GetService<BackupService>();
-if (backupService != null)
-{
-    _ = Task.Run(async () =>
+    var backupService = backgroundScope.ServiceProvider.GetService<BackupService>();
+    if (backupService != null)
     {
-        while (true)
+        _ = System.Threading.Tasks.Task.Run(async () =>
         {
-            var now = DateTime.UtcNow;
-            var nextBackup = now.Date.AddDays(1).AddHours(2); // 2 AM UTC
-            var delay = nextBackup - now;
-            
-            await Task.Delay(delay);
-            
-            try
+            while (true)
             {
-                await backupService.CreateFullBackupAsync();
+                var now = DateTime.UtcNow;
+                var nextBackup = now.Date.AddDays(1).AddHours(2); // 2 AM UTC
+                var delay = nextBackup - now;
+                
+                await System.Threading.Tasks.Task.Delay(delay);
+                
+                try
+                {
+                    await backupService.CreateFullBackupAsync();
+                }
+                catch (Exception ex)
+                {
+                    var logger = backgroundScope.ServiceProvider.GetService<ILogger<Program>>();
+                    logger?.LogError(ex, "Scheduled backup failed");
+                }
             }
-            catch (Exception ex)
-            {
-                var logger = app.Services.GetService<ILogger<Program>>();
-                logger?.LogError(ex, "Scheduled backup failed");
-            }
-        }
-    });
+        });
+    }
 }
 
 app.Run();

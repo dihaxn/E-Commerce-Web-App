@@ -1,0 +1,216 @@
+name: 🐳 Docker Build & Deploy
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # 🏗️ Build and Push Docker Image
+  build-and-push:
+    name: 🏗️ Build & Push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+  # 🔍 Security Scan
+  security-scan:
+    name: 🔍 Security Scan
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          format: "sarif"
+          output: "trivy-results.sarif"
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-results.sarif"
+
+  # 🚀 Deploy to Staging
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-and-push, security-scan]
+    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Azure Container Instances
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            # Create resource group if it doesn't exist
+            az group create --name ecommerce-staging --location eastus
+
+            # Deploy container instance
+            az container create \
+              --resource-group ecommerce-staging \
+              --name ecommerce-app-staging \
+              --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:develop \
+              --registry-login-server ${{ env.REGISTRY }} \
+              --registry-username ${{ github.actor }} \
+              --registry-password ${{ secrets.GITHUB_TOKEN }} \
+              --dns-name-label ecommerce-staging-${{ github.run_number }} \
+              --ports 8080 \
+              --environment-variables \
+                ASPNETCORE_ENVIRONMENT=Staging \
+                ConnectionStrings__DefaultConnection="${{ secrets.STAGING_CONNECTION_STRING }}" \
+                BrevoSettings__ApiKey="${{ secrets.BREVO_API_KEY }}" \
+                PayPalSettings__ClientId="${{ secrets.PAYPAL_CLIENT_ID }}" \
+                PayPalSettings__Secret="${{ secrets.PAYPAL_SECRET }}" \
+                CookieEncryptionKey="${{ secrets.COOKIE_ENCRYPTION_KEY }}"
+
+      - name: Wait for deployment
+        run: sleep 60
+
+      - name: Health check
+        run: |
+          # Get the FQDN of the container instance
+          FQDN=$(az container show --resource-group ecommerce-staging --name ecommerce-app-staging --query ipAddress.fqdn --output tsv)
+          curl -f http://$FQDN:8080/health || exit 1
+
+      - name: Notify deployment success
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "🚀 Staging deployment successful!"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # 🚀 Deploy to Production
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, security-scan]
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) && github.event_name != 'pull_request'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Azure Container Instances
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            # Create resource group if it doesn't exist
+            az group create --name ecommerce-production --location eastus
+
+            # Deploy container instance
+            az container create \
+              --resource-group ecommerce-production \
+              --name ecommerce-app-production \
+              --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
+              --registry-login-server ${{ env.REGISTRY }} \
+              --registry-username ${{ github.actor }} \
+              --registry-password ${{ secrets.GITHUB_TOKEN }} \
+              --dns-name-label ecommerce-production \
+              --ports 8080 \
+              --environment-variables \
+                ASPNETCORE_ENVIRONMENT=Production \
+                ConnectionStrings__DefaultConnection="${{ secrets.PRODUCTION_CONNECTION_STRING }}" \
+                BrevoSettings__ApiKey="${{ secrets.BREVO_API_KEY }}" \
+                PayPalSettings__SenderName="${{ secrets.BREVO_SENDER_NAME }}" \
+                BrevoSettings__SenderEmail="${{ secrets.BREVO_SENDER_EMAIL }}" \
+                PayPalSettings__ClientId="${{ secrets.PAYPAL_CLIENT_ID }}" \
+                PayPalSettings__Secret="${{ secrets.PAYPAL_SECRET }}" \
+                PayPalSettings__Url="${{ secrets.PAYPAL_URL }}" \
+                CookieEncryptionKey="${{ secrets.COOKIE_ENCRYPTION_KEY }}"
+
+      - name: Wait for deployment
+        run: sleep 60
+
+      - name: Health check
+        run: |
+          # Get the FQDN of the container instance
+          FQDN=$(az container show --resource-group ecommerce-production --name ecommerce-app-production --query ipAddress.fqdn --output tsv)
+          curl -f http://$FQDN:8080/health || exit 1
+
+      - name: Run database migrations
+        run: |
+          FQDN=$(az container show --resource-group ecommerce-production --name ecommerce-app-production --query ipAddress.fqdn --output tsv)
+          # Note: In a real scenario, you'd run migrations from a separate container or Azure DevOps pipeline
+
+      - name: Notify deployment success
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "🚀 Production deployment successful!"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # 🧹 Cleanup old images
+  cleanup:
+    name: 🧹 Cleanup
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production]
+    if: always() && github.event_name != 'pull_request'
+
+    steps:
+      - name: Delete old container images
+        uses: actions/delete-package-versions@v4
+        with:
+          package-name: ${{ env.IMAGE_NAME }}
+          package-type: "container"
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: "true"
+          token: ${{ secrets.GITHUB_TOKEN }}

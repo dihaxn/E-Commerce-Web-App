@@ -130,7 +130,17 @@ namespace E_Commerce_BE.Services
         {
             try
             {
-                var drive = new DriveInfo(Path.GetPathRoot(Environment.CurrentDirectory));
+                var rootPath = Path.GetPathRoot(Environment.CurrentDirectory);
+                if (string.IsNullOrEmpty(rootPath))
+                {
+                    return new HealthCheckItem
+                    {
+                        Name = "Disk",
+                        Status = HealthStatus.Unhealthy,
+                        Description = "Unable to determine disk root path"
+                    };
+                }
+                var drive = new DriveInfo(rootPath);
                 var freeSpaceGB = drive.AvailableFreeSpace / 1024 / 1024 / 1024;
                 var totalSpaceGB = drive.TotalSize / 1024 / 1024 / 1024;
                 var freeSpacePercent = (double)freeSpaceGB / totalSpaceGB * 100;
@@ -158,7 +168,7 @@ namespace E_Commerce_BE.Services
             }
         }
 
-        public void LogSecurityEvent(string eventType, string description, string userId = null, string ipAddress = null)
+        public void LogSecurityEvent(string eventType, string description, string? userId = null, string? ipAddress = null)
         {
             var logMessage = $"SECURITY_EVENT: {eventType} - {description}";
             if (!string.IsNullOrEmpty(userId))
@@ -188,7 +198,7 @@ namespace E_Commerce_BE.Services
             TrackMetric(metricName, value);
         }
 
-        private void LogToExternalSystem(string eventType, string description, string userId, string ipAddress)
+        private void LogToExternalSystem(string eventType, string description, string? userId, string? ipAddress)
         {
             // This would integrate with external monitoring systems like:
             // - Application Insights

@@ -321,7 +321,7 @@ namespace E_Commerce_BE.Services
                     var backup = new BackupResult
                     {
                         Timestamp = file.CreationTime,
-                        FilePath = file.FullPath,
+                        FilePath = file.FullName,
                         FileSize = file.Length,
                         Status = BackupStatus.Successful,
                         Type = DetermineBackupType(file.Name)

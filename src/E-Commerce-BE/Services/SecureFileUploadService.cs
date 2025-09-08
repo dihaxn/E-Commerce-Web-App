@@ -8,9 +8,9 @@ namespace E_Commerce_BE.Services
         private readonly FileUploadSettings _settings;
         private readonly IWebHostEnvironment _environment;
 
-        public SecureFileUploadService(FileUploadSettings settings, IWebHostEnvironment environment)
+        public SecureFileUploadService(SecurityConfiguration securityConfig, IWebHostEnvironment environment)
         {
-            _settings = settings;
+            _settings = securityConfig.FileUploadSettings;
             _environment = environment;
         }
 

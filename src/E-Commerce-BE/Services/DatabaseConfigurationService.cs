@@ -33,7 +33,7 @@ namespace E_Commerce_BE.Services
                     errorNumbersToAdd: null);
 
                 sqlOptions.CommandTimeout(30);
-                sqlOptions.EnableSensitiveDataLogging(false); // Disable in production
+                
             });
 
             _logger.LogInformation("Database configured successfully");

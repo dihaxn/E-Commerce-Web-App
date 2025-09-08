@@ -25,7 +25,7 @@ namespace E_Commerce_BE.Services
                 HttpOnly = true,
                 Secure = true, // Requires HTTPS
                 SameSite = SameSiteMode.Strict,
-                MaxAge = maxAge ?? TimeSpan.FromHours(24),
+                MaxAge = maxAge.HasValue ? TimeSpan.FromSeconds(maxAge.Value) : TimeSpan.FromHours(24),
                 Path = "/"
             };
 

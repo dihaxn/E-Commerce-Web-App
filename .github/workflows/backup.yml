@@ -1,0 +1,279 @@
+name: 💾 Database Backup & Recovery
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # Daily at 2 AM UTC
+  workflow_dispatch:
+    inputs:
+      backup_type:
+        description: "Type of backup"
+        required: true
+        default: "full"
+        type: choice
+        options:
+          - full
+          - incremental
+          - restore
+
+jobs:
+  # 💾 Full Database Backup
+  full-backup:
+    name: 💾 Full Backup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.backup_type == 'full' || github.event.inputs.backup_type == '' || github.event_name == 'schedule'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install SQL Server tools
+        run: |
+          wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
+          sudo apt-get update
+          sudo apt-get install -y mssql-tools unixodbc-dev
+
+      - name: Create backup script
+        run: |
+          cat > backup-script.sql << 'EOF'
+          -- Full database backup
+          BACKUP DATABASE [StoreDb] 
+          TO DISK = '/tmp/backup/StoreDb_Full_' + FORMAT(GETDATE(), 'yyyyMMdd_HHmmss') + '.bak'
+          WITH FORMAT, INIT, COMPRESSION, CHECKSUM;
+
+          -- Verify backup
+          RESTORE VERIFYONLY FROM DISK = '/tmp/backup/StoreDb_Full_' + FORMAT(GETDATE(), 'yyyyMMdd_HHmmss') + '.bak';
+          EOF
+
+      - name: Create backup directory
+        run: mkdir -p /tmp/backup
+
+      - name: Execute backup
+        run: |
+          sqlcmd -S "${{ secrets.DB_SERVER }}" -U "${{ secrets.DB_USER }}" -P "${{ secrets.DB_PASSWORD }}" -d "StoreDb" -i backup-script.sql
+
+      - name: Upload backup to Azure Storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+              --source /tmp/backup \
+              --destination backups \
+              --overwrite
+
+      - name: Clean up local backup files
+        run: rm -rf /tmp/backup
+
+      - name: Notify backup success
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "✅ Full database backup completed successfully"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # 📈 Incremental Backup
+  incremental-backup:
+    name: 📈 Incremental Backup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.backup_type == 'incremental'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install SQL Server tools
+        run: |
+          wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
+          sudo apt-get update
+          sudo apt-get install -y mssql-tools unixodbc-dev
+
+      - name: Create incremental backup script
+        run: |
+          cat > incremental-backup.sql << 'EOF'
+          -- Incremental backup (differential)
+          BACKUP DATABASE [StoreDb] 
+          TO DISK = '/tmp/backup/StoreDb_Diff_' + FORMAT(GETDATE(), 'yyyyMMdd_HHmmss') + '.bak'
+          WITH DIFFERENTIAL, COMPRESSION, CHECKSUM;
+          EOF
+
+      - name: Create backup directory
+        run: mkdir -p /tmp/backup
+
+      - name: Execute incremental backup
+        run: |
+          sqlcmd -S "${{ secrets.DB_SERVER }}" -U "${{ secrets.DB_USER }}" -P "${{ secrets.DB_PASSWORD }}" -d "StoreDb" -i incremental-backup.sql
+
+      - name: Upload backup to Azure Storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+              --source /tmp/backup \
+              --destination backups/incremental \
+              --overwrite
+
+      - name: Clean up local backup files
+        run: rm -rf /tmp/backup
+
+  # 🔄 Database Restore
+  database-restore:
+    name: 🔄 Database Restore
+    runs-on: ubuntu-latest
+    if: github.event.inputs.backup_type == 'restore'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install SQL Server tools
+        run: |
+          wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
+          sudo apt-get update
+          sudo apt-get install -y mssql-tools unixodbc-dev
+
+      - name: Download latest backup
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            # Get the latest backup file
+            latest_backup=$(az storage blob list \
+              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+              --container-name backups \
+              --query "[?contains(name, 'StoreDb_Full_')].name" \
+              --output tsv | sort | tail -1)
+
+            # Download the backup
+            az storage blob download \
+              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+              --container-name backups \
+              --name "$latest_backup" \
+              --file "/tmp/restore/$latest_backup"
+
+      - name: Create restore script
+        run: |
+          cat > restore-script.sql << 'EOF'
+          -- Restore database
+          RESTORE DATABASE [StoreDb] 
+          FROM DISK = '/tmp/restore/StoreDb_Full_*.bak'
+          WITH REPLACE, RECOVERY;
+          EOF
+
+      - name: Create restore directory
+        run: mkdir -p /tmp/restore
+
+      - name: Execute restore
+        run: |
+          sqlcmd -S "${{ secrets.DB_SERVER }}" -U "${{ secrets.DB_USER }}" -P "${{ secrets.DB_PASSWORD }}" -d "master" -i restore-script.sql
+
+      - name: Verify restore
+        run: |
+          sqlcmd -S "${{ secrets.DB_SERVER }}" -U "${{ secrets.DB_USER }}" -P "${{ secrets.DB_PASSWORD }}" -d "StoreDb" -Q "SELECT COUNT(*) as TableCount FROM INFORMATION_SCHEMA.TABLES"
+
+      - name: Clean up restore files
+        run: rm -rf /tmp/restore
+
+      - name: Notify restore completion
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "✅ Database restore completed successfully"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # 🧹 Backup Cleanup
+  backup-cleanup:
+    name: 🧹 Backup Cleanup
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    environment: production
+
+    steps:
+      - name: Clean up old backups
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            # Delete backups older than 30 days
+            cutoff_date=$(date -d '30 days ago' '+%Y-%m-%d')
+
+            # Get old backup files
+            old_backups=$(az storage blob list \
+              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+              --container-name backups \
+              --query "[?properties.lastModified < '$cutoff_date'].name" \
+              --output tsv)
+
+            # Delete old backups
+            for backup in $old_backups; do
+              az storage blob delete \
+                --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+                --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+                --container-name backups \
+                --name "$backup"
+            done
+
+      - name: Notify cleanup completion
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "🧹 Old backup cleanup completed"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # 📊 Backup Report
+  backup-report:
+    name: 📊 Backup Report
+    runs-on: ubuntu-latest
+    needs: [full-backup, incremental-backup, database-restore, backup-cleanup]
+    if: always()
+
+    steps:
+      - name: Generate backup report
+        run: |
+          echo "# 💾 Backup Report" >> backup-report.md
+          echo "Generated on: $(date)" >> backup-report.md
+          echo "" >> backup-report.md
+          echo "## Backup Status" >> backup-report.md
+          echo "- Full Backup: ${{ needs.full-backup.result }}" >> backup-report.md
+          echo "- Incremental Backup: ${{ needs.incremental-backup.result }}" >> backup-report.md
+          echo "- Database Restore: ${{ needs.database-restore.result }}" >> backup-report.md
+          echo "- Backup Cleanup: ${{ needs.backup-cleanup.result }}" >> backup-report.md
+          echo "" >> backup-report.md
+          echo "## Backup Storage" >> backup-report.md
+          echo "- Location: Azure Storage Account" >> backup-report.md
+          echo "- Retention: 30 days" >> backup-report.md
+          echo "- Compression: Enabled" >> backup-report.md
+          echo "- Verification: Enabled" >> backup-report.md
+
+      - name: Upload backup report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-report
+          path: backup-report.md

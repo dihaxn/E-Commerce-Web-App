@@ -71,7 +71,7 @@ namespace E_Commerce_BE.Controllers
                 return RedirectToAction("Index", "Checkout");
             }
 
-            return RedirectToAction("Confirm");
+            return RedirectToAction("ConfirmOrder");
         }
 
         public IActionResult Confirm()
@@ -102,7 +102,7 @@ namespace E_Commerce_BE.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Confirm()
+        public async Task<IActionResult> ConfirmOrder()
         {
             List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
             decimal total = CartHelper.GetSubtotal(cartItems) + shippingFee;

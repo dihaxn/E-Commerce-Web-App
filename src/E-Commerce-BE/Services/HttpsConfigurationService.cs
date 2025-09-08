@@ -45,12 +45,7 @@ namespace E_Commerce_BE.Services
         {
             var hstsMaxAge = _configuration.GetValue<int>("HttpsRedirection:HstsMaxAge", 365);
             
-            app.UseHsts(options =>
-            {
-                options.MaxAge = TimeSpan.FromDays(hstsMaxAge);
-                options.IncludeSubDomains = true;
-                options.Preload = true;
-            });
+            app.UseHsts();
 
             _logger.LogInformation($"HSTS configured with max age: {hstsMaxAge} days");
         }

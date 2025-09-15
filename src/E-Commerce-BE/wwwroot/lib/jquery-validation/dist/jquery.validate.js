@@ -489,7 +489,7 @@ $.extend( $.validator, {
 				delete this.invalid[ cleanElement.name ];
 			} else {
 				this.prepareElement( checkElement );
-				this.currentElements = $( checkElement );
+				this.currentElements = $( [] ).add( checkElement );
 
 				// If this element is grouped, then validate all group elements already
 				// containing a value
@@ -1102,7 +1102,7 @@ $.extend( $.validator, {
 				return param;
 			},
 			"string": function( param, element ) {
-				return !!$( param, element.form ).length;
+				return !!$( element.form ).find( param ).length;
 			},
 			"function": function( param, element ) {
 				return param( element );
@@ -1550,7 +1550,7 @@ $.extend( $.validator, {
 		equalTo: function( value, element, param ) {
 
 			// Bind to the blur event of the target in order to revalidate whenever the target field is updated
-			var target = $( param );
+			var target = $( element.form ).find( param );
 			if ( this.settings.onfocusout && target.not( ".validate-equalTo-blur" ).length ) {
 				target.addClass( "validate-equalTo-blur" ).on( "blur.validate-equalTo", function() {
 					$( element ).valid();

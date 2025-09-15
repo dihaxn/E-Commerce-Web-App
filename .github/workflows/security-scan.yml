@@ -58,7 +58,7 @@ jobs:
           queries: security-and-quality
 
       - name: Build for CodeQL
-        run: dotnet build src/E-Commerce-BE/E-Commerce-BE.csproj --configuration Release --no-restore
+        run: dotnet build src/E-Commerce-BE.sln --configuration Release --no-restore
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

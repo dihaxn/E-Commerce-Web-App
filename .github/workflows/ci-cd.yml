@@ -68,6 +68,7 @@ jobs:
       contents: read
       actions: write
       pull-requests: write
+      checks: write
     needs: security-analysis
     strategy:
       matrix:
@@ -114,15 +115,6 @@ jobs:
           --logger "trx;LogFileName=test-results.trx"
           -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 
-      - name: Debug list test result files
-        if: always()
-        run: |
-          echo "Listing test result directory structure:";
-          find tests/E-Commerce-BE.Tests/TestResults -maxdepth 4 -type f -printf '%P\n' || echo "No files found";
-          echo "Attempting glob match for TRX:";
-          ls -R tests/E-Commerce-BE.Tests/TestResults || true;
-          echo "Done listing."
-
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -143,7 +135,36 @@ jobs:
         if: always()
         with:
           name: coverage-${{ matrix.os }}
-          path: tests/E-Commerce-BE.Tests/TestResults/**/coverage.cobertura.xml
+          path: tests/E--Commerce-BE.Tests/TestResults/**/coverage.cobertura.xml
+
+      - name: Generate coverage summary
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.3.0
+        if: success() || failure()
+        with:
+          reports: tests/E-Commerce-BE.Tests/TestResults/**/coverage.cobertura.xml
+          targetdir: "coveragereport"
+          reporttypes: "Html_Dark;Badges"
+          assemblyfilters: "+E-Commerce-BE"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report-${{ matrix.os }}
+          path: coveragereport
+
+      - name: Update coverage badge
+        if: matrix.os == 'ubuntu-latest' # Run only once
+        run: |
+          # Copy the new badge to a known location
+          cp coveragereport/badges/linecoverage.svg .github/badges/coverage.svg
+          # Add and commit the badge
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .github/badges/coverage.svg
+          # Commit only if there are changes
+          git diff --staged --quiet || git commit -m "ci: update coverage badge"
+          git push
 
   # 🐳 Docker Build & Security Scan
   docker-build:

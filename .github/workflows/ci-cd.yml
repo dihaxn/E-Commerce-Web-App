@@ -41,13 +41,16 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Restore dependencies
-        run: dotnet restore src/E-Commerce-BE/E-Commerce-BE.csproj
-
       - name: Security scan with CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: csharp
+
+      - name: Restore dependencies
+        run: dotnet restore src/E-Commerce-BE/E-Commerce-BE.csproj
+
+      - name: Build application
+        run: dotnet build src/E-Commerce-BE/E-Commerce-BE.csproj --no-restore
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

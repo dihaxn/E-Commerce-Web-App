@@ -837,21 +837,9 @@ $.extend( $.validator, {
 		// Return the custom message for the given element and validation method
 		// specified in the element's HTML5 data attribute
 		// return the generic message if present and no method specific message is present
-		// Helper to escape HTML entities in error messages
-		escapeHtml: function(string) {
-			return String(string)
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&#39;');
-		},
-
 		customDataMessage: function( element, method ) {
-			var msg =
-				$( element ).data( "msg" + method.charAt( 0 ).toUpperCase() +
-					method.substring( 1 ).toLowerCase() ) || $( element ).data( "msg" );
-			return typeof msg === "string" ? this.escapeHtml(msg) : msg;
+			return $( element ).data( "msg" + method.charAt( 0 ).toUpperCase() +
+				method.substring( 1 ).toLowerCase() ) || $( element ).data( "msg" );
 		},
 
 		// Return the custom message for the given element name and validation method
@@ -1115,7 +1103,7 @@ $.extend( $.validator, {
 				return param;
 			},
 			"string": function( param, element ) {
-				return !!$( element.form ).find( this.escapeCssMeta( param ) ).length;
+				return !!$( element.form ).find( document.querySelector( this.escapeCssMeta( param ) ) ).length;
 			},
 			"function": function( param, element ) {
 				return param( element );
@@ -1563,7 +1551,7 @@ $.extend( $.validator, {
 		equalTo: function( value, element, param ) {
 
 			// Bind to the blur event of the target in order to revalidate whenever the target field is updated
-			var target = $( element.form ).find( this.escapeCssMeta( param ) );
+			var target = $( element.form ).find( document.querySelector( this.escapeCssMeta( param ) ) );
 			if ( this.settings.onfocusout && target.not( ".validate-equalTo-blur" ).length ) {
 				target.addClass( "validate-equalTo-blur" ).on( "blur.validate-equalTo", function() {
 					$( element ).valid();

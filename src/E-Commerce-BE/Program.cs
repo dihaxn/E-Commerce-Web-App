@@ -18,16 +18,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
         throw new InvalidOperationException("Database connection string is not configured");
     }
-    
+
     options.UseSqlServer(connectionString, sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(
             maxRetryCount: 5,
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorNumbersToAdd: null);
-        
+
         sqlOptions.CommandTimeout(30);
-        
+
     });
 });
 
@@ -124,9 +124,9 @@ if (httpsService == null)
         context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
         context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
         context.Response.Headers.Append("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-        
+
         // Content Security Policy
-        context.Response.Headers.Append("Content-Security-Policy", 
+        context.Response.Headers.Append("Content-Security-Policy",
             "default-src 'self'; " +
             "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.paypal.com; " +
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; " +
@@ -221,9 +221,9 @@ using (var backgroundScope = app.Services.CreateScope())
                 var now = DateTime.UtcNow;
                 var nextBackup = now.Date.AddDays(1).AddHours(2); // 2 AM UTC
                 var delay = nextBackup - now;
-                
+
                 await System.Threading.Tasks.Task.Delay(delay);
-                
+
                 try
                 {
                     await backupService.CreateFullBackupAsync();

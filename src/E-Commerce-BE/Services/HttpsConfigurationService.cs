@@ -55,15 +55,15 @@ namespace E_Commerce_BE.Services
             app.Use(async (context, next) =>
             {
                 // Security Headers
-                context.Response.Headers.Add("X-Frame-Options", "DENY");
-                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-                context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
-                context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
-                context.Response.Headers.Add("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+                context.Response.Headers.Append("X-Frame-Options", "DENY");
+                context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+                context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+                context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+                context.Response.Headers.Append("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
                 
                 // Content Security Policy
                 var csp = BuildContentSecurityPolicy();
-                context.Response.Headers.Add("Content-Security-Policy", csp);
+                context.Response.Headers.Append("Content-Security-Policy", csp);
                 
                 await next();
             });
@@ -94,12 +94,12 @@ namespace E_Commerce_BE.Services
                    _configuration.GetValue<bool>("HttpsRedirection:Enabled", true);
         }
 
-        public string GetHttpsPort()
+        public string? GetHttpsPort()
         {
             return _configuration.GetValue<string>("HttpsPort", "443");
         }
 
-        public string GetHttpPort()
+        public string? GetHttpPort()
         {
             return _configuration.GetValue<string>("HttpPort", "80");
         }

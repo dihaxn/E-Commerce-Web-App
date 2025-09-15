@@ -151,7 +151,7 @@ namespace E_Commerce_BE.Services
             return result;
         }
 
-        private async Task CreateSqlServerBackupAsync(string backupPath)
+        private Task CreateSqlServerBackupAsync(string backupPath)
         {
             // This is a simplified version - in production, you'd use:
             // - SQL Server Management Objects (SMO)
@@ -163,7 +163,7 @@ namespace E_Commerce_BE.Services
                 // For now, we'll create a simple backup file
                 // In production, implement proper SQL Server backup
                 var backupContent = $"-- Database Backup\n-- Created: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n-- This is a placeholder for actual SQL Server backup\n";
-                await File.WriteAllTextAsync(backupPath, backupContent);
+                File.WriteAllText(backupPath, backupContent);
                 
                 _logger.LogInformation($"SQL Server backup placeholder created: {backupPath}");
             }
@@ -172,9 +172,10 @@ namespace E_Commerce_BE.Services
                 _logger.LogError(ex, "Failed to create SQL Server backup");
                 throw;
             }
+            return Task.CompletedTask;
         }
 
-        private async Task CreateFileBackupAsync(string backupPath)
+        private Task CreateFileBackupAsync(string backupPath)
         {
             try
             {
@@ -222,6 +223,7 @@ namespace E_Commerce_BE.Services
                 _logger.LogError(ex, "Failed to create file backup");
                 throw;
             }
+            return Task.CompletedTask;
         }
 
         private async Task<string> CreateBackupManifestAsync(BackupResult dbBackup, BackupResult fileBackup)
@@ -255,7 +257,7 @@ namespace E_Commerce_BE.Services
             return manifestPath;
         }
 
-        private async Task CleanupOldBackupsAsync(string backupPath, BackupType backupType)
+        private Task CleanupOldBackupsAsync(string backupPath, BackupType backupType)
         {
             try
             {
@@ -286,11 +288,12 @@ namespace E_Commerce_BE.Services
             {
                 _logger.LogError(ex, "Failed to cleanup old backups");
             }
+            return Task.CompletedTask;
         }
 
         private string GetBackupPath()
         {
-            var basePath = _configuration.GetValue<string>("Backup:BasePath", "Backups");
+            var basePath = _configuration.GetValue<string>("Backup:BasePath") ?? "Backups";
             var environmentPath = Path.Combine(basePath, _environment.EnvironmentName);
             return Path.Combine(_environment.ContentRootPath, environmentPath);
         }
@@ -301,13 +304,13 @@ namespace E_Commerce_BE.Services
             return "1.0.0";
         }
 
-        public async Task<List<BackupResult>> GetBackupHistoryAsync()
+        public Task<List<BackupResult>> GetBackupHistoryAsync()
         {
             var backupPath = GetBackupPath();
             var backups = new List<BackupResult>();
 
             if (!Directory.Exists(backupPath))
-                return backups;
+                return Task.FromResult(backups);
 
             try
             {
@@ -335,7 +338,7 @@ namespace E_Commerce_BE.Services
                 _logger.LogError(ex, "Failed to get backup history");
             }
 
-            return backups;
+            return Task.FromResult(backups);
         }
 
         private BackupType DetermineBackupType(string fileName)

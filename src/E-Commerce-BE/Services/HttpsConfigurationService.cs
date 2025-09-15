@@ -11,7 +11,7 @@ namespace E_Commerce_BE.Services
         private readonly IWebHostEnvironment _environment;
 
         public HttpsConfigurationService(
-            IConfiguration configuration, 
+            IConfiguration configuration,
             ILogger<HttpsConfigurationService> logger,
             IWebHostEnvironment environment)
         {
@@ -26,13 +26,13 @@ namespace E_Commerce_BE.Services
             {
                 // Force HTTPS in production
                 app.UseHttpsRedirection();
-                
+
                 // Configure HSTS
                 ConfigureHsts(app);
-                
+
                 // Configure security headers
                 ConfigureSecurityHeaders(app);
-                
+
                 _logger.LogInformation("HTTPS configuration applied for production");
             }
             else
@@ -44,7 +44,7 @@ namespace E_Commerce_BE.Services
         private void ConfigureHsts(IApplicationBuilder app)
         {
             var hstsMaxAge = _configuration.GetValue<int>("HttpsRedirection:HstsMaxAge", 365);
-            
+
             app.UseHsts();
 
             _logger.LogInformation($"HSTS configured with max age: {hstsMaxAge} days");
@@ -60,11 +60,11 @@ namespace E_Commerce_BE.Services
                 context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
                 context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
                 context.Response.Headers.Append("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-                
+
                 // Content Security Policy
                 var csp = BuildContentSecurityPolicy();
                 context.Response.Headers.Append("Content-Security-Policy", csp);
-                
+
                 await next();
             });
         }
@@ -90,7 +90,7 @@ namespace E_Commerce_BE.Services
 
         public bool IsHttpsEnabled()
         {
-            return _environment.IsProduction() && 
+            return _environment.IsProduction() &&
                    _configuration.GetValue<bool>("HttpsRedirection:Enabled", true);
         }
 

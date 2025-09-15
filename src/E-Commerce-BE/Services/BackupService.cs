@@ -157,14 +157,14 @@ namespace E_Commerce_BE.Services
             // - SQL Server Management Objects (SMO)
             // - Native SQL Server backup commands
             // - Azure SQL Database backup APIs
-            
+
             try
             {
                 // For now, we'll create a simple backup file
                 // In production, implement proper SQL Server backup
                 var backupContent = $"-- Database Backup\n-- Created: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n-- This is a placeholder for actual SQL Server backup\n";
                 File.WriteAllText(backupPath, backupContent);
-                
+
                 _logger.LogInformation($"SQL Server backup placeholder created: {backupPath}");
             }
             catch (Exception ex)
@@ -229,7 +229,7 @@ namespace E_Commerce_BE.Services
         private async Task<string> CreateBackupManifestAsync(BackupResult dbBackup, BackupResult fileBackup)
         {
             var manifestPath = Path.Combine(GetBackupPath(), $"BackupManifest_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json");
-            
+
             var manifest = new
             {
                 BackupId = Guid.NewGuid().ToString(),
@@ -349,7 +349,7 @@ namespace E_Commerce_BE.Services
                 return BackupType.Files;
             if (fileName.Contains("Manifest"))
                 return BackupType.Full;
-            
+
             return BackupType.Unknown;
         }
     }

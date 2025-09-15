@@ -58,7 +58,7 @@ jobs:
           queries: security-and-quality
 
       - name: Build for CodeQL
-        run: dotnet build src/E-Commerce-BE.sln --configuration Release --no-restore
+        run: dotnet build src/E-Commerce-BE.sln --configuration Release
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
@@ -140,6 +140,10 @@ jobs:
   security-report:
     name: 📊 Security Report
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     needs: [dependency-scan, sast-scan, secret-scan, container-scan]
     if: always()
     steps:

@@ -1,5 +1,6 @@
 ﻿@model StoreSearchModel
 @using E_Commerce_BE.Models
+@using System.Net
 @{
     ViewData["Title"] = "Store";
     var products = ViewBag.Products as List<Product>;
@@ -107,8 +108,10 @@
                 {
                     <li>
                         <a class="pagination-link @(i == ViewBag.PageIndex ? "pagination-active" : "")" asp-route-pageIndex="@i"
-                            asp-route-search="@Model.Search" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category"
-                            asp-route-sort="@Model.Sort">
+                           asp-route-search="@(Model.Search != null ? WebUtility.HtmlEncode(Model.Search) : "")"
+                           asp-route-brand="@(Model.Brand != null ? WebUtility.HtmlEncode(Model.Brand) : "")"
+                           asp-route-category="@(Model.Category != null ? WebUtility.HtmlEncode(Model.Category) : "")"
+                           asp-route-sort="@(Model.Sort != null ? WebUtility.HtmlEncode(Model.Sort) : "")">
                             @i
                         </a>
                     </li>

@@ -684,7 +684,7 @@ $.extend( $.validator, {
 		},
 
 		clean: function( selector ) {
-			return $( document ).find( selector )[ 0 ];
+			return $( this.currentForm ).find( selector )[ 0 ];
 		},
 
 		errors: function() {
@@ -1013,7 +1013,7 @@ $.extend( $.validator, {
 						$.each( v.groups, function( name, testgroup ) {
 							if ( testgroup === group ) {
 								$( v.currentForm )
-									.find( "[name='" + v.escapeCssMeta( name ) + "']" )
+									.find( v.escapeCssMeta( "[name='" + name + "']" ) )
 									.attr( "aria-describedby", error.attr( "id" ) );
 							}
 						} );
@@ -1038,14 +1038,13 @@ $.extend( $.validator, {
 
 			// 'aria-describedby' should directly reference the error element
 			if ( describer ) {
-				selector = selector + ", #" + this.escapeCssMeta( describer )
-					.replace( /\s+/g, ", #" );
+				selector = selector + ", #" + this.escapeCssMeta( describer ).replace( /\s+/g, ", #" );
 			}
 
 			return this
 				.errors()
 				.filter( function() {
-					return $( this ).is( selector );
+					return $( this ).is( document.querySelector( selector ) );
 				} );
 		},
 
@@ -1104,7 +1103,7 @@ $.extend( $.validator, {
 				return param;
 			},
 			"string": function( param, element ) {
-				return !!$( element.form ).find( param ).length;
+				return !!$( element.form ).find( this.escapeCssMeta( param ) ).length;
 			},
 			"function": function( param, element ) {
 				return param( element );
@@ -1552,7 +1551,7 @@ $.extend( $.validator, {
 		equalTo: function( value, element, param ) {
 
 			// Bind to the blur event of the target in order to revalidate whenever the target field is updated
-			var target = $( element.form ).find( param );
+			var target = $( element.form ).find( this.escapeCssMeta( param ) );
 			if ( this.settings.onfocusout && target.not( ".validate-equalTo-blur" ).length ) {
 				target.addClass( "validate-equalTo-blur" ).on( "blur.validate-equalTo", function() {
 					$( element ).valid();

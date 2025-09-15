@@ -980,7 +980,7 @@ $.extend( $.validator, {
 				if ( this.labelContainer.length ) {
 					this.labelContainer.append( place );
 				} else if ( this.settings.errorPlacement ) {
-					this.settings.errorPlacement.call( this, place, $( element ) );
+					this.settings.errorPlacement( place, $( element ) );
 				} else {
 					place.insertAfter( element );
 				}
@@ -1012,7 +1012,8 @@ $.extend( $.validator, {
 						v = this;
 						$.each( v.groups, function( name, testgroup ) {
 							if ( testgroup === group ) {
-								$( "[name='" + v.escapeCssMeta( name ) + "']", v.currentForm )
+								$( v.currentForm )
+									.find( "[name='" + v.escapeCssMeta( name ) + "']" )
 									.attr( "aria-describedby", error.attr( "id" ) );
 							}
 						} );

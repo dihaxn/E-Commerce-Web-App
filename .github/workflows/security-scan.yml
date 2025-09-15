@@ -2,11 +2,11 @@ name: 🔒 Security Scanning
 
 on:
   schedule:
-    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
+    - cron: "0 2 * * 1" # Weekly on Monday at 2 AM
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: "8.0.x"
 
       - name: Restore dependencies
         run: dotnet restore src/E-Commerce-BE/E-Commerce-BE.csproj
@@ -49,13 +49,16 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: "8.0.x"
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: csharp
           queries: security-and-quality
+
+      - name: Build project
+        run: dotnet build src/E-Commerce-BE/E-Commerce-BE.csproj --configuration Release
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
@@ -103,19 +106,19 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ecommerce-app:security-scan'
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
+          image-ref: "ecommerce-app:security-scan"
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
 
       - name: Run Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
 
   # 🌐 Web Application Security Scan
   web-security-scan:
@@ -130,9 +133,9 @@ jobs:
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.7.0
         with:
-          target: 'https://ecommerce-app-staging.azurewebsites.net'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
+          target: "https://ecommerce-app-staging.azurewebsites.net"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
 
       - name: Upload ZAP results
         uses: actions/upload-artifact@v4

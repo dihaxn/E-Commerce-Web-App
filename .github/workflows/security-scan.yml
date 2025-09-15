@@ -14,6 +14,8 @@ jobs:
   dependency-scan:
     name: 🔍 Dependency Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,6 +42,9 @@ jobs:
   sast-scan:
     name: 🛡️ SAST Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -67,6 +72,8 @@ jobs:
   secret-scan:
     name: 🔐 Secret Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -85,6 +92,8 @@ jobs:
   container-scan:
     name: 🐳 Container Security
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -118,6 +127,8 @@ jobs:
   web-security-scan:
     name: 🌐 Web Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout code

@@ -20,6 +20,8 @@ jobs:
   full-backup:
     name: 💾 Full Backup
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event.inputs.backup_type == 'full' || github.event.inputs.backup_type == '' || github.event_name == 'schedule'
     environment: production
 
@@ -84,6 +86,8 @@ jobs:
   incremental-backup:
     name: 📈 Incremental Backup
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event.inputs.backup_type == 'incremental'
     environment: production
 
@@ -137,6 +141,8 @@ jobs:
   database-restore:
     name: 🔄 Database Restore
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event.inputs.backup_type == 'restore'
     environment: production
 
@@ -211,6 +217,8 @@ jobs:
   backup-cleanup:
     name: 🧹 Backup Cleanup
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event_name == 'schedule'
     environment: production
 
@@ -251,6 +259,8 @@ jobs:
   backup-report:
     name: 📊 Backup Report
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [full-backup, incremental-backup, database-restore, backup-cleanup]
     if: always()
 

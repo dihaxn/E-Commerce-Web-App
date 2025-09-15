@@ -2,31 +2,34 @@ name: 🚀 CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
-        - staging
-        - production
+          - staging
+          - production
 
 env:
-  DOTNET_VERSION: '8.0.x'
-  NODE_VERSION: '18.x'
-  AZURE_WEBAPP_NAME: 'ecommerce-app'
-  AZURE_WEBAPP_PACKAGE_PATH: './publish'
+  DOTNET_VERSION: "8.0.x"
+  NODE_VERSION: "18.x"
+  AZURE_WEBAPP_NAME: "ecommerce-app"
+  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
 
 jobs:
   # 🔍 Code Quality & Security Analysis
   security-analysis:
     name: 🔒 Security Analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -58,11 +61,15 @@ jobs:
   build-and-test:
     name: 🏗️ Build & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+      pull-requests: write
     needs: security-analysis
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -76,8 +83,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'src/E-Commerce-BE/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "src/E-Commerce-BE/package-lock.json"
 
       - name: Install npm dependencies
         working-directory: src/E-Commerce-BE
@@ -115,6 +122,9 @@ jobs:
   docker-build:
     name: 🐳 Docker Build & Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     needs: build-and-test
     steps:
       - name: Checkout code
@@ -136,23 +146,24 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ecommerce-app:latest'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          image-ref: "ecommerce-app:latest"
+          format: "sarif"
+          output: "trivy-results.sarif"
 
       - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   # 🚀 Deploy to Staging
   deploy-staging:
     name: 🚀 Deploy to Staging
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build-and-test, docker-build]
     if: github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch'
-    environment: staging
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -198,10 +209,12 @@ jobs:
   deploy-production:
     name: 🚀 Deploy to Production
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build-and-test, docker-build]
     if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
     environment: production
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -247,7 +260,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: success
-          text: '🚀 Production deployment successful!'
+          text: "🚀 Production deployment successful!"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -255,14 +268,16 @@ jobs:
   rollback:
     name: 🔄 Rollback
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [deploy-staging, deploy-production]
     if: failure()
-    
+
     steps:
       - name: Rollback notification
         uses: 8398a7/action-slack@v3
         with:
           status: failure
-          text: '❌ Deployment failed! Please check the logs and consider rollback.'
+          text: "❌ Deployment failed! Please check the logs and consider rollback."
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -23,6 +23,8 @@ jobs:
   load-test:
     name: 🏃‍♂️ Load Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event.inputs.test_type == 'load' || github.event.inputs.test_type == '' || github.event_name == 'schedule'
 
     steps:
@@ -120,6 +122,8 @@ jobs:
   stress-test:
     name: 💪 Stress Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event.inputs.test_type == 'stress'
 
     steps:
@@ -193,6 +197,8 @@ jobs:
   spike-test:
     name: 📈 Spike Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event.inputs.test_type == 'spike'
 
     steps:
@@ -245,6 +251,8 @@ jobs:
   volume-test:
     name: 📊 Volume Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event.inputs.test_type == 'volume'
 
     steps:
@@ -308,6 +316,8 @@ jobs:
   performance-report:
     name: 📈 Performance Report
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [load-test, stress-test, spike-test, volume-test]
     if: always()
 

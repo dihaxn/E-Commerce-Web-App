@@ -264,6 +264,8 @@ jobs:
   monitoring-report:
     name: 📊 Monitoring Report
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs:
       [
         health-monitoring,

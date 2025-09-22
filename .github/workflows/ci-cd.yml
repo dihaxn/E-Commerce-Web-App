@@ -15,21 +15,10 @@ on:
         options:
           - staging
           - production
-      cloud_provider:
-        description: "Cloud provider for deployment"
-        required: true
-        default: "oracle"
-        type: choice
-        options:
-          - oracle
-          - azure
-          - skip
 
 env:
   DOTNET_VERSION: "8.0.x"
   NODE_VERSION: "18.x"
-  AZURE_WEBAPP_NAME: "ecommerce-app"
-  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
 
 jobs:
   # 🔍 Code Quality & Security Analysis
@@ -265,7 +254,7 @@ jobs:
     permissions:
       contents: read
     needs: [build-and-test, docker-build]
-    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging' && github.event.inputs.cloud_provider == 'oracle')
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
 
     steps:
       - name: Trigger Oracle Cloud Deployment
@@ -290,7 +279,7 @@ jobs:
     permissions:
       contents: read
     needs: [build-and-test, docker-build]
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production' && github.event.inputs.cloud_provider == 'oracle')
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
     environment: production
 
     steps:
@@ -308,130 +297,3 @@ jobs:
               }
             });
             console.log('Oracle Cloud deployment triggered:', result.status);
-
-  # 🚀 Deploy to Staging
-  deploy-staging:
-    name: 🚀 Deploy to Azure Staging
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    needs: [build-and-test, docker-build]
-    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.cloud_provider == 'azure' && github.event.inputs.environment == 'staging')
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install npm dependencies
-        working-directory: src/E-Commerce-BE
-        run: npm ci
-
-      - name: Build Tailwind CSS
-        working-directory: src/E-Commerce-BE
-        run: npm run css:build
-
-      - name: Publish application
-        run: dotnet publish src/E-Commerce-BE/E-Commerce-BE.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}-staging
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING }}
-
-      - name: Run database migrations
-        run: |
-          dotnet ef database update --project src/E-Commerce-BE/E-Commerce-BE.csproj --connection "${{ secrets.STAGING_CONNECTION_STRING }}"
-
-      - name: Health check
-        run: |
-          sleep 30
-          curl -f https://${{ env.AZURE_WEBAPP_NAME }}-staging.azurewebsites.net/health || exit 1
-
-  # 🚀 Deploy to Production
-  deploy-production:
-    name: 🚀 Deploy to Azure Production
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    needs: [build-and-test, docker-build]
-    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.cloud_provider == 'azure' && github.event.inputs.environment == 'production')
-    environment: production
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install npm dependencies
-        working-directory: src/E-Commerce-BE
-        run: npm ci
-
-      - name: Build Tailwind CSS
-        working-directory: src/E-Commerce-BE
-        run: npm run css:build
-
-      - name: Publish application
-        run: dotnet publish src/E-Commerce-BE/E-Commerce-BE.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-
-      - name: Run database migrations
-        run: |
-          dotnet ef database update --project src/E-Commerce-BE/E-Commerce-BE.csproj --connection "${{ secrets.PRODUCTION_CONNECTION_STRING }}"
-
-      - name: Health check
-        run: |
-          sleep 30
-          curl -f https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net/health || exit 1
-
-      - name: Notify deployment success
-        uses: 8398a7/action-slack@v3
-        with:
-          status: success
-          text: "🚀 Production deployment successful!"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  # 🔄 Rollback on Failure
-  rollback:
-    name: 🔄 Rollback
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    needs: [deploy-staging, deploy-production]
-    if: false # Disabled until deployment jobs are enabled
-
-    steps:
-      - name: Rollback notification
-        uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          text: "❌ Deployment failed! Please check the logs and consider rollback."
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

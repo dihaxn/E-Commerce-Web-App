@@ -133,6 +133,17 @@ jobs:
           name: coverage-windows
           path: tests/E-Commerce-BE.Tests/TestResults/**/coverage.cobertura.xml
 
+      - name: Check coverage files before processing
+        shell: pwsh
+        run: |
+          Write-Host "Checking for coverage files..."
+          if (Test-Path "tests/E-Commerce-BE.Tests/TestResults") {
+            Write-Host "TestResults directory found. Contents:"
+            Get-ChildItem -Recurse "tests/E-Commerce-BE.Tests/TestResults" | Select-Object FullName
+          } else {
+            Write-Host "TestResults directory not found"
+          }
+
       - name: Generate coverage summary
         uses: danielpalme/ReportGenerator-GitHub-Action@5.3.0
         if: success() || failure()
@@ -141,6 +152,18 @@ jobs:
           targetdir: "coveragereport"
           reporttypes: "Html_Dark;Badges"
           assemblyfilters: "+E-Commerce-BE"
+        continue-on-error: true
+
+      - name: Verify coverage report generation
+        shell: pwsh
+        run: |
+          Write-Host "Checking ReportGenerator output..."
+          if (Test-Path "coveragereport") {
+            Write-Host "coveragereport directory found. Contents:"
+            Get-ChildItem -Recurse "coveragereport" | Select-Object FullName
+          } else {
+            Write-Host "coveragereport directory not found - ReportGenerator may have failed"
+          }
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -151,12 +174,14 @@ jobs:
 
       - name: Update coverage badge
         shell: pwsh
+        if: always()
         run: |
           # Create badge directory if it doesn't exist
           if (!(Test-Path ".github/badges")) {
             New-Item -ItemType Directory -Path ".github/badges" -Force
+            Write-Host "Created .github/badges directory"
           }
-          
+
           # Check if coverage badge was generated
           if (Test-Path "coveragereport/badges/linecoverage.svg") {
             Write-Host "Coverage badge found, updating..."
@@ -180,14 +205,8 @@ jobs:
               Write-Host "No changes to coverage badge"
             }
           } else {
-            Write-Host "Coverage badge not generated (coveragereport/badges/linecoverage.svg not found), skipping update"
-            # List contents for debugging
-            Write-Host "Contents of coveragereport directory:"
-            if (Test-Path "coveragereport") {
-              Get-ChildItem -Recurse "coveragereport" | Select-Object FullName
-            } else {
-              Write-Host "coveragereport directory not found"
-            }
+            Write-Host "Coverage badge not generated - this is expected if no tests ran or coverage collection failed"
+            Write-Host "This will not fail the build"
           }
 
   # 🐳 Docker Build & Security Scan

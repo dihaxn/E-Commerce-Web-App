@@ -150,21 +150,44 @@ jobs:
           path: coveragereport
 
       - name: Update coverage badge
+        shell: pwsh
         run: |
           # Create badge directory if it doesn't exist
-          mkdir -p .github/badges
+          if (!(Test-Path ".github/badges")) {
+            New-Item -ItemType Directory -Path ".github/badges" -Force
+          }
+          
           # Check if coverage badge was generated
           if (Test-Path "coveragereport/badges/linecoverage.svg") {
+            Write-Host "Coverage badge found, updating..."
             # Copy the new badge to a known location
-            Copy-Item coveragereport/badges/linecoverage.svg .github/badges/coverage.svg
-            # Add and commit the badge
+            Copy-Item "coveragereport/badges/linecoverage.svg" ".github/badges/coverage.svg" -Force
+            
+            # Configure git
             git config --global user.name 'github-actions[bot]'
             git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            
+            # Add the badge file
             git add .github/badges/coverage.svg
-            # Commit only if there are changes
-            git diff --staged --quiet; if ($LASTEXITCODE -ne 0) { git commit -m "ci: update coverage badge"; git push }
+            
+            # Check if there are changes to commit
+            $changes = git diff --staged --quiet
+            if ($LASTEXITCODE -ne 0) {
+              git commit -m "ci: update coverage badge"
+              git push
+              Write-Host "Coverage badge updated and committed"
+            } else {
+              Write-Host "No changes to coverage badge"
+            }
           } else {
-            Write-Host "Coverage badge not generated, skipping update"
+            Write-Host "Coverage badge not generated (coveragereport/badges/linecoverage.svg not found), skipping update"
+            # List contents for debugging
+            Write-Host "Contents of coveragereport directory:"
+            if (Test-Path "coveragereport") {
+              Get-ChildItem -Recurse "coveragereport" | Select-Object FullName
+            } else {
+              Write-Host "coveragereport directory not found"
+            }
           }
 
   # 🐳 Docker Build & Security Scan

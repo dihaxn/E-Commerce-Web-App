@@ -256,7 +256,7 @@ jobs:
     permissions:
       contents: read
     needs: [build-and-test, docker-build]
-    if: github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch'
+    if: false # Disabled until Azure credentials are configured
 
     steps:
       - name: Checkout code
@@ -306,7 +306,7 @@ jobs:
     permissions:
       contents: read
     needs: [build-and-test, docker-build]
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    if: false # Disabled until Azure credentials are configured
     environment: production
 
     steps:
@@ -365,7 +365,7 @@ jobs:
     permissions:
       contents: read
     needs: [deploy-staging, deploy-production]
-    if: failure()
+    if: false # Disabled until deployment jobs are enabled
 
     steps:
       - name: Rollback notification

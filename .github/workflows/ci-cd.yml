@@ -135,7 +135,7 @@ jobs:
         if: always()
         with:
           name: coverage-${{ matrix.os }}
-          path: tests/E--Commerce-BE.Tests/TestResults/**/coverage.cobertura.xml
+          path: tests/E-Commerce-BE.Tests/TestResults/**/coverage.cobertura.xml
 
       - name: Generate coverage summary
         uses: danielpalme/ReportGenerator-GitHub-Action@5.3.0
@@ -185,7 +185,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: src/E-Commerce-BE
-          file: src/E-Commerce-BE/Dockerfile
+          file: ./Dockerfile
           push: false
           tags: ecommerce-app:latest
           cache-from: type=gha

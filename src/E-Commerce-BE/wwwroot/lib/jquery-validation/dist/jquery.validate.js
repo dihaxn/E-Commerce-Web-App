@@ -716,6 +716,14 @@ $.extend( $.validator, {
 		},
 
 		elementValue: function( element ) {
+			// Defensive: don't allow string selector interpreted as HTML (potential XSS)
+			if ( typeof element === "string" && element.trim().charAt(0) === "<" ) {
+				if (window && window.console) {
+					console.warn("Unsafe string used as a selector in elementValue: " + element);
+				}
+				// Fail safe: abort, return empty string
+				return "";
+			}
 			var $element = $( element ),
 				type = element.type,
 				isContentEditable = $element.prop( "isContentEditable" ),

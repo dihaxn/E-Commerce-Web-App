@@ -151,15 +151,21 @@ jobs:
 
       - name: Update coverage badge
         run: |
-          # Copy the new badge to a known location
-          cp coveragereport/badges/linecoverage.svg .github/badges/coverage.svg
-          # Add and commit the badge
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add .github/badges/coverage.svg
-          # Commit only if there are changes
-          git diff --staged --quiet || git commit -m "ci: update coverage badge"
-          git push
+          # Create badge directory if it doesn't exist
+          mkdir -p .github/badges
+          # Check if coverage badge was generated
+          if (Test-Path "coveragereport/badges/linecoverage.svg") {
+            # Copy the new badge to a known location
+            Copy-Item coveragereport/badges/linecoverage.svg .github/badges/coverage.svg
+            # Add and commit the badge
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            git add .github/badges/coverage.svg
+            # Commit only if there are changes
+            git diff --staged --quiet; if ($LASTEXITCODE -ne 0) { git commit -m "ci: update coverage badge"; git push }
+          } else {
+            Write-Host "Coverage badge not generated, skipping update"
+          }
 
   # 🐳 Docker Build & Security Scan
   docker-build:

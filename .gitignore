@@ -364,15 +364,15 @@ deployment/
 *.deploy
 
 # CI/CD configuration
-.github/
+# .github/  # Keep GitHub workflows
 .gitlab-ci.yml
 .travis.yml
 appveyor.yml
 .circleci/
 
 # Docker
-Dockerfile
-docker-compose.yml
+# Dockerfile  # Keep Dockerfiles
+# docker-compose.yml  # Keep docker-compose files
 .dockerignore
 
 # ==========================================

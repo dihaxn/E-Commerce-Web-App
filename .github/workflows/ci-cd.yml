@@ -63,16 +63,13 @@ jobs:
   # 🧪 Build & Test
   build-and-test:
     name: 🏗️ Build & Test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: read
       actions: write
       pull-requests: write
       checks: write
     needs: security-analysis
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout code
@@ -119,14 +116,14 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-${{ matrix.os }}
+          name: test-results-windows
           path: tests/E-Commerce-BE.Tests/TestResults/
 
       - name: Generate test report
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: Test Results (${{ matrix.os }})
+          name: Test Results (Windows)
           path: tests/E-Commerce-BE.Tests/TestResults/**/*.trx
           reporter: dotnet-trx
 
@@ -134,7 +131,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-${{ matrix.os }}
+          name: coverage-windows
           path: tests/E-Commerce-BE.Tests/TestResults/**/coverage.cobertura.xml
 
       - name: Generate coverage summary
@@ -150,11 +147,10 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-report-${{ matrix.os }}
+          name: coverage-report-windows
           path: coveragereport
 
       - name: Update coverage badge
-        if: matrix.os == 'ubuntu-latest' # Run only once
         run: |
           # Copy the new badge to a known location
           cp coveragereport/badges/linecoverage.svg .github/badges/coverage.svg

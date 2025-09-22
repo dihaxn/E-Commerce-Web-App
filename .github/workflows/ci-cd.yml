@@ -180,7 +180,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: src/E-Commerce-BE
-          file: ./Dockerfile
+          file: src/E-Commerce-BE/Dockerfile
           push: false
           tags: ecommerce-app:latest
           cache-from: type=gha

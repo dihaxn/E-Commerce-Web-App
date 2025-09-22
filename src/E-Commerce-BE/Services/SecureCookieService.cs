@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace E_Commerce_BE.Services
 {
-    public class SecureCookieService
+    public class SecureCookieService : ISecureCookieService
     {
         private readonly IConfiguration _configuration;
         private readonly string _encryptionKey;
@@ -14,6 +14,33 @@ namespace E_Commerce_BE.Services
             _configuration = configuration;
             // In production, this should come from environment variables or Azure Key Vault
             _encryptionKey = _configuration["CookieEncryptionKey"] ?? "DefaultKeyForDevelopmentOnly123!@#";
+        }
+
+        public void SetSecureCookie(HttpResponse response, string key, string value, CookieOptions options)
+        {
+            var encryptedValue = EncryptString(value);
+            response.Cookies.Append(key, encryptedValue, options);
+        }
+
+        public bool TryGetSecureCookie(HttpRequest request, string key, out string? value)
+        {
+            var encryptedValue = request.Cookies[key];
+            if (string.IsNullOrEmpty(encryptedValue))
+            {
+                value = null;
+                return false;
+            }
+
+            try
+            {
+                value = DecryptString(encryptedValue);
+                return true;
+            }
+            catch
+            {
+                value = null;
+                return false;
+            }
         }
 
         public void SetSecureCookie(HttpResponse response, string key, object value, int? maxAge = null)

@@ -10,22 +10,22 @@ namespace E_Commerce_BE.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly SecureCookieService cookieService;
+        private readonly ICartService _cartService;
         private readonly decimal shippingFee;
 
         public CartController(ApplicationDbContext context, IConfiguration configuration,
-            UserManager<ApplicationUser> userManager, SecureCookieService cookieService)
+            UserManager<ApplicationUser> userManager, ICartService cartService)
         {
             this.context = context;
             this.userManager = userManager;
-            this.cookieService = cookieService;
+            _cartService = cartService;
             shippingFee = configuration.GetValue<decimal>("CartSettings:ShippingFee");
         }
 
         public IActionResult Index()
         {
-            List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
-            decimal subtotal = CartHelper.GetSubtotal(cartItems);
+            List<OrderItem> cartItems = _cartService.GetCartItems();
+            decimal subtotal = _cartService.GetSubtotal(cartItems);
 
             var model = new CartViewModel
             {
@@ -43,8 +43,8 @@ namespace E_Commerce_BE.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Index(CartViewModel model)
         {
-            List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
-            decimal subtotal = CartHelper.GetSubtotal(cartItems);
+            List<OrderItem> cartItems = _cartService.GetCartItems();
+            decimal subtotal = _cartService.GetSubtotal(cartItems);
 
             model.CartItems = cartItems;
             model.Subtotal = subtotal;
@@ -76,13 +76,9 @@ namespace E_Commerce_BE.Controllers
 
         public IActionResult Confirm()
         {
-            List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
-            decimal total = CartHelper.GetSubtotal(cartItems) + shippingFee;
-            int cartSize = 0;
-            foreach (var item in cartItems)
-            {
-                cartSize += item.Quantity;
-            }
+            List<OrderItem> cartItems = _cartService.GetCartItems();
+            decimal total = _cartService.GetSubtotal(cartItems) + shippingFee;
+            int cartSize = _cartService.GetCartSize();
 
             string deliveryAddress = TempData["DeliveryAddress"] as string ?? "";
             string paymentMethod = TempData["PaymentMethod"] as string ?? "";
@@ -104,8 +100,8 @@ namespace E_Commerce_BE.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmOrder()
         {
-            List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
-            decimal total = CartHelper.GetSubtotal(cartItems) + shippingFee;
+            List<OrderItem> cartItems = _cartService.GetCartItems();
+            decimal total = _cartService.GetSubtotal(cartItems) + shippingFee;
 
             string deliveryAddress = TempData["DeliveryAddress"] as string ?? "";
             string paymentMethod = TempData["PaymentMethod"] as string ?? "";
@@ -138,7 +134,7 @@ namespace E_Commerce_BE.Controllers
             context.SaveChanges();
 
             // Clear the shopping cart
-            CartHelper.ClearCart(Request, Response);
+            _cartService.ClearCart();
 
             return RedirectToAction("Index", "Home");
         }
@@ -152,8 +148,8 @@ namespace E_Commerce_BE.Controllers
                 return Json(new { success = false, message = "Invalid quantity" });
             }
 
-            var cartData = CartHelper.GetCartDictionary(Request, Response);
-            
+            var cartData = _cartService.GetCartDictionary();
+
             if (cartData.ContainsKey(productId))
             {
                 cartData[productId] += quantity;
@@ -163,9 +159,9 @@ namespace E_Commerce_BE.Controllers
                 cartData[productId] = quantity;
             }
 
-            CartHelper.UpdateCart(Request, Response, cartData);
+            _cartService.UpdateCart(cartData);
 
-            return Json(new { success = true, cartSize = CartHelper.GetCartSize(Request, Response) });
+            return Json(new { success = true, cartSize = _cartService.GetCartSize() });
         }
 
         [HttpPost]
@@ -177,13 +173,13 @@ namespace E_Commerce_BE.Controllers
                 return Json(new { success = false, message = "Invalid quantity" });
             }
 
-            var cartData = CartHelper.GetCartDictionary(Request, Response);
-            
+            var cartData = _cartService.GetCartDictionary();
+
             if (cartData.ContainsKey(productId))
             {
                 cartData[productId] = quantity;
-                CartHelper.UpdateCart(Request, Response, cartData);
-                return Json(new { success = true, cartSize = CartHelper.GetCartSize(Request, Response) });
+                _cartService.UpdateCart(cartData);
+                return Json(new { success = true, cartSize = _cartService.GetCartSize() });
             }
 
             return Json(new { success = false, message = "Product not found in cart" });
@@ -193,13 +189,13 @@ namespace E_Commerce_BE.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult RemoveFromCart(int productId)
         {
-            var cartData = CartHelper.GetCartDictionary(Request, Response);
-            
+            var cartData = _cartService.GetCartDictionary();
+
             if (cartData.ContainsKey(productId))
             {
                 cartData.Remove(productId);
-                CartHelper.UpdateCart(Request, Response, cartData);
-                return Json(new { success = true, cartSize = CartHelper.GetCartSize(Request, Response) });
+                _cartService.UpdateCart(cartData);
+                return Json(new { success = true, cartSize = _cartService.GetCartSize() });
             }
 
             return Json(new { success = false, message = "Product not found in cart" });

@@ -18,6 +18,8 @@ namespace E_Commerce_BE.Tests.Controllers
     {
         private readonly DbContextOptions<ApplicationDbContext> _dbOptions;
         private readonly Mock<IWebHostEnvironment> _mockWebHostEnvironment;
+        private readonly Mock<ISecureFileUploadService> _mockFileUploadService;
+        private readonly Mock<ISanitizationService> _mockSanitizationService;
 
         public ProductControllerTests()
         {
@@ -27,6 +29,10 @@ namespace E_Commerce_BE.Tests.Controllers
 
             _mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
             _mockWebHostEnvironment.Setup(m => m.WebRootPath).Returns(Path.GetTempPath());
+
+            _mockFileUploadService = new Mock<ISecureFileUploadService>();
+            _mockSanitizationService = new Mock<ISanitizationService>();
+            _mockSanitizationService.Setup(s => s.Sanitize(It.IsAny<string>())).Returns((string s) => s);
         }
 
         private ApplicationDbContext CreateContext() => new ApplicationDbContext(_dbOptions);
@@ -41,7 +47,7 @@ namespace E_Commerce_BE.Tests.Controllers
                 new Product { Id = 2, Name = "Mouse", Brand = "Logitech", Category = "Electronics", Price = 50 }
             );
             context.SaveChanges();
-            var controller = new ProductController(context, _mockWebHostEnvironment.Object);
+            var controller = new ProductController(context, _mockWebHostEnvironment.Object, _mockFileUploadService.Object, _mockSanitizationService.Object);
 
             // Act
             var result = controller.Index(1, null, null, null);
@@ -57,7 +63,7 @@ namespace E_Commerce_BE.Tests.Controllers
         {
             // Arrange
             using var context = CreateContext();
-            var controller = new ProductController(context, _mockWebHostEnvironment.Object);
+            var controller = new ProductController(context, _mockWebHostEnvironment.Object, _mockFileUploadService.Object, _mockSanitizationService.Object);
 
             // Act
             var result = controller.Create();
@@ -67,14 +73,15 @@ namespace E_Commerce_BE.Tests.Controllers
         }
 
         [Fact]
-        public void Create_POST_RedirectsToIndex_WhenModelIsValid()
+        public async Task Create_POST_RedirectsToIndex_WhenModelIsValid()
         {
             // Arrange
             using var context = CreateContext();
-            var controller = new ProductController(context, _mockWebHostEnvironment.Object);
+            _mockFileUploadService.Setup(s => s.ValidateAndSaveFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync((true, "test.jpg", null));
+
+            var controller = new ProductController(context, _mockWebHostEnvironment.Object, _mockFileUploadService.Object, _mockSanitizationService.Object);
             var mockImage = new Mock<IFormFile>();
-            mockImage.Setup(f => f.FileName).Returns("test.jpg");
-            mockImage.Setup(f => f.CopyTo(It.IsAny<Stream>()));
 
             var productDto = new ProductDto
             {
@@ -86,19 +93,20 @@ namespace E_Commerce_BE.Tests.Controllers
                 ImageFile = mockImage.Object
             };
 
-            // Ensure the directory exists
             var productsPath = Path.Combine(_mockWebHostEnvironment.Object.WebRootPath, "products");
-            Directory.CreateDirectory(productsPath);
+            if (!Directory.Exists(productsPath))
+            {
+                Directory.CreateDirectory(productsPath);
+            }
 
             // Act
-            var result = controller.Create(productDto);
+            var result = await controller.Create(productDto);
 
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectToActionResult.ActionName);
             Assert.Equal(1, context.Products.Count());
         }
-
         [Fact]
         public void Edit_GET_ReturnsViewResult_WithProductDto()
         {
@@ -107,7 +115,7 @@ namespace E_Commerce_BE.Tests.Controllers
             var product = new Product { Id = 1, Name = "Test Product" };
             context.Products.Add(product);
             context.SaveChanges();
-            var controller = new ProductController(context, _mockWebHostEnvironment.Object);
+            var controller = new ProductController(context, _mockWebHostEnvironment.Object, _mockFileUploadService.Object, _mockSanitizationService.Object);
 
             // Act
             var result = controller.Edit(1);
@@ -129,11 +137,15 @@ namespace E_Commerce_BE.Tests.Controllers
 
             // Create a dummy file to be "deleted"
             var dummyFilePath = Path.Combine(_mockWebHostEnvironment.Object.WebRootPath, "products", product.ImageFileName);
-            Directory.CreateDirectory(Path.GetDirectoryName(dummyFilePath));
+            var imageDirectory = Path.GetDirectoryName(dummyFilePath);
+            if (imageDirectory != null)
+            {
+                Directory.CreateDirectory(imageDirectory);
+            }
             File.Create(dummyFilePath).Close();
 
 
-            var controller = new ProductController(context, _mockWebHostEnvironment.Object);
+            var controller = new ProductController(context, _mockWebHostEnvironment.Object, _mockFileUploadService.Object, _mockSanitizationService.Object);
 
             // Act
             var result = controller.Delete(1);

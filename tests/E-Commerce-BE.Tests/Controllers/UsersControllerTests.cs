@@ -19,13 +19,29 @@ namespace E_Commerce_BE.Tests.Controllers
         public UsersControllerTests()
         {
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
-            _userManager = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            _userManager = new Mock<UserManager<ApplicationUser>>(
+                userStoreMock.Object,
+                new Mock<Microsoft.Extensions.Options.IOptions<IdentityOptions>>().Object,
+                new Mock<IPasswordHasher<ApplicationUser>>().Object,
+                new IUserValidator<ApplicationUser>[0],
+                new IPasswordValidator<ApplicationUser>[0],
+                new Mock<ILookupNormalizer>().Object,
+                new Mock<IdentityErrorDescriber>().Object,
+                new Mock<IServiceProvider>().Object,
+                new Mock<Microsoft.Extensions.Logging.ILogger<UserManager<ApplicationUser>>>().Object
+            );
 
             var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
-            _roleManager = new Mock<RoleManager<IdentityRole>>(roleStoreMock.Object, null, null, null, null);
+            _roleManager = new Mock<RoleManager<IdentityRole>>(
+                roleStoreMock.Object,
+                new IRoleValidator<IdentityRole>[0],
+                new Mock<ILookupNormalizer>().Object,
+                new Mock<IdentityErrorDescriber>().Object,
+                new Mock<Microsoft.Extensions.Logging.ILogger<RoleManager<IdentityRole>>>().Object
+            );
         }
 
-        private UsersController CreateController(ApplicationUser currentUser = null)
+        private UsersController CreateController(ApplicationUser? currentUser = null)
         {
             var controller = new UsersController(_userManager.Object, _roleManager.Object);
             if (currentUser != null)
@@ -75,26 +91,26 @@ namespace E_Commerce_BE.Tests.Controllers
             var controller = CreateController();
 
             // Act
-            var result = await controller.Details(null) as RedirectToActionResult;
+            var result = await controller.Details(null);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal("Index", result.ActionName);
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
         }
 
         [Fact]
         public async Task EditRole_RedirectsToIndex_WhenUserNotFound()
         {
             // Arrange
-            _userManager.Setup(um => um.FindByIdAsync("non-existent-id")).ReturnsAsync((ApplicationUser)null);
+            _userManager.Setup(um => um.FindByIdAsync("non-existent-id")).ReturnsAsync((ApplicationUser?)null);
             var controller = CreateController();
 
             // Act
-            var result = await controller.EditRole("non-existent-id", "admin") as RedirectToActionResult;
+            var result = await controller.EditRole("non-existent-id", "admin");
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal("Index", result.ActionName);
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
         }
 
         [Fact]
@@ -109,12 +125,13 @@ namespace E_Commerce_BE.Tests.Controllers
 
 
             // Act
-            var result = await controller.DeleteAccount(user.Id) as RedirectToActionResult;
+            var result = await controller.DeleteAccount(user.Id);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal("Details", result.ActionName);
-            Assert.Equal(user.Id, result.RouteValues["id"]);
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Details", redirectToActionResult.ActionName);
+            Assert.NotNull(redirectToActionResult.RouteValues);
+            Assert.Equal(user.Id, redirectToActionResult.RouteValues["id"]);
             tempData.VerifySet(td => td["ErrorMessage"] = "You cannot delete your own account!");
         }
     }

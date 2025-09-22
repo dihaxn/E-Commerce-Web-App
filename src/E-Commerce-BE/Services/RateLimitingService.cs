@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 
 namespace E_Commerce_BE.Services
 {
-    public class RateLimitingService
+    public class RateLimitingService : IRateLimitingService
     {
         private readonly ConcurrentDictionary<string, RateLimitInfo> _rateLimitStore = new();
         private readonly int _maxAttempts;
@@ -14,10 +14,19 @@ namespace E_Commerce_BE.Services
             _lockoutDurationMinutes = configuration.GetValue<int>("SecuritySettings:PasswordPolicy:LockoutDurationMinutes", 15);
         }
 
-        public bool IsRateLimited(string key, string operation = "default")
+        public void ResetRateLimiter(string ipAddress, string action)
         {
-            var fullKey = $"{key}:{operation}";
-            
+            var fullKey = $"{ipAddress}:{action}";
+            if (_rateLimitStore.TryGetValue(fullKey, out var info))
+            {
+                info.Reset();
+            }
+        }
+
+        public bool IsRateLimited(string ipAddress, string action)
+        {
+            var fullKey = $"{ipAddress}:{action}";
+
             if (_rateLimitStore.TryGetValue(fullKey, out var info))
             {
                 // Check if still locked out
@@ -36,10 +45,10 @@ namespace E_Commerce_BE.Services
             return false;
         }
 
-        public void RecordFailedAttempt(string key, string operation = "default")
+        public void RecordFailedAttempt(string ipAddress, string action)
         {
-            var fullKey = $"{key}:{operation}";
-            
+            var fullKey = $"{ipAddress}:{action}";
+
             var info = _rateLimitStore.GetOrAdd(fullKey, _ => new RateLimitInfo());
             info.RecordFailedAttempt();
 
@@ -50,20 +59,19 @@ namespace E_Commerce_BE.Services
             }
         }
 
-        public void RecordSuccessfulAttempt(string key, string operation = "default")
+        public void RecordSuccessfulAttempt(string ipAddress, string action)
         {
-            var fullKey = $"{key}:{operation}";
-            
+            var fullKey = $"{ipAddress}:{action}";
+
             if (_rateLimitStore.TryGetValue(fullKey, out var info))
             {
                 info.Reset();
             }
         }
-
-        public RateLimitStatus GetRateLimitStatus(string key, string operation = "default")
+        public RateLimitStatus GetRateLimitStatus(string ipAddress, string action)
         {
-            var fullKey = $"{key}:{operation}";
-            
+            var fullKey = $"{ipAddress}:{action}";
+
             if (_rateLimitStore.TryGetValue(fullKey, out var info))
             {
                 return new RateLimitStatus

@@ -69,9 +69,12 @@ builder.Services.AddSession(options =>
 
 // Add production services
 builder.Services.AddSingleton<SecurityConfiguration>();
-builder.Services.AddScoped<SecureFileUploadService>();
-builder.Services.AddScoped<SecureCookieService>();
-builder.Services.AddSingleton<RateLimitingService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ISanitizationService, SanitizationService>();
+builder.Services.AddScoped<ISecureFileUploadService, SecureFileUploadService>();
+builder.Services.AddScoped<ISecureCookieService, SecureCookieService>();
+builder.Services.AddSingleton<IRateLimitingService, RateLimitingService>();
 builder.Services.AddScoped<DatabaseConfigurationService>();
 builder.Services.AddSingleton<HttpsConfigurationService>();
 builder.Services.AddSingleton<MonitoringService>();
@@ -85,16 +88,6 @@ if (!string.IsNullOrEmpty(brevoApiKey))
 }
 
 var app = builder.Build();
-
-// Initialize CartHelper with secure cookie service
-using (var scope = app.Services.CreateScope())
-{
-    var cookieService = scope.ServiceProvider.GetService<SecureCookieService>();
-    if (cookieService != null)
-    {
-        CartHelper.Initialize(cookieService);
-    }
-}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

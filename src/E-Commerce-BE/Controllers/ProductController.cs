@@ -12,15 +12,17 @@ namespace E_Commerce_BE.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IWebHostEnvironment environment;
-        private readonly SecureFileUploadService fileUploadService;
+        private readonly ISecureFileUploadService fileUploadService;
+        private readonly ISanitizationService _sanitizationService;
         private readonly int pageSize = 5;
 
         public ProductController(ApplicationDbContext context, IWebHostEnvironment environment,
-            SecureFileUploadService fileUploadService)
+            ISecureFileUploadService fileUploadService, ISanitizationService sanitizationService)
         {
             this.context = context;
             this.environment = environment;
             this.fileUploadService = fileUploadService;
+            _sanitizationService = sanitizationService;
         }
 
         public IActionResult Index(int pageIndex, string? search, string? column, string? orderBy)
@@ -30,7 +32,8 @@ namespace E_Commerce_BE.Controllers
             // Search functionality
             if (search != null)
             {
-                query = query.Where(p => p.Name.Contains(search) || p.Brand.Contains(search));
+                var sanitizedSearch = _sanitizationService.Sanitize(search);
+                query = query.Where(p => p.Name.Contains(sanitizedSearch) || p.Brand.Contains(sanitizedSearch));
             }
 
             // Sort functionality
@@ -160,18 +163,18 @@ namespace E_Commerce_BE.Controllers
 
             if (!isValid)
             {
-                ModelState.AddModelError("ImageFile", errorMessage);
+                ModelState.AddModelError("ImageFile", errorMessage ?? "An error occurred during file upload.");
                 return View(productDto);
             }
 
             // save the new product in the database
             Product product = new Product()
             {
-                Name = productDto.Name,
-                Brand = productDto.Brand,
-                Category = productDto.Category,
+                Name = _sanitizationService.Sanitize(productDto.Name),
+                Brand = _sanitizationService.Sanitize(productDto.Brand),
+                Category = _sanitizationService.Sanitize(productDto.Category),
                 Price = productDto.Price,
-                Description = productDto.Description,
+                Description = _sanitizationService.Sanitize(productDto.Description ?? ""),
                 ImageFileName = fileName,
                 CreatedAt = DateTime.UtcNow,
             };
@@ -232,7 +235,7 @@ namespace E_Commerce_BE.Controllers
 
                 if (!isValid)
                 {
-                    ModelState.AddModelError("ImageFile", errorMessage);
+                    ModelState.AddModelError("ImageFile", errorMessage ?? "An error occurred during file upload.");
                     ViewData["ProductId"] = product.Id;
                     ViewData["ImageFileName"] = product.ImageFileName;
                     ViewData["CreatedAt"] = product.CreatedAt.ToString("MM/dd/yyyy");
@@ -245,11 +248,11 @@ namespace E_Commerce_BE.Controllers
             }
 
             // update the product in the database
-            product.Name = productDto.Name;
-            product.Brand = productDto.Brand;
-            product.Category = productDto.Category;
+            product.Name = _sanitizationService.Sanitize(productDto.Name);
+            product.Brand = _sanitizationService.Sanitize(productDto.Brand);
+            product.Category = _sanitizationService.Sanitize(productDto.Category);
             product.Price = productDto.Price;
-            product.Description = productDto.Description;
+            product.Description = _sanitizationService.Sanitize(productDto.Description ?? "");
             product.ImageFileName = newFileName;
 
             context.SaveChanges();

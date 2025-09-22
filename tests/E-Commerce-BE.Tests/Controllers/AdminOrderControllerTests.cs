@@ -92,12 +92,15 @@ namespace E_Commerce_BE.Tests.Controllers
             var controller = new AdminOrdersController(context);
 
             // Act
-            var result = controller.Edit(1, null, "Shipped");
+            var result = controller.Edit(1, "Completed", "Shipped");
 
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Details", redirectToActionResult.ActionName);
-            Assert.Equal("Shipped", context.Orders.Find(1).OrderStatus);
+            var updatedOrder = context.Orders.Find(1);
+            Assert.NotNull(updatedOrder);
+            Assert.Equal("Shipped", updatedOrder.OrderStatus);
+            Assert.Equal("Completed", updatedOrder.PaymentStatus);
         }
     }
 }

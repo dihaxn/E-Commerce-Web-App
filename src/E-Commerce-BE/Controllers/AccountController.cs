@@ -13,16 +13,18 @@ namespace E_Commerce_BE.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
-        private readonly RateLimitingService rateLimitingService;
+        private readonly IRateLimitingService rateLimitingService;
+        private readonly ISanitizationService _sanitizationService;
 
         public AccountController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, IConfiguration configuration,
-            RateLimitingService rateLimitingService)
+            IRateLimitingService rateLimitingService, ISanitizationService sanitizationService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
             this.rateLimitingService = rateLimitingService;
+            _sanitizationService = sanitizationService;
         }
 
         public IActionResult Register()
@@ -67,12 +69,12 @@ namespace E_Commerce_BE.Controllers
             // create a new account and authenticate the user
             var user = new ApplicationUser()
             {
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName,
-                UserName = registerDto.Email, // UserName will be used to authenticate the user
-                Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber,
-                Address = registerDto.Address,
+                FirstName = _sanitizationService.Sanitize(registerDto.FirstName),
+                LastName = _sanitizationService.Sanitize(registerDto.LastName),
+                UserName = _sanitizationService.Sanitize(registerDto.Email), // UserName will be used to authenticate the user
+                Email = _sanitizationService.Sanitize(registerDto.Email),
+                PhoneNumber = _sanitizationService.Sanitize(registerDto.PhoneNumber ?? ""),
+                Address = _sanitizationService.Sanitize(registerDto.Address),
                 CreateAt = DateTime.UtcNow,
             };
 
@@ -154,7 +156,7 @@ namespace E_Commerce_BE.Controllers
             {
                 // Record failed attempt
                 rateLimitingService.RecordFailedAttempt(clientIp, "login");
-                
+
                 var status = rateLimitingService.GetRateLimitStatus(clientIp, "login");
                 if (status.IsLockedOut)
                 {
@@ -209,12 +211,12 @@ namespace E_Commerce_BE.Controllers
             }
 
             // Update the user profile
-            appUser.FirstName = profileDto.FirstName;
-            appUser.LastName = profileDto.LastName;
-            appUser.UserName = profileDto.Email; // Update UserName to match Email
-            appUser.Email = profileDto.Email;
-            appUser.PhoneNumber = profileDto.PhoneNumber;
-            appUser.Address = profileDto.Address;
+            appUser.FirstName = _sanitizationService.Sanitize(profileDto.FirstName);
+            appUser.LastName = _sanitizationService.Sanitize(profileDto.LastName);
+            appUser.UserName = _sanitizationService.Sanitize(profileDto.Email); // Update UserName to match Email
+            appUser.Email = _sanitizationService.Sanitize(profileDto.Email);
+            appUser.PhoneNumber = _sanitizationService.Sanitize(profileDto.PhoneNumber ?? "");
+            appUser.Address = _sanitizationService.Sanitize(profileDto.Address);
 
             var result = await userManager.UpdateAsync(appUser);
 

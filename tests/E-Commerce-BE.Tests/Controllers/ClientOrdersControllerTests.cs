@@ -22,11 +22,21 @@ namespace E_Commerce_BE.Tests.Controllers
         public ClientOrdersControllerTests()
         {
             _options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseInMemoryDatabase(databaseName: "TestDatabase_ClientOrders")
                 .Options;
 
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
-            _userManager = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            _userManager = new Mock<UserManager<ApplicationUser>>(
+                userStoreMock.Object,
+                new Mock<Microsoft.Extensions.Options.IOptions<IdentityOptions>>().Object,
+                new Mock<IPasswordHasher<ApplicationUser>>().Object,
+                new IUserValidator<ApplicationUser>[0],
+                new IPasswordValidator<ApplicationUser>[0],
+                new Mock<ILookupNormalizer>().Object,
+                new Mock<IdentityErrorDescriber>().Object,
+                new Mock<IServiceProvider>().Object,
+                new Mock<Microsoft.Extensions.Logging.ILogger<UserManager<ApplicationUser>>>().Object
+            );
         }
 
         private ApplicationDbContext GetInMemoryDbContext()
@@ -86,8 +96,8 @@ namespace E_Commerce_BE.Tests.Controllers
             // Arrange
             using var context = GetInMemoryDbContext();
             var user = new ApplicationUser { Id = "test-client-id", UserName = "testclient" };
-            var product = new Product { Id = 1, Name = "Test Product" };
-            var orderItem = new OrderItem { Product = product, Quantity = 1 };
+            var product = new Product { Id = 1, Name = "Test Product", Price = 10 };
+            var orderItem = new OrderItem { Product = product, Quantity = 1, UnitPrice = 10 };
             var order = new Order { Id = 1, ClientId = user.Id, DeliveryAddress = "Test Address", Items = new List<OrderItem> { orderItem } };
             context.Users.Add(user);
             context.Products.Add(product);

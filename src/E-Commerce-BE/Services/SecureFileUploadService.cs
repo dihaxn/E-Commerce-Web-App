@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace E_Commerce_BE.Services
 {
-    public class SecureFileUploadService
+    public class SecureFileUploadService : ISecureFileUploadService
     {
         private readonly FileUploadSettings _settings;
         private readonly IWebHostEnvironment _environment;
@@ -14,7 +14,7 @@ namespace E_Commerce_BE.Services
             _environment = environment;
         }
 
-        public async Task<(bool IsValid, string FileName, string ErrorMessage)> ValidateAndSaveFileAsync(IFormFile file)
+        public async Task<(bool, string, string?)> ValidateAndSaveFileAsync(IFormFile file)
         {
             // Check if file is null
             if (file == null)

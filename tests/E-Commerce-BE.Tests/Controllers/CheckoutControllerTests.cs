@@ -17,14 +17,15 @@ namespace E_Commerce_BE.Tests.Controllers
         private readonly DbContextOptions<ApplicationDbContext> _options;
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<UserManager<ApplicationUser>> _userManager;
+        private readonly Mock<ICartService> _cartService;
 
         public CheckoutControllerTests()
         {
             _options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseInMemoryDatabase(databaseName: "TestDatabase_Checkout")
                 .Options;
 
-            var inMemorySettings = new Dictionary<string, string> {
+            var inMemorySettings = new Dictionary<string, string?> {
                 {"StripeSettings:PublishableKey", "pk_test_123"},
                 {"StripeSettings:SecretKey", "sk_test_123"},
                 {"StripeSettings:WebhookSecret", "whsec_123"},
@@ -44,7 +45,18 @@ namespace E_Commerce_BE.Tests.Controllers
 
 
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
-            _userManager = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            _userManager = new Mock<UserManager<ApplicationUser>>(
+                userStoreMock.Object,
+                new Mock<Microsoft.Extensions.Options.IOptions<IdentityOptions>>().Object,
+                new Mock<IPasswordHasher<ApplicationUser>>().Object,
+                new IUserValidator<ApplicationUser>[0],
+                new IPasswordValidator<ApplicationUser>[0],
+                new Mock<ILookupNormalizer>().Object,
+                new Mock<IdentityErrorDescriber>().Object,
+                new Mock<IServiceProvider>().Object,
+                new Mock<Microsoft.Extensions.Logging.ILogger<UserManager<ApplicationUser>>>().Object
+            );
+            _cartService = new Mock<ICartService>();
         }
 
         private ApplicationDbContext GetInMemoryDbContext()
@@ -60,7 +72,10 @@ namespace E_Commerce_BE.Tests.Controllers
         {
             // Arrange
             using var context = GetInMemoryDbContext();
-            var controller = new CheckoutController(_configuration.Object, context, _userManager.Object);
+            _cartService.Setup(s => s.GetCartItems()).Returns(new List<OrderItem>());
+            _cartService.Setup(s => s.GetSubtotal(It.IsAny<List<OrderItem>>())).Returns(0);
+
+            var controller = new CheckoutController(_configuration.Object, context, _userManager.Object, _cartService.Object);
             var httpContext = new DefaultHttpContext();
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -68,7 +83,8 @@ namespace E_Commerce_BE.Tests.Controllers
             }, "mock"));
             httpContext.User = user;
             controller.ControllerContext.HttpContext = httpContext;
-            controller.TempData = new Mock<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataDictionary>().Object;
+            var tempData = new Mock<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataDictionary>();
+            controller.TempData = tempData.Object;
 
 
             // Act

@@ -18,25 +18,27 @@ namespace E_Commerce_BE.Controllers
         private readonly decimal shippingFee;
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ICartService _cartService;
 
         public CheckoutController(IConfiguration configuration, ApplicationDbContext context
-            , UserManager<ApplicationUser> userManager)
+            , UserManager<ApplicationUser> userManager, ICartService cartService)
         {
             StripePublishableKey = configuration["StripeSettings:PublishableKey"]!;
             StripeSecretKey = configuration["StripeSettings:SecretKey"]!;
-            
+
             // Configure Stripe
             StripeConfiguration.ApiKey = StripeSecretKey;
 
             shippingFee = configuration.GetValue<decimal>("CartSettings:ShippingFee");
             this.context = context;
             this.userManager = userManager;
+            _cartService = cartService;
         }
 
         public IActionResult Index()
         {
-            List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
-            decimal total = CartHelper.GetSubtotal(cartItems) + shippingFee;
+            List<OrderItem> cartItems = _cartService.GetCartItems();
+            decimal total = _cartService.GetSubtotal(cartItems) + shippingFee;
 
             string deliveryAddress = TempData["DeliveryAddress"] as string ?? "";
             TempData.Keep();
@@ -51,8 +53,8 @@ namespace E_Commerce_BE.Controllers
         [HttpPost]
         public async Task<JsonResult> CreatePaymentIntent()
         {
-            List<OrderItem> cartItems = CartHelper.GetCartItems(Request, Response, context);
-            decimal totalAmount = CartHelper.GetSubtotal(cartItems) + shippingFee;
+            List<OrderItem> cartItems = _cartService.GetCartItems();
+            decimal totalAmount = _cartService.GetSubtotal(cartItems) + shippingFee;
 
             try
             {
@@ -119,7 +121,7 @@ namespace E_Commerce_BE.Controllers
         private async Task SaveOrder(PaymentIntent paymentIntent, string deliveryAddress)
         {
             // get cart items
-            var cartItems = CartHelper.GetCartItems(Request, Response, context);
+            var cartItems = _cartService.GetCartItems();
 
             var appUser = await userManager.GetUserAsync(User);
             if (appUser == null)
@@ -145,7 +147,7 @@ namespace E_Commerce_BE.Controllers
             context.SaveChanges();
 
             // delete the shopping cart cookie
-            Response.Cookies.Delete("shopping_cart");
+            _cartService.ClearCart();
         }
 
 

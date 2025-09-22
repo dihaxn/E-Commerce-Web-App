@@ -15,6 +15,15 @@ on:
         options:
           - staging
           - production
+      cloud_provider:
+        description: "Cloud provider for deployment"
+        required: true
+        default: "oracle"
+        type: choice
+        options:
+          - oracle
+          - azure
+          - skip
 
 env:
   DOTNET_VERSION: "8.0.x"
@@ -249,14 +258,65 @@ jobs:
         with:
           sarif_file: "trivy-results.sarif"
 
-  # 🚀 Deploy to Staging
-  deploy-staging:
-    name: 🚀 Deploy to Staging
+  # 🚀 Deploy to Oracle Cloud Staging
+  deploy-oci-staging:
+    name: 🌥️ Deploy to OCI Staging
     runs-on: ubuntu-latest
     permissions:
       contents: read
     needs: [build-and-test, docker-build]
-    if: false # Disabled until Azure credentials are configured
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging' && github.event.inputs.cloud_provider == 'oracle')
+
+    steps:
+      - name: Trigger Oracle Cloud Deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const result = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'oci-deploy.yml',
+              ref: 'main',
+              inputs: {
+                environment: 'staging'
+              }
+            });
+            console.log('Oracle Cloud deployment triggered:', result.status);
+
+  # 🚀 Deploy to Oracle Cloud Production
+  deploy-oci-production:
+    name: 🌥️ Deploy to OCI Production
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: [build-and-test, docker-build]
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production' && github.event.inputs.cloud_provider == 'oracle')
+    environment: production
+
+    steps:
+      - name: Trigger Oracle Cloud Deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const result = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'oci-deploy.yml',
+              ref: 'main',
+              inputs: {
+                environment: 'production'
+              }
+            });
+            console.log('Oracle Cloud deployment triggered:', result.status);
+
+  # 🚀 Deploy to Staging
+  deploy-staging:
+    name: 🚀 Deploy to Azure Staging
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: [build-and-test, docker-build]
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.cloud_provider == 'azure' && github.event.inputs.environment == 'staging')
 
     steps:
       - name: Checkout code
@@ -301,12 +361,12 @@ jobs:
 
   # 🚀 Deploy to Production
   deploy-production:
-    name: 🚀 Deploy to Production
+    name: 🚀 Deploy to Azure Production
     runs-on: ubuntu-latest
     permissions:
       contents: read
     needs: [build-and-test, docker-build]
-    if: false # Disabled until Azure credentials are configured
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.cloud_provider == 'azure' && github.event.inputs.environment == 'production')
     environment: production
 
     steps:

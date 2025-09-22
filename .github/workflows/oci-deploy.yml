@@ -1,0 +1,521 @@
+name: 🌥️ Oracle Cloud Deployment
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  OCI_REGISTRY: "iad.ocir.io" # US East (Ashburn) - change to your region
+  TENANCY_NAMESPACE: "${{ secrets.OCI_TENANCY_NAMESPACE }}"
+  IMAGE_NAME: "ecommerce-app"
+  DOTNET_VERSION: "8.0.x"
+  NODE_VERSION: "18.x"
+
+jobs:
+  # 🏗️ Build and Push to Oracle Container Registry
+  build-and-push-oci:
+    name: 🏗️ Build & Push to OCIR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      image-url: ${{ steps.build.outputs.image-url }}
+      image-tag: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install npm dependencies
+        working-directory: src/E-Commerce-BE
+        run: npm ci
+
+      - name: Build Tailwind CSS
+        working-directory: src/E-Commerce-BE
+        run: npm run css:build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Oracle Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.OCI_REGISTRY }}
+          username: ${{ env.TENANCY_NAMESPACE }}/${{ secrets.OCI_USERNAME }}
+          password: ${{ secrets.OCI_AUTH_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.OCI_REGISTRY }}/${{ env.TENANCY_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix={{branch}}-
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: src/E-Commerce-BE
+          file: src/E-Commerce-BE/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: Set image URL output
+        run: |
+          echo "image-url=${{ env.OCI_REGISTRY }}/${{ env.TENANCY_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+
+  # 🚀 Deploy to OCI Container Instances (Staging)
+  deploy-staging-oci:
+    name: 🚀 Deploy to OCI Staging
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: build-and-push-oci
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment: oci-staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Oracle CLI
+        uses: oracle-actions/configure-kubectl-oke@v1.3.2
+        with:
+          version: "latest"
+
+      - name: Configure OCI CLI
+        run: |
+          mkdir -p ~/.oci
+          cat > ~/.oci/config << EOF
+          [DEFAULT]
+          user=${{ secrets.OCI_USER_OCID }}
+          fingerprint=${{ secrets.OCI_FINGERPRINT }}
+          tenancy=${{ secrets.OCI_TENANCY_OCID }}
+          region=${{ secrets.OCI_REGION }}
+          key_file=~/.oci/key.pem
+          EOF
+
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/key.pem
+          chmod 600 ~/.oci/key.pem
+
+      - name: Install OCI CLI
+        run: |
+          curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Create or Update Container Instance
+        run: |
+          export PATH=$PATH:$HOME/bin
+
+          # Variables
+          COMPARTMENT_ID="${{ secrets.OCI_COMPARTMENT_OCID }}"
+          SUBNET_ID="${{ secrets.OCI_SUBNET_OCID }}"
+          IMAGE_URL="${{ needs.build-and-push-oci.outputs.image-url }}"
+          INSTANCE_NAME="ecommerce-staging-${{ github.run_number }}"
+
+          # Check if container instance exists
+          EXISTING_INSTANCE=$(oci container-instances container-instance list \
+            --compartment-id $COMPARTMENT_ID \
+            --display-name $INSTANCE_NAME \
+            --query "data[0].id" \
+            --raw-output 2>/dev/null || echo "null")
+
+          if [ "$EXISTING_INSTANCE" != "null" ] && [ ! -z "$EXISTING_INSTANCE" ]; then
+            echo "Deleting existing container instance..."
+            oci container-instances container-instance delete \
+              --container-instance-id $EXISTING_INSTANCE \
+              --force
+            
+            # Wait for deletion
+            echo "Waiting for deletion to complete..."
+            sleep 60
+          fi
+
+          # Create new container instance
+          echo "Creating new container instance..."
+          cat > container-config.json << EOF
+          {
+            "compartmentId": "$COMPARTMENT_ID",
+            "displayName": "$INSTANCE_NAME",
+            "availabilityDomain": "${{ secrets.OCI_AVAILABILITY_DOMAIN }}",
+            "faultDomain": "FAULT-DOMAIN-1",
+            "shape": "CI.Standard.E4.Flex",
+            "shapeConfig": {
+              "ocpus": 1.0,
+              "memoryInGBs": 6.0
+            },
+            "vnics": [{
+              "subnetId": "$SUBNET_ID",
+              "assignPublicIp": true
+            }],
+            "containers": [{
+              "displayName": "ecommerce-app",
+              "imageUrl": "$IMAGE_URL",
+              "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Staging",
+                "ASPNETCORE_URLS": "http://+:8080",
+                "ConnectionStrings__DefaultConnection": "${{ secrets.OCI_STAGING_CONNECTION_STRING }}",
+                "BrevoSettings__ApiKey": "${{ secrets.BREVO_API_KEY }}",
+                "BrevoSettings__SenderName": "${{ secrets.BREVO_SENDER_NAME }}",
+                "BrevoSettings__SenderEmail": "${{ secrets.BREVO_SENDER_EMAIL }}",
+                "PayPalSettings__ClientId": "${{ secrets.PAYPAL_CLIENT_ID }}",
+                "PayPalSettings__Secret": "${{ secrets.PAYPAL_SECRET }}",
+                "PayPalSettings__Url": "${{ secrets.PAYPAL_URL }}",
+                "CookieEncryptionKey": "${{ secrets.COOKIE_ENCRYPTION_KEY }}"
+              },
+              "resourceConfig": {
+                "memoryLimitInGBs": 4.0,
+                "vcpusLimit": 0.5
+              },
+              "ports": [{
+                "containerPort": 8080,
+                "protocol": "TCP"
+              }],
+              "healthChecks": [{
+                "name": "health-check",
+                "healthCheckType": "HTTP",
+                "path": "/health",
+                "port": 8080,
+                "intervalInSeconds": 30,
+                "timeoutInSeconds": 5,
+                "failureThreshold": 3,
+                "successThreshold": 1
+              }]
+            }],
+            "imagePullSecrets": [{
+              "registryEndpoint": "${{ env.OCI_REGISTRY }}",
+              "secretType": "BASIC_AUTH",
+              "username": "${{ env.TENANCY_NAMESPACE }}/${{ secrets.OCI_USERNAME }}",
+              "password": "${{ secrets.OCI_AUTH_TOKEN }}"
+            }]
+          }
+          EOF
+
+          # Create the container instance
+          INSTANCE_RESPONSE=$(oci container-instances container-instance create --from-json file://container-config.json)
+          INSTANCE_ID=$(echo $INSTANCE_RESPONSE | jq -r '.data.id')
+
+          echo "Container instance created with ID: $INSTANCE_ID"
+          echo "Waiting for container to be running..."
+
+          # Wait for the instance to be running
+          for i in {1..20}; do
+            STATUS=$(oci container-instances container-instance get --container-instance-id $INSTANCE_ID --query 'data."lifecycle-state"' --raw-output)
+            echo "Status: $STATUS (attempt $i/20)"
+            
+            if [ "$STATUS" = "ACTIVE" ]; then
+              echo "Container instance is running!"
+              break
+            elif [ "$STATUS" = "FAILED" ]; then
+              echo "Container instance failed to start"
+              exit 1
+            fi
+            
+            sleep 30
+          done
+
+          # Get the public IP
+          PUBLIC_IP=$(oci container-instances container-instance get --container-instance-id $INSTANCE_ID --query 'data.vnics[0]."public-ip"' --raw-output)
+          echo "Public IP: $PUBLIC_IP"
+          echo "Application URL: http://$PUBLIC_IP:8080"
+
+          # Store outputs
+          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
+
+      - name: Health check
+        run: |
+          echo "Waiting for application to be ready..."
+          sleep 120
+
+          # Health check with retries
+          for i in {1..10}; do
+            if curl -f "http://$PUBLIC_IP:8080/health" -m 10; then
+              echo "✅ Health check passed!"
+              exit 0
+            else
+              echo "⏳ Health check failed, retrying... (attempt $i/10)"
+              sleep 30
+            fi
+          done
+
+          echo "❌ Health check failed after 10 attempts"
+          exit 1
+
+      - name: Deployment success notification
+        if: success()
+        run: |
+          echo "🚀 Staging deployment to Oracle Cloud successful!"
+          echo "📍 Application URL: http://$PUBLIC_IP:8080"
+
+  # 🚀 Deploy to OCI Container Instances (Production)
+  deploy-production-oci:
+    name: 🚀 Deploy to OCI Production
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: build-and-push-oci
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment: oci-production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Oracle CLI
+        uses: oracle-actions/configure-kubectl-oke@v1.3.2
+        with:
+          version: "latest"
+
+      - name: Configure OCI CLI
+        run: |
+          mkdir -p ~/.oci
+          cat > ~/.oci/config << EOF
+          [DEFAULT]
+          user=${{ secrets.OCI_USER_OCID }}
+          fingerprint=${{ secrets.OCI_FINGERPRINT }}
+          tenancy=${{ secrets.OCI_TENANCY_OCID }}
+          region=${{ secrets.OCI_REGION }}
+          key_file=~/.oci/key.pem
+          EOF
+
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/key.pem
+          chmod 600 ~/.oci/key.pem
+
+      - name: Install OCI CLI
+        run: |
+          curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Create or Update Container Instance
+        run: |
+          export PATH=$PATH:$HOME/bin
+
+          # Variables
+          COMPARTMENT_ID="${{ secrets.OCI_COMPARTMENT_OCID }}"
+          SUBNET_ID="${{ secrets.OCI_SUBNET_OCID }}"
+          IMAGE_URL="${{ needs.build-and-push-oci.outputs.image-url }}"
+          INSTANCE_NAME="ecommerce-production"
+
+          # Check if container instance exists
+          EXISTING_INSTANCE=$(oci container-instances container-instance list \
+            --compartment-id $COMPARTMENT_ID \
+            --display-name $INSTANCE_NAME \
+            --query "data[0].id" \
+            --raw-output 2>/dev/null || echo "null")
+
+          if [ "$EXISTING_INSTANCE" != "null" ] && [ ! -z "$EXISTING_INSTANCE" ]; then
+            echo "Deleting existing container instance..."
+            oci container-instances container-instance delete \
+              --container-instance-id $EXISTING_INSTANCE \
+              --force
+            
+            # Wait for deletion
+            echo "Waiting for deletion to complete..."
+            sleep 60
+          fi
+
+          # Create new container instance
+          echo "Creating new container instance..."
+          cat > container-config.json << EOF
+          {
+            "compartmentId": "$COMPARTMENT_ID",
+            "displayName": "$INSTANCE_NAME",
+            "availabilityDomain": "${{ secrets.OCI_AVAILABILITY_DOMAIN }}",
+            "faultDomain": "FAULT-DOMAIN-1",
+            "shape": "CI.Standard.E4.Flex",
+            "shapeConfig": {
+              "ocpus": 2.0,
+              "memoryInGBs": 12.0
+            },
+            "vnics": [{
+              "subnetId": "$SUBNET_ID",
+              "assignPublicIp": true
+            }],
+            "containers": [{
+              "displayName": "ecommerce-app",
+              "imageUrl": "$IMAGE_URL",
+              "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Production",
+                "ASPNETCORE_URLS": "http://+:8080",
+                "ConnectionStrings__DefaultConnection": "${{ secrets.OCI_PRODUCTION_CONNECTION_STRING }}",
+                "BrevoSettings__ApiKey": "${{ secrets.BREVO_API_KEY }}",
+                "BrevoSettings__SenderName": "${{ secrets.BREVO_SENDER_NAME }}",
+                "BrevoSettings__SenderEmail": "${{ secrets.BREVO_SENDER_EMAIL }}",
+                "PayPalSettings__ClientId": "${{ secrets.PAYPAL_CLIENT_ID }}",
+                "PayPalSettings__Secret": "${{ secrets.PAYPAL_SECRET }}",
+                "PayPalSettings__Url": "${{ secrets.PAYPAL_URL }}",
+                "CookieEncryptionKey": "${{ secrets.COOKIE_ENCRYPTION_KEY }}"
+              },
+              "resourceConfig": {
+                "memoryLimitInGBs": 8.0,
+                "vcpusLimit": 1.5
+              },
+              "ports": [{
+                "containerPort": 8080,
+                "protocol": "TCP"
+              }],
+              "healthChecks": [{
+                "name": "health-check",
+                "healthCheckType": "HTTP",
+                "path": "/health",
+                "port": 8080,
+                "intervalInSeconds": 30,
+                "timeoutInSeconds": 5,
+                "failureThreshold": 3,
+                "successThreshold": 1
+              }]
+            }],
+            "imagePullSecrets": [{
+              "registryEndpoint": "${{ env.OCI_REGISTRY }}",
+              "secretType": "BASIC_AUTH",
+              "username": "${{ env.TENANCY_NAMESPACE }}/${{ secrets.OCI_USERNAME }}",
+              "password": "${{ secrets.OCI_AUTH_TOKEN }}"
+            }]
+          }
+          EOF
+
+          # Create the container instance
+          INSTANCE_RESPONSE=$(oci container-instances container-instance create --from-json file://container-config.json)
+          INSTANCE_ID=$(echo $INSTANCE_RESPONSE | jq -r '.data.id')
+
+          echo "Container instance created with ID: $INSTANCE_ID"
+          echo "Waiting for container to be running..."
+
+          # Wait for the instance to be running
+          for i in {1..20}; do
+            STATUS=$(oci container-instances container-instance get --container-instance-id $INSTANCE_ID --query 'data."lifecycle-state"' --raw-output)
+            echo "Status: $STATUS (attempt $i/20)"
+            
+            if [ "$STATUS" = "ACTIVE" ]; then
+              echo "Container instance is running!"
+              break
+            elif [ "$STATUS" = "FAILED" ]; then
+              echo "Container instance failed to start"
+              exit 1
+            fi
+            
+            sleep 30
+          done
+
+          # Get the public IP
+          PUBLIC_IP=$(oci container-instances container-instance get --container-instance-id $INSTANCE_ID --query 'data.vnics[0]."public-ip"' --raw-output)
+          echo "Public IP: $PUBLIC_IP"
+          echo "Application URL: http://$PUBLIC_IP:8080"
+
+          # Store outputs
+          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
+
+      - name: Health check
+        run: |
+          echo "Waiting for application to be ready..."
+          sleep 120
+
+          # Health check with retries
+          for i in {1..10}; do
+            if curl -f "http://$PUBLIC_IP:8080/health" -m 10; then
+              echo "✅ Health check passed!"
+              exit 0
+            else
+              echo "⏳ Health check failed, retrying... (attempt $i/10)"
+              sleep 30
+            fi
+          done
+
+          echo "❌ Health check failed after 10 attempts"
+          exit 1
+
+      - name: Deployment success notification
+        if: success()
+        run: |
+          echo "🚀 Production deployment to Oracle Cloud successful!"
+          echo "📍 Application URL: http://$PUBLIC_IP:8080"
+
+  # 🧹 Cleanup old images
+  cleanup-oci:
+    name: 🧹 Cleanup Old Images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: [deploy-staging-oci, deploy-production-oci]
+    if: always() && (needs.deploy-staging-oci.result == 'success' || needs.deploy-production-oci.result == 'success')
+
+    steps:
+      - name: Configure OCI CLI
+        run: |
+          mkdir -p ~/.oci
+          cat > ~/.oci/config << EOF
+          [DEFAULT]
+          user=${{ secrets.OCI_USER_OCID }}
+          fingerprint=${{ secrets.OCI_FINGERPRINT }}
+          tenancy=${{ secrets.OCI_TENANCY_OCID }}
+          region=${{ secrets.OCI_REGION }}
+          key_file=~/.oci/key.pem
+          EOF
+
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/key.pem
+          chmod 600 ~/.oci/key.pem
+
+      - name: Install OCI CLI
+        run: |
+          curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Cleanup old container images
+        run: |
+          export PATH=$PATH:$HOME/bin
+
+          echo "🧹 Cleaning up old container images..."
+
+          # List images and keep only the latest 5
+          REPO_NAME="${{ env.TENANCY_NAMESPACE }}/${{ env.IMAGE_NAME }}"
+
+          # Get list of image tags (keeping latest 5)
+          oci artifacts container image list \
+            --compartment-id ${{ secrets.OCI_COMPARTMENT_OCID }} \
+            --repository-name $REPO_NAME \
+            --query 'data[5:]."digest"' \
+            --raw-output | while read digest; do
+              if [ ! -z "$digest" ] && [ "$digest" != "null" ]; then
+                echo "Deleting image with digest: $digest"
+                oci artifacts container image delete \
+                  --image-id $digest \
+                  --force || echo "Failed to delete $digest"
+              fi
+            done
+
+          echo "✅ Cleanup completed"

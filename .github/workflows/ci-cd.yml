@@ -99,13 +99,12 @@ jobs:
         run: dotnet restore src/E-Commerce-BE/E-Commerce-BE.csproj
 
       - name: Build application
-        run: dotnet build src/E-Commerce-BE/E-Commerce-BE.csproj --configuration Release --no-restore
+        run: dotnet build src/E-Commerce-BE.sln --configuration Release --no-restore
 
       - name: Run unit tests
         run: >
           dotnet test tests/E-Commerce-BE.Tests/E-Commerce-BE.Tests.csproj
           --configuration Release
-          --no-build
           --verbosity normal
           --results-directory tests/E-Commerce-BE.Tests/TestResults
           --collect:"XPlat Code Coverage"

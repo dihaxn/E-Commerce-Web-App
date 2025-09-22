@@ -235,15 +235,10 @@ jobs:
           echo "Checking if Dockerfile exists:"
           test -f src/E-Commerce-BE/Dockerfile && echo "Dockerfile exists" || echo "Dockerfile NOT found"
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: src/E-Commerce-BE
-          file: Dockerfile
-          push: false
-          tags: ecommerce-app:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Build Docker image  
+        run: |
+          cd src/E-Commerce-BE
+          docker build -t ecommerce-app:latest .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master

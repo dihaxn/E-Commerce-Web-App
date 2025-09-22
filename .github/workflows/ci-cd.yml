@@ -96,7 +96,7 @@ jobs:
         run: npm run css:build
 
       - name: Restore dependencies
-        run: dotnet restore src/E-Commerce-BE/E-Commerce-BE.csproj
+        run: dotnet restore src/E-Commerce-BE.sln
 
       - name: Build application
         run: dotnet build src/E-Commerce-BE.sln --configuration Release --no-restore

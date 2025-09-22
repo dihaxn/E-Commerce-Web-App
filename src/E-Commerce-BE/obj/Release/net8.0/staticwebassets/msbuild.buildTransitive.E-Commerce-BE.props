@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/E-Commerce-BE.props" />
-</Project>

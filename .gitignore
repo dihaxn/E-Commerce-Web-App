@@ -411,7 +411,6 @@ transaction-logs/
 # ==========================================
 
 # Keep empty directories
-!**/
 !.gitkeep
 !wwwroot/products/.gitkeep
 

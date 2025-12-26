@@ -766,6 +766,12 @@ $.extend( $.validator, {
 		check: function( element ) {
 			element = this.validationTargetFor( this.clean( element ) );
 
+			// Ensure element is a DOM node and not a string to avoid XSS through selectors
+			if (typeof element === "string") {
+				// If element is a string, reject it safely
+				return false;
+			}
+
 			var rules = $( element ).rules(),
 				rulesCount = $.map( rules, function( n, i ) {
 					return i;

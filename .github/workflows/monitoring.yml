@@ -2,7 +2,7 @@ name: 📊 Monitoring & Alerting
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # Every 5 minutes
+    - cron: "*/30 * * * *" # Every 30 minutes (reduce noisy notifications)
   workflow_dispatch:
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
           fi
 
       - name: Alert on health check failure
-        if: steps.health-prod.outputs.status == 'unhealthy' || steps.db-health.outputs.status == 'unhealthy'
+        if: (steps.health-prod.outputs.status == 'unhealthy' || steps.db-health.outputs.status == 'unhealthy') && secrets.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         with:
           status: failure
@@ -77,7 +77,7 @@ jobs:
       - name: Install curl and jq
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl jq
+          sudo apt-get install -y curl jq bc
 
       - name: Measure response times
         id: response-times
@@ -118,7 +118,7 @@ jobs:
           fi
 
       - name: Alert on slow performance
-        if: steps.performance-check.outputs.status == 'slow'
+        if: steps.performance-check.outputs.status == 'slow' && secrets.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         with:
           status: warning
@@ -193,7 +193,7 @@ jobs:
           fi
 
       - name: Alert on security issues
-        if: steps.security-headers.outputs.frame_options == 'missing' || steps.security-headers.outputs.content_type_options == 'missing' || steps.security-headers.outputs.xss_protection == 'missing' || steps.security-headers.outputs.hsts == 'missing' || steps.https-check.outputs.http_redirect == 'not_working' || steps.https-check.outputs.https_working == 'no'
+        if: (steps.security-headers.outputs.frame_options == 'missing' || steps.security-headers.outputs.content_type_options == 'missing' || steps.security-headers.outputs.xss_protection == 'missing' || steps.security-headers.outputs.hsts == 'missing' || steps.https-check.outputs.http_redirect == 'not_working' || steps.https-check.outputs.https_working == 'no') && secrets.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         with:
           status: failure
@@ -247,7 +247,7 @@ jobs:
           fi
 
       - name: Alert on downtime
-        if: steps.uptime-check.outputs.status == 'down'
+        if: steps.uptime-check.outputs.status == 'down' && secrets.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         with:
           status: failure
